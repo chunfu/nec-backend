@@ -1,4 +1,5 @@
 import http from 'http';
+import path from 'path';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -22,6 +23,9 @@ app.use(cors({
 app.use(bodyParser.json({
 	limit : config.bodyLimit
 }));
+
+// serve frontend built files
+app.use(express.static(__dirname + '/build'));
 
 // connect to db
 initializeDb( db => {

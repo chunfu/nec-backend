@@ -9,6 +9,9 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
+import Cars from './components/Cars';
+import Pos from './components/Pos';
+
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -22,8 +25,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const menuOptions = [
-  { label: '公司車最佳租賃', path: '/cars' },
-  { label: '技術服務據點選擇', path: '/pos' },
+  { label: '社車租賃模組', path: '/cars' },
+  { label: '服務據點模組', path: '/pos' },
 ];
 
 export default function App() {
@@ -77,11 +80,11 @@ export default function App() {
         </AppBar>
       </div>
 
-      <Route exact path="/" component={() => <h1>Cars</h1>} />
-      <Route path="/cars" component={() => <h1>Cars</h1>} />
+      <Route exact path="/" component={() => <Cars />} />
+      <Route path="/cars" component={() => <Cars />} />
       <Route path="/pos" component={() => {
         setSelectedIndex(1);
-        return <h1>POS</h1>
+        return <Pos />
       }} />
     </Router>
   );
