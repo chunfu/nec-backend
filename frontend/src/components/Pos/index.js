@@ -120,7 +120,7 @@ const Pos = props => {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={handleCloseFileModal}
+            onClick={handleCloseParamsModal}
             color="primary"
             variant="contained"
           >
