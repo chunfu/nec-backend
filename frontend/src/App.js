@@ -42,6 +42,8 @@ export default function App() {
     setSelectedIndex(idx);
   };
 
+  // Link should use forwardRef
+
   return (
     <Router>
       <div className={classes.root}>

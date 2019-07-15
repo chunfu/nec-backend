@@ -48,7 +48,7 @@ const Pos = props => {
     setValues({ ...values, [name]: event.target.value });
   };
 
-  const [data, loadData] = useFetch('/api/carModule', {});
+  const [data, loadData] = useFetch('/api/posModule', {});
 
   const [paramsModalOpen, setParamsModalOpen] = useState(false);
   const handleOpenParamsModal = () => setParamsModalOpen(true);
