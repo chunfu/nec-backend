@@ -138,50 +138,50 @@ const Pos = props => {
       >
         <DialogTitle>讀取資料</DialogTitle>
         <DialogContent>
-        <form noValidate autoComplete="off">
-          <UploadButton
-            id="officeCost"
-            label="據點辦公室成本"
-            inputClass={classes.input}
-            buttonClass={classes.button}
-          />
-          <UploadButton
-            id="capacity"
-            label="服務據點容量限制"
-            inputClass={classes.input}
-            buttonClass={classes.button}
-          />
-          <UploadButton
-            id="employeeCost"
-            label="各據點單位員工成本"
-            inputClass={classes.input}
-            buttonClass={classes.button}
-          />
-          <UploadButton
-            id="serviceTimes"
-            label="客戶歷年服務平均次數"
-            inputClass={classes.input}
-            buttonClass={classes.button}
-          />
-          <UploadButton
-            id="office2customerTime"
-            label="服務據點到客戶門市車行時間"
-            inputClass={classes.input}
-            buttonClass={classes.button}
-          />
-          <UploadButton
-            id="serviceQualityChange"
-            label="服務水準可否調派"
-            inputClass={classes.input}
-            buttonClass={classes.button}
-          />
-          <UploadButton
-            id="serviceHistory"
-            label="歷史服務紀錄"
-            inputClass={classes.input}
-            buttonClass={classes.button}
-          />
-        </form>
+          <form noValidate autoComplete="off">
+            <UploadButton
+              id="officeCost"
+              label="據點辦公室成本"
+              inputClass={classes.input}
+              buttonClass={classes.button}
+            />
+            <UploadButton
+              id="capacity"
+              label="服務據點容量限制"
+              inputClass={classes.input}
+              buttonClass={classes.button}
+            />
+            <UploadButton
+              id="employeeCost"
+              label="各據點單位員工成本"
+              inputClass={classes.input}
+              buttonClass={classes.button}
+            />
+            <UploadButton
+              id="serviceTimes"
+              label="客戶歷年服務平均次數"
+              inputClass={classes.input}
+              buttonClass={classes.button}
+            />
+            <UploadButton
+              id="office2customerTime"
+              label="服務據點到客戶門市車行時間"
+              inputClass={classes.input}
+              buttonClass={classes.button}
+            />
+            <UploadButton
+              id="serviceQualityChange"
+              label="服務水準可否調派"
+              inputClass={classes.input}
+              buttonClass={classes.button}
+            />
+            <UploadButton
+              id="serviceHistory"
+              label="歷史服務紀錄"
+              inputClass={classes.input}
+              buttonClass={classes.button}
+            />
+          </form>
         </DialogContent>
         <DialogActions>
           <Button

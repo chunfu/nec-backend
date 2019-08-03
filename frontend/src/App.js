@@ -29,7 +29,7 @@ const routeConfig = [
   { label: '服務據點模組', path: '/pos', comp: Pos },
 ];
 
-const App = (props) => {
+const App = props => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -46,7 +46,7 @@ const App = (props) => {
     const p = window.location.pathname;
     // set menu index when landing
     setSelectedIndex(routeConfig.findIndex(({ path }) => path === p) || 0);
-  }, [])
+  }, []);
 
   return (
     <Router>
@@ -87,7 +87,9 @@ const App = (props) => {
       </div>
 
       <Route exact path="/" component={Cars} />
-      {routeConfig.map(({ path, comp }) => <Route path={path} component={comp} />)}
+      {routeConfig.map(({ path, comp }) => (
+        <Route path={path} component={comp} />
+      ))}
     </Router>
   );
 };
