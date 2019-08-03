@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -24,12 +24,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const menuOptions = [
-  { label: '社車租賃模組', path: '/cars' },
-  { label: '服務據點模組', path: '/pos' },
+const routeConfig = [
+  { label: '社車租賃模組', path: '/cars', comp: Cars },
+  { label: '服務據點模組', path: '/pos', comp: Pos },
 ];
 
-export default function App() {
+const App = (props) => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -42,7 +42,11 @@ export default function App() {
     setSelectedIndex(idx);
   };
 
-  // Link should use forwardRef
+  useEffect(() => {
+    const p = window.location.pathname;
+    // set menu index when landing
+    setSelectedIndex(routeConfig.findIndex(({ path }) => path === p) || 0);
+  }, [])
 
   return (
     <Router>
@@ -64,7 +68,7 @@ export default function App() {
               open={open}
               onClose={handleClose}
             >
-              {menuOptions.map(({ label, path }, index) => (
+              {routeConfig.map(({ label, path }, index) => (
                 <MenuItem
                   key={label}
                   selected={index === selectedIndex}
@@ -76,18 +80,16 @@ export default function App() {
               ))}
             </Menu>
             <Typography variant="h6" className={classes.title}>
-              {menuOptions[selectedIndex].label}
+              {routeConfig[selectedIndex].label}
             </Typography>
           </Toolbar>
         </AppBar>
       </div>
 
-      <Route exact path="/" component={() => <Cars />} />
-      <Route path="/cars" component={() => <Cars />} />
-      <Route path="/pos" component={() => {
-        setSelectedIndex(1);
-        return <Pos />
-      }} />
+      <Route exact path="/" component={Cars} />
+      {routeConfig.map(({ path, comp }) => <Route path={path} component={comp} />)}
     </Router>
   );
-}
+};
+
+export default App;
