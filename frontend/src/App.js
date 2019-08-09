@@ -45,7 +45,11 @@ const App = props => {
   useEffect(() => {
     const p = window.location.pathname;
     // set menu index when landing
-    setSelectedIndex(routeConfig.findIndex(({ path }) => path === p) || 0);
+    let idx = routeConfig.findIndex(({ path }) => path === p);
+    if (idx < 0) {
+      idx = 0;
+    }
+    setSelectedIndex(idx);
   }, []);
 
   return (
