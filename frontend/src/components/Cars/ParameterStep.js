@@ -6,8 +6,36 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+
+const locations = [
+  '淡水',
+  '桃園',
+  '新竹',
+  '台中',
+  '嘉義',
+  '台南',
+  '高雄',
+  '屏東',
+  '台東',
+  '花蓮',
+  '宜蘭',
+];
 
 const useStyles = makeStyles(theme => ({
+  formControl: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 250,
+  },
+  inputContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
@@ -29,19 +57,21 @@ const ParamterStep = props => {
   const [values, setValues] = useState({
     comapnyCarNumber: '',
     privateCarNumber: '',
+    location: '',
     restTime: '',
     comapnyCarAnnualCost: '',
     comapnyCarFuelConsumption: '',
     privateCarDistance: '',
     privateCarBonus: '',
     privateCarExtraBonus: '',
-    taxiDistance: '',
-    taxiCost: '',
-    taxiExtraCost: '',
   });
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
+
+  const [configModalOpen, setConfigModalOpen] = useState(false);
+  const handleOpenConfigModal = () => setConfigModalOpen(true);
+  const handleCloseConfigModal = () => setConfigModalOpen(false);
 
   const [paramsModalOpen, setParamsModalOpen] = useState(false);
   const handleOpenParamsModal = () => setParamsModalOpen(true);
@@ -51,41 +81,21 @@ const ParamterStep = props => {
       <Button
         className={classes.button}
         variant="contained"
-        onClick={handleOpenParamsModal}
+        onClick={handleOpenConfigModal}
       >
-        讀取模型參數
+        系統參數
       </Button>
       <Dialog
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
-        open={paramsModalOpen}
-        onClose={handleCloseParamsModal}
+        open={configModalOpen}
+        onClose={handleCloseConfigModal}
         fullWidth
         maxWidth="lg"
       >
-        <DialogTitle>讀取模型參數</DialogTitle>
+        <DialogTitle>讀取系統參數</DialogTitle>
         <DialogContent>
           <form noValidate autoComplete="off">
-            <TextField
-              label="目前據點社車供應"
-              placeholder="X 輛"
-              value={values.comapnyCarNumber}
-              onChange={handleChange('comapnyCarNumber')}
-              type="number"
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField
-              label="目前據點私車供應"
-              placeholder="X 輛"
-              value={values.privateCarNumber}
-              onChange={handleChange('privateCarNumber')}
-              type="number"
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-            />
             <TextField
               label="車輛工作間隔時間下限"
               placeholder="X 分鐘"
@@ -146,38 +156,70 @@ const ParamterStep = props => {
               margin="normal"
               variant="outlined"
             />
-            <TextField
-              label="計程車基本里程數"
-              placeholder="X 公尺"
-              value={values.taxiDistance}
-              onChange={handleChange('taxiDistance')}
-              type="number"
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-            />
-            {/* （基本里程數內） */}
-            <TextField
-              label="計程車基本起跳價"
-              placeholder="X 元"
-              value={values.taxiCost}
-              onChange={handleChange('taxiCost')}
-              type="number"
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField
-              label="計程車基本里程數外單位價格"
-              placeholder="X 元/公里"
-              value={values.taxiExtraCost}
-              onChange={handleChange('taxiExtraCost')}
-              type="number"
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-            />
           </form>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseConfigModal}
+            color="primary"
+            variant="contained"
+          >
+            確認
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Button
+        className={classes.button}
+        variant="contained"
+        onClick={handleOpenParamsModal}
+      >
+        日常參數
+      </Button>
+      <Dialog
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        open={paramsModalOpen}
+        onClose={handleCloseParamsModal}
+        fullWidth
+        maxWidth="lg"
+      >
+        <DialogTitle>讀取日常參數</DialogTitle>
+        <DialogContent className={classes.inputContainer}>
+          <TextField
+            label="目前據點社車供應"
+            placeholder="X 輛"
+            value={values.comapnyCarNumber}
+            onChange={handleChange('comapnyCarNumber')}
+            type="number"
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            label="目前據點私車供應"
+            placeholder="X 輛"
+            value={values.privateCarNumber}
+            onChange={handleChange('privateCarNumber')}
+            type="number"
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
+          <FormControl className={classes.formControl} variant="outlined">
+            <InputLabel htmlFor="location">據點選擇</InputLabel>
+            <Select
+              value={values.location}
+              onChange={handleChange('location')}
+              input={
+                <OutlinedInput labelWidth="60" name="location" id="location" />
+              }
+            >
+              {locations.map(l => (
+                <MenuItem value={l}>{l}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button

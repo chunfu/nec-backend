@@ -1,20 +1,14 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import Typography from '@material-ui/core/Typography';
 
-import ParameterStep from './ParameterStep';
 import FileStep from './FileStep';
-import SimpleTable from '../../widget/SimpleTable';
-import useFetch from '../../utils/useFetch';
+import ParameterStep from './ParameterStep';
+import InfoStep from './InfoStep';
+import ResultStep from './ResultStep';
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -31,21 +25,22 @@ const useStyles = makeStyles(theme => ({
   table: {
     marginTop: theme.spacing(5),
   },
+  fixBottom: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+  }
 }));
 
 const steps = [
-  {
-    label: 'Select campaign settings',
-    comp: FileStep,
-  },
-  { label: 'Create an ad group', comp: ParameterStep },
-  { label: 'Create an ad', comp: null },
+  { label: '檔案讀取', comp: FileStep },
+  { label: '參數設定', comp: ParameterStep },
+  { label: '路徑資訊', comp: InfoStep },
+  { label: '輸出結果', comp: ResultStep },
 ];
 
 const Cars = props => {
   const classes = useStyles();
-
-  const [data, loadData] = useFetch('/api/carModule', {});
 
   const [activeStep, setActiveStep] = React.useState(0);
   function handleNext() {
@@ -54,64 +49,38 @@ const Cars = props => {
   function handleBack() {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
   }
-  function handleReset() {
-    setActiveStep(0);
-  }
-
   const ActiveComp = steps[activeStep].comp || (() => <h1>No Comp</h1>);
   return (
     <React.Fragment>
       <ActiveComp />
-      <Stepper activeStep={activeStep}>
-        {steps.map(({ label }) => {
-          const stepProps = {};
-          const labelProps = {};
-          return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
-      <div>
-        {activeStep === steps.length ? (
-          <div>
-            <Typography>All steps completed - you&apos;re finished</Typography>
-            <Button onClick={handleReset} className={classes.button}>
-              Reset
-            </Button>
-          </div>
-        ) : (
-          <div>
-            <Button
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              className={classes.button}
-            >
-              Back
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleNext}
-              className={classes.button}
-            >
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button>
-          </div>
-        )}
-      </div>
-      <Button
-        className={classes.button}
-        variant="contained"
-        color="primary"
-        onClick={() => loadData()}
-      >
-        最佳化資源配置
-      </Button>
-      <div className={classes.table}>
-        {data.columns && (
-          <SimpleTable columns={data.columns} rows={data.rows} />
+      <div className={classes.fixBottom}>
+        <Stepper activeStep={activeStep}>
+          {steps.map(({ label }) => {
+            const stepProps = {};
+            const labelProps = {};
+            return (
+              <Step key={label} {...stepProps}>
+                <StepLabel {...labelProps}>{label}</StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+        <Button
+          disabled={activeStep === 0}
+          onClick={handleBack}
+          className={classes.button}
+        >
+          Back
+        </Button>
+        {activeStep < steps.length - 1 && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleNext}
+            className={classes.button}
+          >
+            Next
+          </Button>
         )}
       </div>
     </React.Fragment>

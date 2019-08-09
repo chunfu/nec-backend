@@ -32,7 +32,19 @@ const FileStep = props => {
       />
       <label htmlFor="upload-history">
         <Button className={classes.button} variant="contained" component="span">
-          讀取歷史工作
+          年度歷史工作紀錄
+        </Button>
+      </label>
+      <input
+        accept=".csv,.xls,.xlsx"
+        className={classes.input}
+        id="upload-taxi"
+        multiple
+        type="file"
+      />
+      <label htmlFor="upload-history">
+        <Button className={classes.button} variant="contained" component="span">
+          各地區計程車費率
         </Button>
       </label>
     </React.Fragment>
