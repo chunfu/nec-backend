@@ -79,6 +79,8 @@ const DrivingTimeStep = props => {
         aria-describedby="parameter-modal-description"
         open={paramsModalOpen}
         onClose={handleCloseParamsModal}
+        fullWidth
+        maxWidth="lg"
       >
         <DialogTitle>模型參數設定</DialogTitle>
         <DialogContent>
@@ -103,7 +105,11 @@ const DrivingTimeStep = props => {
               margin="normal"
               variant="outlined"
             />
-            <FormControl className={classes.formControl} variant="outlined">
+            <FormControl
+              margin="normal"
+              className={classes.formControl}
+              variant="outlined"
+            >
               <InputLabel htmlFor="location">必須保留的據點</InputLabel>
               <Select
                 value={values.location}

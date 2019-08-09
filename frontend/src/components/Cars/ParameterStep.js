@@ -206,7 +206,11 @@ const ParamterStep = props => {
             margin="normal"
             variant="outlined"
           />
-          <FormControl className={classes.formControl} variant="outlined">
+          <FormControl
+            margin="normal"
+            className={classes.formControl}
+            variant="outlined"
+          >
             <InputLabel htmlFor="location">據點選擇</InputLabel>
             <Select
               value={values.location}
