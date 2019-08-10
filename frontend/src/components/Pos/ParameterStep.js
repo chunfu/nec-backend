@@ -10,29 +10,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
-  formControl: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 250,
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 250,
-  },
-  input: {
-    display: 'none',
-  },
-  button: {
-    margin: theme.spacing(1),
-  },
-  table: {
-    marginTop: theme.spacing(5),
-  },
-}));
+import useStyles from '../../utils/useStyles';
 
 const locations = [
   '南港',
@@ -50,7 +29,7 @@ const locations = [
 ];
 
 const DrivingTimeStep = props => {
-  const classes = useStyles();
+  const classes = useStyles()();
 
   const [values, setValues] = useState({
     fuelCost: '',

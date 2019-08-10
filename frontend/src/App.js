@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -9,20 +8,9 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
+import useStyles from './utils/useStyles';
 import Cars from './components/Cars';
 import Pos from './components/Pos';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
 
 const routeConfig = [
   { label: '社車租賃模組', path: '/cars', comp: Cars },
@@ -30,7 +18,7 @@ const routeConfig = [
 ];
 
 const App = props => {
-  const classes = useStyles();
+  const classes = useStyles()();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);

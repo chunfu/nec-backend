@@ -1,36 +1,15 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 
+import useStyles from '../../utils/useStyles';
 import DrivingTimeStep from './DrivingTimeStep';
 import ParamterStep from './ParameterStep';
 import FileStep from './FileStep';
 import SLAStep from './SLAStep';
 import ResultStep from './ResultStep';
-
-const useStyles = makeStyles(theme => ({
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  input: {
-    display: 'none',
-  },
-  button: {
-    margin: theme.spacing(1),
-  },
-  table: {
-    marginTop: theme.spacing(5),
-  },
-  fixBottom: {
-    position: 'absolute',
-    width: '100%',
-    bottom: 0,
-  }
-}));
 
 const steps = [
   { label: '車行時間', comp: DrivingTimeStep },
@@ -41,7 +20,7 @@ const steps = [
 ];
 
 const Pos = props => {
-  const classes = useStyles();
+  const classes = useStyles()();
 
   const [activeStep, setActiveStep] = React.useState(0);
   function handleNext() {

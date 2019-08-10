@@ -1,26 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import MaterialTable from 'material-table';
 import useFetch from '../../utils/useFetch';
-
-const useStyles = makeStyles(theme => ({
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  input: {
-    display: 'none',
-  },
-  button: {
-    margin: theme.spacing(1),
-  },
-  table: {
-    marginTop: theme.spacing(2),
-  },
-}));
+import useStyles from '../../utils/useStyles';
 
 const locations = [
   '南港',
@@ -57,7 +41,7 @@ const Location = (/*{ value, onChange }*/) => {
 };
 
 const SLAStep = props => {
-  const classes = useStyles();
+  const classes = useStyles()();
 
   const [data, loadData] = useFetch('/api/carModule', {});
   let columns = [];
