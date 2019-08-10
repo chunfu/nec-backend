@@ -39,6 +39,9 @@ const useStyles = () => makeStyles(theme => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
+  link: {
+    cursor: 'pointer',
+  },
 }));
 
 export default useStyles;
