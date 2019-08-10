@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import SimpleTable from '../../widget/SimpleTable';
+import MaterialTable from 'material-table';
 import useFetch from '../../utils/useFetch';
 
 const useStyles = makeStyles(theme => ({
@@ -36,7 +36,7 @@ const InfoStep = props => {
     <React.Fragment>
       <div className={classes.table}>
         {data.columns && (
-          <SimpleTable columns={data.columns} rows={data.rows} />
+          <MaterialTable columns={data.columns} data={data.rows} />
         )}
       </div>
     </React.Fragment>

@@ -22,13 +22,13 @@ function createData(
 }
 
 const columns = [
-  { label: '社車數量', key: 'publicCarNum' },
-  { label: '變動成本一: 社車', key: 'companyCarCost' },
-  { label: '變動成本二: 私車', key: 'privateCarCost' },
-  { label: '變動成本三: 大眾運輸', key: 'publicCost' },
-  { label: '變動成本統計', key: 'costTotal' },
-  { label: '固定成本租金', key: 'fixCostTotal' },
-  { label: '交通成本總計', key: 'transportationCost' },
+  { title: '社車數量', field: 'publicCarNum' },
+  { title: '變動成本一: 社車', field: 'companyCarCost' },
+  { title: '變動成本二: 私車', field: 'privateCarCost' },
+  { title: '變動成本三: 大眾運輸', field: 'publicCost' },
+  { title: '變動成本統計', field: 'costTotal' },
+  { title: '固定成本租金', field: 'fixCostTotal' },
+  { title: '交通成本總計', field: 'transportationCost' },
 ];
 const rows = [
   createData(0, 159, 6.0, 24, 4.0, 100, 200),

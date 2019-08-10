@@ -3,8 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import MaterialTable from 'material-table';
 import useFetch from '../../utils/useFetch';
-import SimpleTable from '../../widget/SimpleTable';
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -74,7 +74,7 @@ const SLAStep = props => {
   }, []);
   return (
     <div className={classes.table}>
-      {columns && <SimpleTable columns={columns} rows={rows} />}
+      {columns && <MaterialTable columns={columns} data={rows} />}
     </div>
   );
 };

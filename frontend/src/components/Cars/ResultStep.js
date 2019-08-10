@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import MaterialTable from 'material-table';
 import useFetch from '../../utils/useFetch';
-import SimpleTable from '../../widget/SimpleTable';
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -38,7 +38,7 @@ const ResultStep = props => {
       </Button>
       <div className={classes.table}>
         {data.columns && (
-          <SimpleTable columns={data.columns} rows={data.rows} />
+          <MaterialTable columns={data.columns} data={data.rows} />
         )}
       </div>
     </React.Fragment>
