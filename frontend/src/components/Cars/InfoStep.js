@@ -18,7 +18,11 @@ const InfoStep = props => {
     <React.Fragment>
       <div className={classes.table}>
         {data.columns && (
-          <MaterialTable columns={data.columns} data={data.rows} />
+          <MaterialTable
+            title="還原工作服務路徑"
+            columns={data.columns}
+            data={data.rows}
+          />
         )}
       </div>
     </React.Fragment>

@@ -26,7 +26,7 @@ const Location = (/*{ value, onChange }*/) => {
     <FormControl>
       <Select
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={e => setValue(e.target.value)}
         inputProps={{
           name: 'location',
           id: 'location',
@@ -58,7 +58,13 @@ const SLAStep = props => {
   }, []);
   return (
     <div className={classes.table}>
-      {columns && <MaterialTable columns={columns} data={rows} />}
+      {columns && (
+        <MaterialTable
+          title="調整SLA無法滿足之客戶"
+          columns={columns}
+          data={rows}
+        />
+      )}
     </div>
   );
 };
