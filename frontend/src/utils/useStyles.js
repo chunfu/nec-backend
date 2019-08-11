@@ -35,6 +35,9 @@ const useStyles = () => makeStyles(theme => ({
     marginRight: theme.spacing(1),
     width: 250,
   },
+  horizontalFormGroup: {
+    flexDirection: 'row',
+  },
   inputContainer: {
     display: 'flex',
     flexWrap: 'wrap',

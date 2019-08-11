@@ -5,15 +5,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import useStyles from '../../utils/useStyles';
 
-const locations = [
+const locationNames = [
   '南港',
   '淡水',
   '桃園',
@@ -28,16 +28,43 @@ const locations = [
   '屏東',
 ];
 
-const DrivingTimeStep = props => {
+const ParameterStep = props => {
   const classes = useStyles()();
 
   const [values, setValues] = useState({
     fuelCost: '',
     serviceQuality: '',
-    location: '',
+    locations: [],
+    checkOther: false,
+    otherLocation: '',
   });
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
+  };
+
+  const handleLocationChange = name => e => {
+    const checked = e.target.checked;
+    let newLocations = values.locations.slice();
+    if (checked) {
+      // add to new locations
+      newLocations.push(name);
+    } else {
+      // remove from new locations
+      const nameIdx = newLocations.findIndex(l => l === name);
+      newLocations.splice(nameIdx, 1);
+    }
+
+    setValues({ ...values, locations: newLocations });
+  };
+
+  const handleCheckOther = e => {
+    const checked = e.target.checked;
+    let otherLocation = values.otherLocation;
+    if (!checked) {
+      // clear otherLocation
+      otherLocation = '';
+    }
+    setValues({ ...values, checkOther: checked, otherLocation });
   };
 
   const [paramsModalOpen, setParamsModalOpen] = useState(false);
@@ -84,27 +111,40 @@ const DrivingTimeStep = props => {
               margin="normal"
               variant="outlined"
             />
-            <FormControl
-              margin="normal"
-              className={classes.formControl}
-              variant="outlined"
-            >
-              <InputLabel htmlFor="location">必須保留的據點</InputLabel>
-              <Select
-                value={values.location}
-                onChange={handleChange('location')}
-                input={
-                  <OutlinedInput
-                    labelWidth="110"
-                    name="location"
-                    id="location"
+            <FormControl component="fieldset" className={classes.formControl}>
+              <FormLabel>必須保留的據點</FormLabel>
+              <FormGroup className={classes.horizontalFormGroup}>
+                {locationNames.map(name => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={!!values.locations.find(l => l === name)}
+                        onChange={handleLocationChange(name)}
+                        value={name}
+                        color="primary"
+                      />
+                    }
+                    label={name}
                   />
-                }
-              >
-                {locations.map(l => (
-                  <MenuItem value={l}>{l}</MenuItem>
                 ))}
-              </Select>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={values.checkOther}
+                      onChange={handleCheckOther}
+                      value="其他"
+                      color="primary"
+                    />
+                  }
+                  label="其他"
+                />
+                {values.checkOther && (
+                  <TextField
+                    value={values.otherLocation}
+                    onChange={handleChange('otherLocation')}
+                  />
+                )}
+              </FormGroup>
             </FormControl>
           </form>
         </DialogContent>
@@ -122,4 +162,4 @@ const DrivingTimeStep = props => {
   );
 };
 
-export default DrivingTimeStep;
+export default ParameterStep;
