@@ -11,6 +11,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+import { PosContext } from '.';
 import useStyles from '../../utils/useStyles';
 
 const locationNames = [
@@ -30,14 +31,8 @@ const locationNames = [
 
 const ParameterStep = props => {
   const classes = useStyles()();
+  const { parameter: { values, setValues }} = props;
 
-  const [values, setValues] = useState({
-    fuelCost: '',
-    serviceQuality: '',
-    locations: [],
-    checkOther: false,
-    otherLocation: '',
-  });
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
@@ -162,4 +157,10 @@ const ParameterStep = props => {
   );
 };
 
-export default ParameterStep;
+const withContext = () => (
+  <PosContext.Consumer>
+    {props => <ParameterStep {...props} />}
+  </PosContext.Consumer>
+);
+
+export default withContext;

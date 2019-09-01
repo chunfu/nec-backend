@@ -11,10 +11,16 @@ const StepsComp = props => {
 
   const [activeStep, setActiveStep] = useState(0);
   function handleNext() {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    const nextActiveStep = activeStep + 1;
+    const { onClickNext = () => null } = steps[nextActiveStep];
+    setActiveStep(nextActiveStep);
+    onClickNext();
   }
   function handleBack() {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
+    const prevActiveStep = activeStep - 1;
+    const { onClickBack = () => null } = steps[prevActiveStep];
+    setActiveStep(prevActiveStep);
+    onClickBack();
   }
   const ActiveComp = steps[activeStep].comp || (() => <h1>No Comp</h1>);
   return (

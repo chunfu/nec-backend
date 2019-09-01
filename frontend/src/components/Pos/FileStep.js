@@ -4,6 +4,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+
+import { PosContext } from '.';
 import UploadButton from '../../widget/UploadButton';
 import useStyles from '../../utils/useStyles';
 
@@ -12,6 +14,16 @@ const FileStep = props => {
   const [fileModalOpen, setFileModalOpen] = useState(false);
   const handleOpenFileModal = () => setFileModalOpen(true);
   const handleCloseFileModal = () => setFileModalOpen(false);
+
+  const {
+    file: { files, setFiles },
+  } = props;
+  const onFileChange = name => e => {
+    setFiles({
+      ...files,
+      [name]: e.target.files[0],
+    });
+  };
 
   return (
     <React.Fragment>
@@ -38,18 +50,21 @@ const FileStep = props => {
               label="各據點成本限制"
               inputClass={classes.input}
               buttonClass={classes.button}
+              onChange={onFileChange('localtionCost')}
             />
             <UploadButton
               id="locationWorkerService"
               label="各據點歷年員工數與服務次數"
               inputClass={classes.input}
               buttonClass={classes.button}
+              onChange={onFileChange('locationWorkerService')}
             />
             <UploadButton
               id="customerExpectService"
               label="各客戶預期未來年服務次數"
               inputClass={classes.input}
               buttonClass={classes.button}
+              onChange={onFileChange('customerExpectService')}
             />
           </form>
         </DialogContent>
@@ -67,4 +82,8 @@ const FileStep = props => {
   );
 };
 
-export default FileStep;
+const withContext = () => (
+  <PosContext.Consumer>{props => <FileStep {...props} />}</PosContext.Consumer>
+);
+
+export default withContext;
