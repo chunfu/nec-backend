@@ -39,7 +39,8 @@
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "morgan": "^1.8.0",
-    "resource-router-middleware": "^0.6.0"
+    "resource-router-middleware": "^0.6.0",
+    "xlsx": "^0.15.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
