@@ -1,9 +1,76 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
 import MaterialTable from 'material-table';
 
 import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
+
+const Address = ({ classes, index, value, handleChange }) => (
+  <div>
+    <TextField
+      label="客戶ID"
+      className={classes.textField}
+      margin="normal"
+      variant="outlined"
+      value={value.customerId}
+      onChange={handleChange(index, 'customerId')}
+    />
+    <TextField
+      label="客戶名稱"
+      className={classes.textField}
+      margin="normal"
+      variant="outlined"
+      value={value.customerName}
+      onChange={handleChange(index, 'customerName')}
+    />
+    <TextField
+      label="客戶地址"
+      className={classes.textField}
+      margin="normal"
+      variant="outlined"
+      value={value.customerAddress}
+      onChange={handleChange(index, 'customerAddress')}
+    />
+    <TextField
+      label="據點地址"
+      className={classes.textField}
+      margin="normal"
+      variant="outlined"
+      value={value.officeAddress}
+      onChange={handleChange(index, 'officeAddress')}
+    />
+  </div>
+);
+const NewAddresses = props => {
+  const { addresses, setAddresses, classes } = props;
+
+  const onFieldChange = (idx, key) => e => {
+    let newAddresses = addresses.slice();
+    newAddresses[idx][key] = e.target.value;
+    setAddresses(newAddresses);
+  };
+
+  return (
+    <div className={classes.newAddresses}>
+      {addresses.map((addr, idx) => (
+        <Address
+          index={idx}
+          value={addr}
+          handleChange={onFieldChange}
+          classes={classes}
+        />
+      ))}
+      <Icon
+        color="primary"
+        onClick={() => setAddresses(addresses.concat([{}]))}
+      >
+        add_circle
+      </Icon>
+    </div>
+  );
+};
 
 /**
  * TODO:
@@ -19,6 +86,8 @@ const DrivingTimeStep = props => {
 
   const [data, loadData] = useFetch('/api/pos/movetime', {});
   const { columns, rows } = data;
+
+  const [addresses, setAddresses] = useState([{}]);
   return (
     <>
       <Button
@@ -28,6 +97,11 @@ const DrivingTimeStep = props => {
       >
         載入車行時間表
       </Button>
+      <NewAddresses
+        addresses={addresses}
+        setAddresses={setAddresses}
+        classes={classes}
+      />
       <div className={classes.table}>
         {columns && (
           <MaterialTable title="車行時間" columns={columns} data={rows} />

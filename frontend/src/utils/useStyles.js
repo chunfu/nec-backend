@@ -45,6 +45,15 @@ const useStyles = () => makeStyles(theme => ({
   link: {
     cursor: 'pointer',
   },
+  newAddresses: {
+    '& > div:nth-last-child(2)': {
+      display: 'inline',
+    },
+    '& > span': {
+      height: '80px',
+      lineHeight: '80px',
+    },
+  },
 }));
 
 export default useStyles;
