@@ -44,7 +44,7 @@ const Address = ({ classes, index, value, handleChange }) => (
   </div>
 );
 const NewAddresses = props => {
-  const { addresses, setAddresses, classes } = props;
+  const { addresses, setAddresses, loadData, classes } = props;
 
   const onFieldChange = (idx, key) => e => {
     let newAddresses = addresses.slice();
@@ -55,12 +55,24 @@ const NewAddresses = props => {
   return (
     <div className={classes.newAddresses}>
       {addresses.map((addr, idx) => (
-        <Address
-          index={idx}
-          value={addr}
-          handleChange={onFieldChange}
-          classes={classes}
-        />
+        <div className={classes.newAddress}>
+          <Address
+            index={idx}
+            value={addr}
+            handleChange={onFieldChange}
+            classes={classes}
+          />
+          <Icon
+            color="primary"
+            onClick={() => {
+              let newArr = addresses.slice();
+              newArr.splice(idx, 1);
+              setAddresses(newArr);
+            }}
+          >
+            remove_circle
+          </Icon>
+        </div>
       ))}
       <Icon
         color="primary"
@@ -68,6 +80,15 @@ const NewAddresses = props => {
       >
         add_circle
       </Icon>
+      <Button
+        className={classes.button}
+        variant="contained"
+        onClick={() =>
+          loadData({ method: 'PUT', body: JSON.stringify(addresses) })
+        }
+      >
+        新增地址
+      </Button>
     </div>
   );
 };
@@ -101,6 +122,7 @@ const DrivingTimeStep = props => {
         addresses={addresses}
         setAddresses={setAddresses}
         classes={classes}
+        loadData={loadData}
       />
       <div className={classes.table}>
         {columns && (

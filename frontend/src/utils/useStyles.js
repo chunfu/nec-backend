@@ -24,6 +24,9 @@ const useStyles = () => makeStyles(theme => ({
   table: {
     marginTop: theme.spacing(2),
   },
+  stepperSpace: {
+    marginBottom: '120px',
+  },
   fixBottom: {
     position: 'fixed',
     backgroundColor: 'white',
@@ -45,8 +48,8 @@ const useStyles = () => makeStyles(theme => ({
   link: {
     cursor: 'pointer',
   },
-  newAddresses: {
-    '& > div:nth-last-child(2)': {
+  newAddress: {
+    '& > div': {
       display: 'inline',
     },
     '& > span': {

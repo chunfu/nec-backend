@@ -25,7 +25,9 @@ const StepsComp = props => {
   const ActiveComp = steps[activeStep].comp || (() => <h1>No Comp</h1>);
   return (
     <React.Fragment>
-      <ActiveComp />
+      <div className={classes.stepperSpace}>
+        <ActiveComp />
+      </div>
       <div className={classes.fixBottom}>
         <Stepper activeStep={activeStep}>
           {steps.map(({ label }) => {
