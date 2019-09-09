@@ -1,6 +1,7 @@
 import { version } from '../../package.json';
 import { Router } from 'express';
 import { getMoveTime, putMoveTime } from './pos/movetime';
+import { getSla } from './pos/sla';
 
 function createData(
   publicCarNum,
@@ -60,6 +61,8 @@ export default ({ config, db }) => {
 
   api.get('/pos/movetime', getMoveTime);
   api.put('/pos/movetime', putMoveTime);
+
+  api.get('/pos/sla', getSla);
 
   // perhaps expose some API metadata at the root
   api.get('/', (req, res) => {

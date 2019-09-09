@@ -4,9 +4,17 @@ const useFetch = (url, defaultData, defaultOptions = {}) => {
   const [data, updateData] = useState(defaultData);
 
   const loadData = async (options = {}) => {
-    const resp = await fetch(url, {
+    let { query } = options;
+    let realUrl = url;
+    if (query) {
+      query = Object.keys(query)
+        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(query[k]))
+        .join('&');
+      realUrl = `${realUrl}?${query}`;
+    }
+    const resp = await fetch(realUrl, {
       headers: {
-        'content-type': 'application/json'
+        'content-type': 'application/json',
       },
       ...defaultOptions,
       ...options,

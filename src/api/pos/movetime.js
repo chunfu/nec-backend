@@ -1,12 +1,15 @@
 import * as xlsx from 'xlsx';
 import * as _ from 'lodash';
+
+const MOVETIME_FILE_PATH = './movetime.xlsx';
+
 const gmap = require('@google/maps').createClient({
   key: 'API KEY',
   Promise: Promise,
 });
 
 const getMoveTime = (req, res) => {
-  const workbook = xlsx.readFile('./movetime.xlsx');
+  const workbook = xlsx.readFile(MOVETIME_FILE_PATH);
   const wsname = workbook.SheetNames[0];
   const ws = workbook.Sheets[wsname];
   const rows = xlsx.utils.sheet_to_json(ws);
@@ -99,7 +102,9 @@ const putMoveTime = async (req, res) => {
   );
   const newOfficeAddresses = newAddresses.filter(addr => addr.officeAddress);
   try {
-    const workbook = xlsx.readFile('./movetime.xlsx');
+    console.log('before read', new Date);
+    const workbook = xlsx.readFile(MOVETIME_FILE_PATH);
+    console.log('before read', new Date);
     const wsname = workbook.SheetNames[0];
     const ws = workbook.Sheets[wsname];
     let rows = xlsx.utils.sheet_to_json(ws);
@@ -115,9 +120,14 @@ const putMoveTime = async (req, res) => {
       );
     }
 
-    columns = columns.map(key => ({ title: key, field: key }));
+    console.log('before write', new Date);
+    const newws = xlsx.utils.json_to_sheet(rows, { header: columns })
+    workbook.Sheets[wsname] = newws;
+    // don't know why can't have path like './movetime.xlsx'
+    xlsx.writeFile(workbook, 'movetime.xlsx');
+    console.log('after write', new Date);
     res.json({
-      columns,
+      columns: columns.map(key => ({ title: key, field: key })),
       rows,
     });
   } catch (e) {

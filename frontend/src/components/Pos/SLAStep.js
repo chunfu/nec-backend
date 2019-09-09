@@ -3,8 +3,10 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import MaterialTable from 'material-table';
+import { PosContext } from '.';
 import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
+import tableConfig from '../../const/tableConfig';
 
 const locations = [
   '南港',
@@ -20,13 +22,18 @@ const locations = [
   '高雄',
   '屏東',
 ];
-const Location = (/*{ value, onChange }*/) => {
+const Location = ({ onChange = () => null }) => {
   const [value, setValue] = useState('');
+  const onChangeSelect = e => {
+    const v = e.target.value;
+    setValue(v);
+    onChange(e, v);
+  };
   return (
     <FormControl>
       <Select
         value={value}
-        onChange={e => setValue(e.target.value)}
+        onChange={onChangeSelect}
         inputProps={{
           name: 'location',
           id: 'location',
@@ -41,18 +48,29 @@ const Location = (/*{ value, onChange }*/) => {
 };
 
 const SLAStep = props => {
+  const {
+    // read parameter from context provider
+    parameter: {
+      values: { serviceQuality },
+    },
+  } = props;
   const classes = useStyles()();
 
-  const [data, loadData] = useFetch('/api/carModule', {});
-  let columns = [];
-  let rows = [];
-  if (data.columns) {
-    columns = data.columns.concat({ label: '服務據點', key: 'location' });
-    rows = data.rows.map(r => ({ ...r, location: <Location /> }));
+  const [data, loadData] = useFetch('/api/pos/sla', {});
+  let { columns, rows } = data;
+  if (columns) {
+    columns = columns.concat({
+      title: '服務據點',
+      field: 'location',
+      render: rowData => {
+        const i = rows.indexOf(rowData);
+        return <Location onChange={(e, v) => (rows[i]['location'] = v)} />;
+      },
+    });
   }
   useEffect(() => {
     async function fetchData() {
-      await loadData();
+      await loadData({ query: { serviceQuality } });
     }
     fetchData();
   }, []);
@@ -63,10 +81,15 @@ const SLAStep = props => {
           title="調整SLA無法滿足之客戶"
           columns={columns}
           data={rows}
+          {...tableConfig}
         />
       )}
     </div>
   );
 };
 
-export default SLAStep;
+const withContext = () => (
+  <PosContext.Consumer>{props => <SLAStep {...props} />}</PosContext.Consumer>
+);
+
+export default withContext;
