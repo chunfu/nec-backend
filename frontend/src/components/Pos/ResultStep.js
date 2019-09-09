@@ -8,7 +8,7 @@ import useStyles from '../../utils/useStyles';
 
 const ResultStep = props => {
   const classes = useStyles()();
-  const [data, loadData] = useFetch('/api/posModule', {});
+  const [data, loadData] = useFetch('/api/pos/optimal', {}, { method: 'POST' });
 
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const handleOpenDetailModal = () => setDetailModalOpen(true);
