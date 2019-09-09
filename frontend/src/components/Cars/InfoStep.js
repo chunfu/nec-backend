@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
 import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
+import tableConfig from '../../const/tableConfig';
 
 const InfoStep = props => {
   const classes = useStyles()();
@@ -22,6 +23,7 @@ const InfoStep = props => {
             title="還原工作服務路徑"
             columns={data.columns}
             data={data.rows}
+            {...tableConfig}
           />
         )}
       </div>

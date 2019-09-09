@@ -5,6 +5,7 @@ import Dialog from '@material-ui/core/Dialog';
 import MaterialTable from 'material-table';
 import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
+import tableConfig from '../../const/tableConfig';
 
 const ResultStep = props => {
   const classes = useStyles()();
@@ -62,7 +63,7 @@ const ResultStep = props => {
               title="年度社車供應成本表"
               columns={columns}
               data={data.rows}
-              options={{ exportButton: true }}
+              {...tableConfig}
             />
           </div>
           <Dialog
@@ -77,7 +78,7 @@ const ResultStep = props => {
               title="年度社車供應日常分派結果成本表"
               columns={data.columns}
               data={data.rows}
-              options={{ exportButton: true }}
+              {...tableConfig}
             />
           </Dialog>
           <Dialog
@@ -92,7 +93,7 @@ const ResultStep = props => {
               title="據點私車補貼價格敏感度分析表"
               columns={data.columns}
               data={data.rows}
-              options={{ exportButton: true }}
+              {...tableConfig}
             />
           </Dialog>
         </React.Fragment>

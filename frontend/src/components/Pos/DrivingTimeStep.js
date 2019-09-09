@@ -6,6 +6,7 @@ import MaterialTable from 'material-table';
 
 import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
+import tableConfig from '../../const/tableConfig';
 
 const Address = ({ classes, index, value, handleChange }) => (
   <div>
@@ -126,7 +127,12 @@ const DrivingTimeStep = props => {
       />
       <div className={classes.table}>
         {columns && (
-          <MaterialTable title="車行時間" columns={columns} data={rows} />
+          <MaterialTable
+            title="車行時間"
+            columns={columns}
+            data={rows}
+            {...tableConfig}
+          />
         )}
       </div>
     </>

@@ -5,6 +5,7 @@ import Dialog from '@material-ui/core/Dialog';
 import MaterialTable from 'material-table';
 import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
+import tableConfig from '../../const/tableConfig';
 
 const ResultStep = props => {
   const classes = useStyles()();
@@ -50,6 +51,7 @@ const ResultStep = props => {
             title="最佳化結果"
             columns={columns}
             data={data.rows}
+            {...tableConfig}
           />
           <Dialog
             aria-labelledby="detail-modal-title"
@@ -63,7 +65,7 @@ const ResultStep = props => {
               title="該據點客戶分配"
               columns={data.columns}
               data={data.rows}
-              options={{ exportButton: true }}
+              {...tableConfig}
             />
           </Dialog>
         </div>
