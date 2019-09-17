@@ -1,57 +1,29 @@
-Express & ES6 REST API Boilerplate
-==================================
-
-This is a straightforward boilerplate for building REST APIs with ES6 and Express.
-
-- ES6 support via [babel](https://babeljs.io)
-- REST resources as middleware via [resource-router-middleware](https://github.com/developit/resource-router-middleware)
-- CORS support via [cors](https://github.com/troygoode/node-cors)
-- Body Parsing via [body-parser](https://github.com/expressjs/body-parser)
-
-> Tip: If you are using [Mongoose](https://github.com/Automattic/mongoose), you can automatically expose your Models as REST resources using [restful-mongoose](https://git.io/restful-mongoose).
+# TODO
+1. persist parameters
+1. loading indicator
+1. send SLA to server
+1. execute optModel
 
 
+## Pos
+1. check duration from gmap
+1. ~~show 2 digit for duration~~
+1. adjust address column size to show more letters in the same line
+1. ~~ui -> separate adding customer & office address~~
+1. sla -> location list should use office id
+1. office id, address mapping file
+1. SLA module export reachable file
+1. needAdjustOK file is the output of SLAStep
+1. import movetime excel (lower priority)
 
-Getting Started
----------------
 
-```sh
-# clone it
-git clone git@github.com:developit/express-es6-rest-api.git
-cd express-es6-rest-api
-
-# Make it your own
-rm -rf .git && git init && npm init
-
-# Install dependencies
-npm install
-
-# Start development live-reload server
-PORT=8080 npm run dev
-
-# Start production server:
-PORT=8080 npm start
-```
-Docker Support
-------
-```sh
-cd express-es6-rest-api
-
-# Build your docker
-docker build -t es6/api-service .
-#            ^      ^           ^
-#          tag  tag name      Dockerfile location
-
-# run your docker
-docker run -p 8080:8080 es6/api-service
-#                 ^            ^
-#          bind the port    container tag
-#          to your host
-#          machine port   
-
-```
-
-License
--------
-
-MIT
+## Car
+1. new file: worker data upload
+1. new file: office address upload
+1. PathDistModule -> input 3 files except taxi file & office slection (string from param)
+1. PathDistModule export path_detail.xlsx(show detail according to pathId) & analysis.xlsx(display)
+1. need to research on how to query detail from detail.xlsx
+1. optModel -> input analysis.xlsx, taxi file, all parameters
+1. optModel -> expot cost.xlsx -> click CCcars_num to show detail from assign_detail.xlsx
+1. pcsensitivityModule -> input assign_detail.xlsx, company car, private car, location, company car rental cost, private car basic mileage
+1. pcsensitivityModule -> export pc_cost.xlsx

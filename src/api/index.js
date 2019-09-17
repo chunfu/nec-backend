@@ -3,6 +3,7 @@ import { Router } from 'express';
 import { getMoveTime, putMoveTime } from './pos/movetime';
 import { getSla } from './pos/sla';
 import { getOptimal } from './pos/optimal';
+import { getLocations } from './pos/locations';
 
 function createData(
   publicCarNum,
@@ -65,6 +66,8 @@ export default ({ config, db }) => {
 
   api.get('/pos/sla', getSla);
   api.post('/pos/optimal', getOptimal);
+
+  api.get('/pos/locations', getLocations);
 
   // perhaps expose some API metadata at the root
   api.get('/', (req, res) => {

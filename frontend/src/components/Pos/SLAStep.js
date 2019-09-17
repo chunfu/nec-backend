@@ -8,21 +8,7 @@ import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
 import tableConfig from '../../const/tableConfig';
 
-const locations = [
-  '南港',
-  '淡水',
-  '桃園',
-  '新竹',
-  '台中',
-  '宜蘭',
-  '花蓮',
-  '台東',
-  '台南',
-  '嘉義',
-  '高雄',
-  '屏東',
-];
-const Location = ({ onChange = () => null }) => {
+const Location = ({ onChange = () => null, options }) => {
   const [value, setValue] = useState('');
   const onChangeSelect = e => {
     const v = e.target.value;
@@ -39,8 +25,8 @@ const Location = ({ onChange = () => null }) => {
           id: 'location',
         }}
       >
-        {locations.map(l => (
-          <MenuItem value={l}>{l}</MenuItem>
+        {options.map(({ id, address }) => (
+          <MenuItem value={id}>{address}</MenuItem>
         ))}
       </Select>
     </FormControl>
@@ -56,6 +42,8 @@ const SLAStep = props => {
   } = props;
   const classes = useStyles()();
 
+  const [locations, loadLocations] = useFetch('/api/pos/locations', {});
+
   const [data, loadData] = useFetch('/api/pos/sla', {});
   let { columns, rows } = data;
   if (columns) {
@@ -64,12 +52,18 @@ const SLAStep = props => {
       field: 'location',
       render: rowData => {
         const i = rows.indexOf(rowData);
-        return <Location onChange={(e, v) => (rows[i]['location'] = v)} />;
+        return (
+          <Location
+            onChange={(e, v) => (rows[i]['location'] = v)}
+            options={locations}
+          />
+        );
       },
     });
   }
   useEffect(() => {
     async function fetchData() {
+      await loadLocations();
       await loadData({ query: { serviceQuality } });
     }
     fetchData();

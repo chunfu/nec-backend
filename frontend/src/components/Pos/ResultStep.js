@@ -3,11 +3,21 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Dialog from '@material-ui/core/Dialog';
 import MaterialTable from 'material-table';
+
+import { PosContext } from '.';
 import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
 import tableConfig from '../../const/tableConfig';
 
 const ResultStep = props => {
+  const {
+    // read parameter from context provider
+    parameter: { values },
+    file: { files },
+  } = props;
+
+  console.log({ values, files });
+
   const classes = useStyles()();
   const [data, loadData] = useFetch('/api/pos/optimal', {}, { method: 'POST' });
 
@@ -35,13 +45,17 @@ const ResultStep = props => {
     columns = data.columns.map(firstColAsLink);
   }
 
+  const onClickOptimalButton = () => {
+    loadData();
+  };
+
   return (
     <React.Fragment>
       <Button
         className={classes.button}
         variant="contained"
         color="primary"
-        onClick={() => loadData()}
+        onClick={onClickOptimalButton}
       >
         最佳化資源配置
       </Button>
@@ -74,4 +88,10 @@ const ResultStep = props => {
   );
 };
 
-export default ResultStep;
+const withContext = () => (
+  <PosContext.Consumer>
+    {props => <ResultStep {...props} />}
+  </PosContext.Consumer>
+);
+
+export default withContext;

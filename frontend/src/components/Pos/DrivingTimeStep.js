@@ -8,44 +8,57 @@ import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
 import tableConfig from '../../const/tableConfig';
 
-const Address = ({ classes, index, value, handleChange }) => (
-  <div>
-    <TextField
-      label="客戶ID"
-      className={classes.textField}
-      margin="normal"
-      variant="outlined"
-      value={value.customerId}
-      onChange={handleChange(index, 'customerId')}
-    />
-    <TextField
-      label="客戶名稱"
-      className={classes.textField}
-      margin="normal"
-      variant="outlined"
-      value={value.customerName}
-      onChange={handleChange(index, 'customerName')}
-    />
-    <TextField
-      label="客戶地址"
-      className={classes.textField}
-      margin="normal"
-      variant="outlined"
-      value={value.customerAddress}
-      onChange={handleChange(index, 'customerAddress')}
-    />
-    <TextField
-      label="據點地址"
-      className={classes.textField}
-      margin="normal"
-      variant="outlined"
-      value={value.officeAddress}
-      onChange={handleChange(index, 'officeAddress')}
-    />
-  </div>
-);
+const Address = ({ classes, index, value, handleChange, type }) =>
+  type === 'customer' ? (
+    <div>
+      <TextField
+        label="客戶ID"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={value.customerId}
+        onChange={handleChange(index, 'customerId')}
+      />
+      <TextField
+        label="客戶名稱"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={value.customerName}
+        onChange={handleChange(index, 'customerName')}
+      />
+      <TextField
+        label="客戶地址"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={value.customerAddress}
+        onChange={handleChange(index, 'customerAddress')}
+      />
+    </div>
+  ) : (
+    <div>
+      <TextField
+        label="據點ID"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={value.officeId}
+        onChange={handleChange(index, 'officeId')}
+      />
+      <TextField
+        label="據點地址"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={value.officeAddress}
+        onChange={handleChange(index, 'officeAddress')}
+      />
+    </div>
+  );
+
 const NewAddresses = props => {
-  const { addresses, setAddresses, loadData, classes } = props;
+  const { addresses, setAddresses, classes, type } = props;
 
   const onFieldChange = (idx, key) => e => {
     let newAddresses = addresses.slice();
@@ -62,6 +75,7 @@ const NewAddresses = props => {
             value={addr}
             handleChange={onFieldChange}
             classes={classes}
+            type={type}
           />
           <Icon
             color="primary"
@@ -81,15 +95,6 @@ const NewAddresses = props => {
       >
         add_circle
       </Icon>
-      <Button
-        className={classes.button}
-        variant="contained"
-        onClick={() =>
-          loadData({ method: 'PUT', body: JSON.stringify(addresses) })
-        }
-      >
-        新增地址
-      </Button>
     </div>
   );
 };
@@ -109,7 +114,13 @@ const DrivingTimeStep = props => {
   const [data, loadData] = useFetch('/api/pos/movetime', {});
   const { columns, rows } = data;
 
-  const [addresses, setAddresses] = useState([{}]);
+  const [customerAddresses, setCustomerAddresses] = useState([{}]);
+  const [officeAddresses, setOfficeAddresses] = useState([{}]);
+
+  const onClickNewAddr = () => {
+    loadData({ method: 'PUT', body: JSON.stringify({ customerAddresses, officeAddresses }) })
+  }
+
   return (
     <>
       <Button
@@ -120,11 +131,23 @@ const DrivingTimeStep = props => {
         載入車行時間表
       </Button>
       <NewAddresses
-        addresses={addresses}
-        setAddresses={setAddresses}
+        addresses={customerAddresses}
+        setAddresses={setCustomerAddresses}
         classes={classes}
-        loadData={loadData}
+        type="customer"
       />
+      <NewAddresses
+        addresses={officeAddresses}
+        setAddresses={setOfficeAddresses}
+        classes={classes}
+      />
+      <Button
+        className={classes.button}
+        variant="contained"
+        onClick={onClickNewAddr}
+      >
+        新增地址
+      </Button>
       <div className={classes.table}>
         {columns && (
           <MaterialTable
