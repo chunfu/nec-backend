@@ -1,7 +1,7 @@
 import { version } from '../../package.json';
 import { Router } from 'express';
 import { getMoveTime, putMoveTime } from './pos/movetime';
-import { getSla } from './pos/sla';
+import { getSla, putSla } from './pos/sla';
 import { getOptimal } from './pos/optimal';
 import { getLocations } from './pos/locations';
 
@@ -65,6 +65,8 @@ export default ({ config, db }) => {
   api.put('/pos/movetime', putMoveTime);
 
   api.get('/pos/sla', getSla);
+  api.put('/pos/sla', putSla);
+
   api.post('/pos/optimal', getOptimal);
 
   api.get('/pos/locations', getLocations);

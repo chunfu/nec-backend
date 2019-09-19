@@ -3,6 +3,22 @@ import * as util from 'util';
 import { exec } from 'child_process';
 const execAsync = util.promisify(exec);
 
+// material-table will pollute original data with additional tableData property
+// we have to remove it before export to needAdjustOK.xlsx
+const neededColumns = [
+  'CustomerID',
+  'CustomerName',
+  'CustomerAddress',
+  'location',
+];
+
+const getCleanObj = (r) => {
+  return neededColumns.reduce((acc, c) => {
+    acc[c] = r[c];
+    return acc;
+  }, {});
+}
+
 const getSla = async (req, res) => {
   let { serviceQuality } = req.query;
   // serviceQuality might be empty string, need extra handling
@@ -13,7 +29,7 @@ const getSla = async (req, res) => {
     const { stdout, stderr } = await execAsync(
       `python -c 'import SLA; print SLA.SLAcheck(${serviceQuality}, "movetime.xlsx")'`,
     );
-    const workbook = xlsx.readFile('./sla.xlsx');
+    const workbook = xlsx.readFile('./needAdjust.xlsx');
     const wsname = workbook.SheetNames[0];
     const ws = workbook.Sheets[wsname];
     const rows = xlsx.utils.sheet_to_json(ws);
@@ -27,4 +43,22 @@ const getSla = async (req, res) => {
   }
 };
 
-export { getSla };
+const putSla = async (req, res) => {
+  const { columns, rows: origRows } = req.body;
+  const rows = origRows.map(r => getCleanObj(r));
+  try {
+    const workbook = xlsx.utils.book_new();
+    workbook.SheetNames.push('sheet1');
+    const worksheet = xlsx.utils.json_to_sheet(rows, {
+      header: columns.map(c => c.field),
+    });
+    workbook.Sheets['sheet1'] = worksheet;
+    xlsx.writeFile(workbook, './needAdjustOK.xlsx');
+
+    res.json({ columns, rows });
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
+
+export { getSla, putSla };

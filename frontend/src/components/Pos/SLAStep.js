@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -25,8 +26,8 @@ const Location = ({ onChange = () => null, options }) => {
           id: 'location',
         }}
       >
-        {options.map(({ id, address }) => (
-          <MenuItem value={id}>{address}</MenuItem>
+        {options.map(({ id, name }) => (
+          <MenuItem value={id}>{name}</MenuItem>
         ))}
       </Select>
     </FormControl>
@@ -44,6 +45,7 @@ const SLAStep = props => {
 
   const [locations, loadLocations] = useFetch('/api/pos/locations', {});
 
+  const [_, putSla] = useFetch('/api/pos/sla', {}, { method: 'PUT' });
   const [data, loadData] = useFetch('/api/pos/sla', {});
   let { columns, rows } = data;
   if (columns) {
@@ -71,12 +73,21 @@ const SLAStep = props => {
   return (
     <div className={classes.table}>
       {columns && (
-        <MaterialTable
-          title="調整SLA無法滿足之客戶"
-          columns={columns}
-          data={rows}
-          {...tableConfig}
-        />
+        <>
+          <Button
+            className={classes.button}
+            variant="contained"
+            onClick={() => putSla({ body: JSON.stringify({ columns, rows }) })}
+          >
+            確認
+          </Button>
+          <MaterialTable
+            title="調整SLA無法滿足之客戶"
+            columns={columns}
+            data={rows}
+            {...tableConfig}
+          />
+        </>
       )}
     </div>
   );

@@ -14,6 +14,7 @@ def SLAcheck(minSLA, movetimePath):
     movetimePath: path 
     <output>
     df_needAdjust: a table of customers who need to manual assign, contain three columns 'CustomerID', 'CustomerName', 'CustomerAddress'
+    df_reachable: a table of customers to site office which could satisfy SLA or not, (True or False in each cell)
     '''
 
     df_movetime = pd.read_excel(movetimePath)
@@ -30,7 +31,7 @@ def SLAcheck(minSLA, movetimePath):
     df_needAdjust = pd.DataFrame(needAdjust, columns=['CustomerID', 'CustomerName', 'CustomerAddress'], copy=True)
     # print(df_needAdjust)
 
-    return df_needAdjust.to_excel('sla.xlsx', encoding='utf-8')
+    return df_needAdjust.to_excel('needAdjust.xlsx', encoding='utf-8'), df_reachable.to_excel('reachable.xlsx', encoding='utf-8')
 
 # def updateSLAtable(df_reachable, df_needAdjust):
 
