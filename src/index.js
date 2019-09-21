@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
+import fileUpload from 'express-fileupload';
 import initializeDb from './db';
 import middleware from './middleware';
 import api from './api';
@@ -23,6 +24,8 @@ app.use(cors({
 app.use(bodyParser.json({
 	limit : config.bodyLimit
 }));
+
+app.use(fileUpload());
 
 // serve frontend built files
 app.use(express.static(__dirname + '/build'));

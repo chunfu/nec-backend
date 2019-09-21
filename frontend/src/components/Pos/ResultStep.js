@@ -46,7 +46,14 @@ const ResultStep = props => {
   }
 
   const onClickOptimalButton = () => {
-    loadData();
+    let formData = new FormData();
+    Object.keys(values).forEach(valueName => {
+      formData.append(valueName, values[valueName]);
+    });
+    Object.keys(files).forEach(fileName => {
+      formData.append(fileName, files[fileName], `${fileName}.xlsx`);
+    });
+    loadData({ headers: {}, body: formData });
   };
 
   return (

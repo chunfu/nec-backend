@@ -46,25 +46,25 @@ const FileStep = props => {
         <DialogContent>
           <form noValidate autoComplete="off">
             <UploadButton
-              id="locationCost"
+              id="siteInfo"
               label="各據點成本限制"
               inputClass={classes.input}
               buttonClass={classes.button}
-              onChange={onFileChange('localtionCost')}
+              onChange={onFileChange('siteInfo')}
             />
             <UploadButton
-              id="locationWorkerService"
+              id="historyCalls"
               label="各據點歷年員工數與服務次數"
               inputClass={classes.input}
               buttonClass={classes.button}
-              onChange={onFileChange('locationWorkerService')}
+              onChange={onFileChange('historyCalls')}
             />
             <UploadButton
-              id="customerExpectService"
+              id="expectedCalls"
               label="各客戶預期未來年服務次數"
               inputClass={classes.input}
               buttonClass={classes.button}
-              onChange={onFileChange('customerExpectService')}
+              onChange={onFileChange('expectedCalls')}
             />
           </form>
         </DialogContent>

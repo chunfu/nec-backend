@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 const UploadButton = ({ id, label, inputClass, buttonClass, onChange }) => (
   <React.Fragment>
     <input
-      accept=".csv"
+      accept=".xlsx"
       className={inputClass}
       id={id}
       type="file"
