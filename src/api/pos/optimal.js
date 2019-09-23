@@ -6,11 +6,12 @@ const execAsync = util.promisify(exec);
 
 const getOptimal = async (req, res) => {
   const {
-    files = {},
+    files,
     body: { oilprice, reservationSite, otherLocation },
   } = req;
 
   try {
+    if (!files) throw new Error('無上傳任何檔案');
     const { siteInfo, historyCalls, expectedCalls } = files;
     // error handling here
     if (!siteInfo) throw new Error('各據點成本限制 未上傳');

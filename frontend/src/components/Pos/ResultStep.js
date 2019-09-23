@@ -14,6 +14,7 @@ const ResultStep = props => {
     // read parameter from context provider
     parameter: { values },
     file: { files },
+    showErrDialog,
   } = props;
 
   const classes = useStyles()();
@@ -54,7 +55,7 @@ const ResultStep = props => {
     try {
       await loadData({ headers: {}, body: formData });
     } catch (e) {
-      console.log('***print err', e);
+      showErrDialog(e.message);
     }
   };
 
