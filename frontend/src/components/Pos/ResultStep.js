@@ -16,8 +16,6 @@ const ResultStep = props => {
     file: { files },
   } = props;
 
-  console.log({ values, files });
-
   const classes = useStyles()();
   const [data, loadData] = useFetch('/api/pos/optimal', {}, { method: 'POST' });
 
@@ -45,7 +43,7 @@ const ResultStep = props => {
     columns = data.columns.map(firstColAsLink);
   }
 
-  const onClickOptimalButton = () => {
+  const onClickOptimalButton = async () => {
     let formData = new FormData();
     Object.keys(values).forEach(valueName => {
       formData.append(valueName, values[valueName]);
@@ -53,7 +51,11 @@ const ResultStep = props => {
     Object.keys(files).forEach(fileName => {
       formData.append(fileName, files[fileName], `${fileName}.xlsx`);
     });
-    loadData({ headers: {}, body: formData });
+    try {
+      await loadData({ headers: {}, body: formData });
+    } catch (e) {
+      console.log('***print err', e);
+    }
   };
 
   return (

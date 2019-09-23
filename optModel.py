@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 '''
 Optimization module
 呼叫範例:

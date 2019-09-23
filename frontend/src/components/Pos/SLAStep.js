@@ -43,7 +43,7 @@ const SLAStep = props => {
   } = props;
   const classes = useStyles()();
 
-  const [locations, loadLocations] = useFetch('/api/pos/locations', {});
+  const [locations, loadLocations] = useFetch('/api/pos/locations', []);
 
   const [_, putSla] = useFetch('/api/pos/sla', {}, { method: 'PUT' });
   const [data, loadData] = useFetch('/api/pos/sla', {});

@@ -20,6 +20,9 @@ const useFetch = (url, defaultData, defaultOptions = {}) => {
       ...options,
     });
     const json = await resp.json();
+    if (!resp.ok) {
+      throw new Error(json.errMsg);
+    }
     updateData(json);
   };
 

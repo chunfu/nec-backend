@@ -24,7 +24,7 @@ const Pos = props => {
   const [values, setValues] = useState({
     fuelCost: '',
     serviceQuality: '',
-    locations: [],
+    reservationSite: [],
     checkOther: false,
     otherLocation: '',
   });

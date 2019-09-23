@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -12,44 +12,32 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 import { PosContext } from '.';
+import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
-
-const locationNames = [
-  '南港',
-  '淡水',
-  '桃園',
-  '新竹',
-  '台中',
-  '宜蘭',
-  '花蓮',
-  '台東',
-  '台南',
-  '嘉義',
-  '高雄',
-  '屏東',
-];
 
 const ParameterStep = props => {
   const classes = useStyles()();
   const { parameter: { values, setValues }} = props;
 
+  const [locations, loadLocations] = useFetch('/api/pos/locations', []);
+
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
 
-  const handleLocationChange = name => e => {
+  const handleLocationChange = id => e => {
     const checked = e.target.checked;
-    let newLocations = values.locations.slice();
+    let newLocations = values.reservationSite.slice();
     if (checked) {
       // add to new locations
-      newLocations.push(name);
+      newLocations.push(id);
     } else {
       // remove from new locations
-      const nameIdx = newLocations.findIndex(l => l === name);
-      newLocations.splice(nameIdx, 1);
+      const idIdx = newLocations.findIndex(l => l === id);
+      newLocations.splice(idIdx, 1);
     }
 
-    setValues({ ...values, locations: newLocations });
+    setValues({ ...values, reservationSite: newLocations });
   };
 
   const handleCheckOther = e => {
@@ -66,6 +54,12 @@ const ParameterStep = props => {
   const handleOpenParamsModal = () => setParamsModalOpen(true);
   const handleCloseParamsModal = () => setParamsModalOpen(false);
 
+  useEffect(() => {
+    async function fetchData() {
+      await loadLocations();
+    }
+    fetchData();
+  }, []);
   return (
     <React.Fragment>
       <Button
@@ -89,8 +83,8 @@ const ParameterStep = props => {
             <TextField
               label="油錢"
               placeholder="X 元/公里"
-              value={values.fuelCost}
-              onChange={handleChange('fuelCost')}
+              value={values.oilprice}
+              onChange={handleChange('oilprice')}
               type="number"
               className={classes.textField}
               margin="normal"
@@ -109,13 +103,13 @@ const ParameterStep = props => {
             <FormControl component="fieldset" className={classes.formControl}>
               <FormLabel>必須保留的據點</FormLabel>
               <FormGroup className={classes.horizontalFormGroup}>
-                {locationNames.map(name => (
+                {locations.map(({ id, name }) => (
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={!!values.locations.find(l => l === name)}
-                        onChange={handleLocationChange(name)}
-                        value={name}
+                        checked={!!values.reservationSite.find(l => l === id)}
+                        onChange={handleLocationChange(id)}
+                        value={id}
                         color="primary"
                       />
                     }
