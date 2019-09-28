@@ -19,9 +19,9 @@ export const PosContext = React.createContext({
 });
 
 const steps = [
+  { label: '車行時間', comp: DrivingTimeStep },
   { label: '參數設定', comp: ParamterStep },
   { label: '讀取資料', comp: FileStep },
-  { label: '車行時間', comp: DrivingTimeStep },
   { label: '調整SLA無法滿足之客戶', comp: SLAStep },
   { label: '輸出結果', comp: ResultStep },
 ];

@@ -3,13 +3,12 @@
 '''
 Optimization module
 呼叫範例:
-optModel(6, ['南港','新竹','台中','高雄'], 'C:/Users/cherc/Desktop/necsys/movetime.xlsx', 'C:/Users/cherc/Desktop/necsys/expectedCalls.xlsx',\
+optModel(6, [1,2,3], 'C:/Users/cherc/Desktop/necsys/movetime.xlsx', 'C:/Users/cherc/Desktop/necsys/expectedCalls.xlsx',\
  'C:/Users/cherc/Desktop/necsys/historyCalls.xlsx', 'C:/Users/cherc/Desktop/necsys/SiteInfo.xlsx')
 '''
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from gurobipy import *
-import numpy as np
 
 # regression: history calls and employees
 def reg(df_historyCalls):
@@ -21,23 +20,27 @@ def reg(df_historyCalls):
 
     return g, s
 
-def updateSLAtable(df_reachable, df_needAdjust): 
-
-    sites = df_reachable.columns
-    for a in range(len(df_needAdjust)):
-        i = np.where(siteName == df_needAdjust['manaulAdjust'].iloc[a])
-        df_reachable[df_reachable2['客戶ID'] == df_needAdjust['CustomerID']][sites[i]] == True
-
+def updateSLAtable(df_reachable, df_needAdjustOK, df_officeMapping): 
+    for idx in df_needAdjustOK.index:
+#         print(df_needAdjustOK['CustomerID'].iloc[idx])
+#         print(df_needAdjustOK['location'].iloc[idx])
+        cusID = df_needAdjustOK['CustomerID'].iloc[idx]
+        loc = df_needAdjustOK['location'].iloc[idx]
+        idx2 = df_officeMapping.index[df_officeMapping['id']==loc].tolist()[0]
+        setTrueSite = df_officeMapping['name'].iloc[idx2]
+        idx3 = df_reachable.index[df_reachable['客戶ID']==cusID].tolist()[0]
+#         print(df_reachable[setTrueSite].iloc[idx3])            
+        df_reachable[setTrueSite].iloc[idx3] = True
     return df_reachable
-    
 
-def optModel(oilprice, reservationSite, df_reachable, df_needAdjustOK, movetimePath, expectedCallsPath, historyCallsPath, siteInfoPath):
+
+def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetimePath, expectedCallsPath, historyCallsPath, siteInfoPath, officeMappingPath):
     '''
     <input>
-    oilprice: float, 
-    reservationSite: list, 
-    df_reachable: 客戶服務水準滿足表
-    df_needAdjustOK: 
+    oilprice: float
+    reservationSite: list
+    reachablePath: 客戶服務水準滿足表
+    needAdjustOKPath: 
     movetimePath, expectedCallsPath, historyCallsPath, siteInfoPath: path
     <output>
     df_site: table
@@ -49,12 +52,15 @@ def optModel(oilprice, reservationSite, df_reachable, df_needAdjustOK, movetimeP
     df_expectedCalls = pd.read_excel(expectedCallsPath) 
     df_historyCalls = pd.read_excel(historyCallsPath)  
     df_siteInfo = pd.read_excel(siteInfoPath)
+    df_officeMapping = pd.read_excel(officeMappingPath)
+    df_reachable = pd.read_excel(reachablePath)
+    df_needAdjustOK = pd.read_excel(needAdjustOKPath)
     siteName = df_siteInfo['據點'].values
     customerID = df_expectedCalls['客戶ID'].values
 
     
     # update 客戶表
-    df_reachableOK = updateSLAtable(df_reachable, df_needAdjustOK)
+    df_reachableOK = updateSLAtable(df_reachable, df_needAdjustOK, df_officeMapping)
 
     # Parameter processing
     M = df_siteInfo['最大容納人數'].values
@@ -62,15 +68,12 @@ def optModel(oilprice, reservationSite, df_reachable, df_needAdjustOK, movetimeP
     f = df_siteInfo[['前進據點成本','固定據點成本']].values
     h = df_expectedCalls['預期年服務次數'].values
     d = df_movetime[df_movetime.columns[4:]].values
-    A = df_reachableOK[df_reachableOK.columns[4:]].values
+    A = df_reachableOK.values
     
     numofSite = len(df_siteInfo)
     numofCustomer = len(df_expectedCalls)
 
     g, s = reg(df_historyCalls)
-
-    for site in reservationSite:
-        if site
 
     scales=[0,1]
     locations=[i for i in range(numofSite)]
@@ -91,7 +94,7 @@ def optModel(oilprice, reservationSite, df_reachable, df_needAdjustOK, movetimeP
     model.addConstrs(w[j] <= x[j,0]+M[j]*x[j,1] for j in locations)
     model.addConstrs(w[j] >= x[j,0]+x[j,1] for j in locations)
     model.addConstrs(w[j] >= g*(quicksum(h[i]*y[i,j] for i in customers))+s for j in locations)
-    model.addConstrs(x[j,1] == 1 for j in reservationSite) 
+    model.addConstrs(x[j-1,1] == 1 for j in reservationSite) 
                 
     # update model
     model.update()

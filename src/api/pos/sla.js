@@ -27,7 +27,7 @@ const getSla = async (req, res) => {
   // sla.py should export sla.xlsx as result
   try {
     const { stdout, stderr } = await execAsync(
-      `python -c 'import SLA; print SLA.SLAcheck(${serviceQuality}, "movetime.xlsx")'`,
+      `python3 -c 'import SLA; print SLA.SLAcheck(${serviceQuality}, "movetime.xlsx")'`,
     );
     const workbook = xlsx.readFile('./needAdjust.xlsx');
     const wsname = workbook.SheetNames[0];
@@ -39,7 +39,7 @@ const getSla = async (req, res) => {
 
     res.json({ columns, rows });
   } catch (err) {
-    res.status(500).json({ err: err.message });
+    res.status(500).json({ errMsg: err.message });
   }
 };
 

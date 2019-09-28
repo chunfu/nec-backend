@@ -129,6 +129,7 @@ const putMoveTime = async (req, res) => {
       officeAddressesList = officeAddressesList.concat(
         newOfficeAddresses.map((add, idx) => ({
           id: add.officeId || (total + idx + 1),
+          name: add.officeName,
           address: add.officeAddress,
         })),
       );

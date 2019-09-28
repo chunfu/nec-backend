@@ -116,23 +116,6 @@ const ParameterStep = props => {
                     label={name}
                   />
                 ))}
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={values.checkOther}
-                      onChange={handleCheckOther}
-                      value="其他"
-                      color="primary"
-                    />
-                  }
-                  label="其他"
-                />
-                {values.checkOther && (
-                  <TextField
-                    value={values.otherLocation}
-                    onChange={handleChange('otherLocation')}
-                  />
-                )}
               </FormGroup>
             </FormControl>
           </form>

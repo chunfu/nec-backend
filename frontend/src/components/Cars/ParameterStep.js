@@ -11,6 +11,7 @@ import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 
+import { CarContext } from '.';
 import useStyles from '../../utils/useStyles';
 
 const locations = [
@@ -27,19 +28,10 @@ const locations = [
   '宜蘭',
 ];
 
-const ParamterStep = props => {
+const ParameterStep = props => {
   const classes = useStyles()();
-  const [values, setValues] = useState({
-    comapnyCarNumber: '',
-    privateCarNumber: '',
-    location: '',
-    restTime: '',
-    comapnyCarAnnualCost: '',
-    comapnyCarFuelConsumption: '',
-    privateCarDistance: '',
-    privateCarBonus: '',
-    privateCarExtraBonus: '',
-  });
+  const { parameter: { values, setValues }} = props;
+
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
@@ -186,12 +178,12 @@ const ParamterStep = props => {
             className={classes.formControl}
             variant="outlined"
           >
-            <InputLabel htmlFor="location">據點選擇</InputLabel>
+            <InputLabel htmlFor="office">據點選擇</InputLabel>
             <Select
-              value={values.location}
-              onChange={handleChange('location')}
+              value={values.office}
+              onChange={handleChange('office')}
               input={
-                <OutlinedInput labelWidth="60" name="location" id="location" />
+                <OutlinedInput labelWidth="60" name="office" id="office" />
               }
             >
               {locations.map(l => (
@@ -214,4 +206,10 @@ const ParamterStep = props => {
   );
 };
 
-export default ParamterStep;
+const withContext = () => (
+  <CarContext.Consumer>
+    {props => <ParameterStep {...props} />}
+  </CarContext.Consumer>
+);
+
+export default withContext;

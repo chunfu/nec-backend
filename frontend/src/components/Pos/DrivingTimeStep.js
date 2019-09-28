@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import MaterialTable from 'material-table';
 
+import { PosContext } from '.';
 import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
 import tableConfig from '../../const/tableConfig';
@@ -45,6 +46,14 @@ const Address = ({ classes, index, value, handleChange, type }) =>
         variant="outlined"
         value={value.officeId}
         onChange={handleChange(index, 'officeId')}
+      />
+      <TextField
+        label="據點名稱"
+        className={classes.textField}
+        margin="normal"
+        variant="outlined"
+        value={value.officeName}
+        onChange={handleChange(index, 'officeName')}
       />
       <TextField
         label="據點地址"
@@ -109,6 +118,7 @@ const NewAddresses = props => {
  * 6. request movetime.xlsx in frontend to get the latest
  */
 const DrivingTimeStep = props => {
+  const { showErrDialog } = props;
   const classes = useStyles()();
 
   const [data, loadData] = useFetch('/api/pos/movetime', {});
@@ -117,8 +127,12 @@ const DrivingTimeStep = props => {
   const [customerAddresses, setCustomerAddresses] = useState([{}]);
   const [officeAddresses, setOfficeAddresses] = useState([{}]);
 
-  const onClickNewAddr = () => {
-    loadData({ method: 'PUT', body: JSON.stringify({ customerAddresses, officeAddresses }) })
+  const onClickNewAddr = async () => {
+    try {
+      await loadData({ method: 'PUT', body: JSON.stringify({ customerAddresses, officeAddresses }) })
+    } catch (e) {
+      showErrDialog(e.message);
+    }
   }
 
   return (
@@ -162,4 +176,10 @@ const DrivingTimeStep = props => {
   );
 };
 
-export default DrivingTimeStep;
+const withContext = () => (
+  <PosContext.Consumer>
+    {props => <DrivingTimeStep {...props} />}
+  </PosContext.Consumer>
+);
+
+export default withContext;
