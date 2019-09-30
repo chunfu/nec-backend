@@ -3,20 +3,39 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Dialog from '@material-ui/core/Dialog';
 import MaterialTable from 'material-table';
+
+import { CarContext } from '.';
 import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
 import tableConfig from '../../const/tableConfig';
 
 const ResultStep = props => {
   const classes = useStyles()();
-  const [data, loadData] = useFetch('/api/carModule', {});
+  const {
+    parameter: { values },
+    file: { files },
+    showErrDialog,
+  } = props;
 
+  const [data, loadData] = useFetch('/api/car/optimal', {}, { method: 'POST' });
+
+  const [detail, loadDetail] = useFetch('/api/car/optimal', {});
   const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const handleOpenDetailModal = () => setDetailModalOpen(true);
+  const handleOpenDetailModal = ccn => {
+    setDetailModalOpen(true);
+    loadDetail({ params: ccn });
+  };
   const handleCloseDetailModal = () => setDetailModalOpen(false);
 
+  const [sensitivity, loadSensitivity] = useFetch(
+    '/api/car/sensitivity',
+    {},
+  );
   const [priceSensitiveModalOpen, setPriceSensitiveModalOpen] = useState(false);
-  const handleOpenParamsModal = () => setPriceSensitiveModalOpen(true);
+  const handleOpenParamsModal = () => {
+    setPriceSensitiveModalOpen(true);
+    loadSensitivity({ query: values });
+  };
   const handleCloseParamsModal = () => setPriceSensitiveModalOpen(false);
 
   const firstColAsLink = (col, idx) => {
@@ -24,7 +43,10 @@ const ResultStep = props => {
     const render =
       idx === 0 &&
       (rowData => (
-        <Link onClick={handleOpenDetailModal} className={classes.link}>
+        <Link
+          onClick={() => handleOpenDetailModal(rowData['CCcars_num'])}
+          className={classes.link}
+        >
           {rowData[field]}
         </Link>
       ));
@@ -76,8 +98,8 @@ const ResultStep = props => {
           >
             <MaterialTable
               title="年度社車供應日常分派結果成本表"
-              columns={data.columns}
-              data={data.rows}
+              columns={detail.columns}
+              data={detail.rows}
               {...tableConfig}
             />
           </Dialog>
@@ -91,8 +113,8 @@ const ResultStep = props => {
           >
             <MaterialTable
               title="據點私車補貼價格敏感度分析表"
-              columns={data.columns}
-              data={data.rows}
+              columns={sensitivity.columns}
+              data={sensitivity.rows}
               {...tableConfig}
             />
           </Dialog>
@@ -102,4 +124,10 @@ const ResultStep = props => {
   );
 };
 
-export default ResultStep;
+const withContext = () => (
+  <CarContext.Consumer>
+    {props => <ResultStep {...props} />}
+  </CarContext.Consumer>
+);
+
+export default withContext;

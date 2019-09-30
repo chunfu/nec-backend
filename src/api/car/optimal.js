@@ -15,6 +15,7 @@ const getOptimal = async (req, res) => {
     },
   } = req;
   try {
+    /*
     if (!files) throw new Error('無上傳任何檔案');
     const { taxiCost } = files;
     // error handling here
@@ -28,15 +29,56 @@ const getOptimal = async (req, res) => {
     if (!privateCarBonus) throw new Error('私車基本里程數內單位補貼 未指定');
     if (!privateCarExtraBonus) throw new Error('私車基本里程數外單位補貼 未指定');
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
+    */
+    /* Mark it out temporarily
     const { stdout, stderr } = await execAsync(
       `python3 -c 'import NEC_OptCCModel2_OptModel; print NEC_OptCCModel2_OptModel.OptModel("mrData.xlsx", "workerData.xlsx", "officeAddress.xlsx", ${office})'`,
     );
+    */
 
-    // output 2 files: pathDistDetail.xlsx, pathDistAnaly.xlsx
-    res.json({ msg: 1 });
+    // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
+    const workbook = xlsx.readFile('./loc_DailyAssign_cost.xlsx');
+    const wsname = workbook.SheetNames[0];
+    const ws = workbook.Sheets[wsname];
+    const rows = xlsx.utils.sheet_to_json(ws);
+    const columns =
+      rows.length &&
+      Object.keys(rows[0]).map(key => ({ title: key, field: key }));
+
+    res.json({ columns, rows });
   } catch (e) {
     res.status(500).json({ errMsg: e.message });
   }
 };
 
-export { getOptimal };
+const getOptimalDetail = async (req, res) => {
+  const {
+    params: { ccn },
+  } = req;
+  try {
+    const ccnInt = parseInt(ccn, 10);
+    if (!ccnInt) throw new Error('Company car number is not a number');
+    /* Mark it out temporarily
+    const { stdout, stderr } = await execAsync(
+      `python3 -c 'import NEC_OptCCModel2_OptModel; print NEC_OptCCModel2_OptModel.OptModel("mrData.xlsx", "workerData.xlsx", "officeAddress.xlsx", ${office})'`,
+    );
+    */
+
+    // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
+    const workbook = xlsx.readFile('./loc_DailyAssign_detail.xlsx');
+    const wsname = workbook.SheetNames[0];
+    const ws = workbook.Sheets[wsname];
+    let rows = xlsx.utils.sheet_to_json(ws);
+    const columns =
+      rows.length &&
+      Object.keys(rows[0]).map(key => ({ title: key, field: key }));
+    // ccn is string, CCcars_num is integer
+    rows = rows.filter(({ CCcars_num }) => CCcars_num === ccnInt);
+
+    res.json({ columns, rows });
+  } catch (e) {
+    res.status(500).json({ errMsg: e.message });
+  }
+};
+
+export { getOptimal, getOptimalDetail };

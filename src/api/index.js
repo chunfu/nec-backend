@@ -5,7 +5,11 @@ import { getSla, putSla } from './pos/sla';
 import { getOptimal } from './pos/optimal';
 import { getLocations } from './pos/locations';
 import { getPath } from './car/path';
-import { getOptimal as getCarOptimal } from './car/optimal';
+import {
+  getOptimal as getCarOptimal,
+  getOptimalDetail as getCarOptimalDetail,
+} from './car/optimal';
+import { getSensitivity } from './car/sensitivity';
 
 function createData(
   publicCarNum,
@@ -75,6 +79,8 @@ export default ({ config, db }) => {
 
   api.post('/car/path', getPath);
   api.post('/car/optimal', getCarOptimal);
+  api.get('/car/optimal/:ccn', getCarOptimalDetail);
+  api.get('/car/sensitivity', getSensitivity);
   // perhaps expose some API metadata at the root
   api.get('/', (req, res) => {
     res.json({ version });

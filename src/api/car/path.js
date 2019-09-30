@@ -17,9 +17,11 @@ const getPath = async (req, res) => {
     if (!officeAddress) throw new Error('各據點地址資訊 未上傳');
     if (!office) throw new Error('據點未指定');
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
+    /* Mark it out temporarily
     const { stdout, stderr } = await execAsync(
       `python3 -c 'import NEC_OptCCModel1_PathDist; print NEC_OptCCModel1_PathDist.PathDist("mrData.xlsx", "workerData.xlsx", "officeAddress.xlsx", "${office}")'`,
     );
+    */
 
     // output 2 files: pathDistDetail.xlsx, pathDistAnaly.xlsx
     res.json({ msg: 1 });

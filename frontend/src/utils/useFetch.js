@@ -4,8 +4,11 @@ const useFetch = (url, defaultData, defaultOptions = {}) => {
   const [data, updateData] = useState(defaultData);
 
   const loadData = async (options = {}) => {
-    let { query } = options;
+    let { query, params } = options;
     let realUrl = url;
+    if (params !== undefined) {
+      realUrl = `${realUrl}/${params}`;
+    }
     if (query) {
       query = Object.keys(query)
         .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(query[k]))
