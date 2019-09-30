@@ -118,7 +118,7 @@ const NewAddresses = props => {
  * 6. request movetime.xlsx in frontend to get the latest
  */
 const DrivingTimeStep = props => {
-  const { showErrDialog } = props;
+  const { showErrDialog, showLoading } = props;
   const classes = useStyles()();
 
   const [data, loadData] = useFetch('/api/pos/movetime', {});
@@ -127,9 +127,17 @@ const DrivingTimeStep = props => {
   const [customerAddresses, setCustomerAddresses] = useState([{}]);
   const [officeAddresses, setOfficeAddresses] = useState([{}]);
 
+  const onClickLoadButton = async () => {
+    showLoading(true);
+    await loadData();
+    showLoading(false);
+  }
+
   const onClickNewAddr = async () => {
     try {
+      showLoading(true);
       await loadData({ method: 'PUT', body: JSON.stringify({ customerAddresses, officeAddresses }) })
+      showLoading(false);
     } catch (e) {
       showErrDialog(e.message);
     }
@@ -140,7 +148,7 @@ const DrivingTimeStep = props => {
       <Button
         className={classes.button}
         variant="contained"
-        onClick={() => loadData()}
+        onClick={onClickLoadButton}
       >
         載入車行時間表
       </Button>

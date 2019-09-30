@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import useLocalStorage from '../../utils/useLocalStorage';
 import StepsComp from '../../widget/StepsComp';
+import LoadingMask from '../../widget/LoadingMask';
 import DrivingTimeStep from './DrivingTimeStep';
 import ParamterStep from './ParameterStep';
 import FileStep from './FileStep';
@@ -45,14 +46,18 @@ const Pos = props => {
     setErrMsg(errMsg);
   };
 
+  const [loading, showLoading] = useState(false);
+
   return (
     <PosContext.Provider
       value={{
         parameter: { values, setValues },
         file: { files, setFiles },
         showErrDialog,
+        showLoading,
       }}
     >
+      <LoadingMask show={loading} />
       <StepsComp steps={steps} />
       <Dialog
         open={errDialogOpen}

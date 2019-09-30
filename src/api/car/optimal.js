@@ -58,11 +58,6 @@ const getOptimalDetail = async (req, res) => {
   try {
     const ccnInt = parseInt(ccn, 10);
     if (!ccnInt) throw new Error('Company car number is not a number');
-    /* Mark it out temporarily
-    const { stdout, stderr } = await execAsync(
-      `python3 -c 'import NEC_OptCCModel2_OptModel; print NEC_OptCCModel2_OptModel.OptModel("mrData.xlsx", "workerData.xlsx", "officeAddress.xlsx", ${office})'`,
-    );
-    */
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
     const workbook = xlsx.readFile('./loc_DailyAssign_detail.xlsx');
