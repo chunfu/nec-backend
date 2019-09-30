@@ -6,6 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import useLocalStorage from '../../utils/useLocalStorage';
 import StepsComp from '../../widget/StepsComp';
 import DrivingTimeStep from './DrivingTimeStep';
 import ParamterStep from './ParameterStep';
@@ -27,7 +28,7 @@ const steps = [
 ];
 
 const Pos = props => {
-  const [values, setValues] = useState({
+  const [values, setValues] = useLocalStorage('pos-parameters', {
     fuelCost: '',
     serviceQuality: '',
     reservationSite: [],
@@ -39,7 +40,7 @@ const Pos = props => {
 
   const [errDialogOpen, setErrDialogOpen] = useState(false);
   const [errMsg, setErrMsg] = useState('');
-  const showErrDialog = (errMsg) => {
+  const showErrDialog = errMsg => {
     setErrDialogOpen(true);
     setErrMsg(errMsg);
   };
@@ -58,16 +59,16 @@ const Pos = props => {
         onClose={() => setErrDialogOpen(false)}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">
-          錯誤訊息
-        </DialogTitle>
+        <DialogTitle id="responsive-dialog-title">錯誤訊息</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {errMsg}
-          </DialogContentText>
+          <DialogContentText>{errMsg}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setErrDialogOpen(false)} color="primary" autoFocus>
+          <Button
+            onClick={() => setErrDialogOpen(false)}
+            color="primary"
+            autoFocus
+          >
             關閉
           </Button>
         </DialogActions>
