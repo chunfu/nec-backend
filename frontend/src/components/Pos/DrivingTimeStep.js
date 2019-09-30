@@ -128,20 +128,27 @@ const DrivingTimeStep = props => {
   const [officeAddresses, setOfficeAddresses] = useState([{}]);
 
   const onClickLoadButton = async () => {
-    showLoading(true);
-    await loadData();
+    try {
+      showLoading(true);
+      await loadData();
+    } catch (e) {
+      showErrDialog(e.message);
+    }
     showLoading(false);
-  }
+  };
 
   const onClickNewAddr = async () => {
     try {
       showLoading(true);
-      await loadData({ method: 'PUT', body: JSON.stringify({ customerAddresses, officeAddresses }) })
-      showLoading(false);
+      await loadData({
+        method: 'PUT',
+        body: JSON.stringify({ customerAddresses, officeAddresses }),
+      });
     } catch (e) {
       showErrDialog(e.message);
     }
-  }
+    showLoading(false);
+  };
 
   return (
     <>

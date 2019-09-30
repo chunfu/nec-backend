@@ -12,6 +12,7 @@ const InfoStep = props => {
     parameter: { values },
     file: { files },
     showErrDialog,
+    showLoading,
   } = props;
   // show fake data for now
   const [data, loadData] = useFetch('/api/car/path', {}, { method: 'POST' });
@@ -26,10 +27,12 @@ const InfoStep = props => {
         formData.append(fileName, files[fileName], `${fileName}.xlsx`);
       });
       try {
+        showLoading(true);
         await loadData({ headers: {}, body: formData });
       } catch (e) {
         showErrDialog(e.message);
       }
+      showLoading(false);
     }
     fetchData();
   }, []);

@@ -69,14 +69,27 @@ const SLAStep = props => {
   useEffect(() => {
     async function fetchData() {
       try {
+        showLoading(true);
         await loadLocations();
         await loadData({ query: { serviceQuality } });
       } catch (e) {
         showErrDialog(e.message);
       }
+      showLoading(false);
     }
     fetchData();
   }, []);
+
+  const onClickConfirmButton = async () => {
+    try {
+      showLoading(true);
+      await putSla({ body: JSON.stringify({ columns, rows }) });
+    } catch (e) {
+      showErrDialog(e.message);
+    }
+    showLoading(false);
+  };
+
   return (
     <div className={classes.table}>
       {columns && (
@@ -84,7 +97,7 @@ const SLAStep = props => {
           <Button
             className={classes.button}
             variant="contained"
-            onClick={() => putSla({ body: JSON.stringify({ columns, rows }) })}
+            onClick={onClickConfirmButton}
           >
             確認
           </Button>

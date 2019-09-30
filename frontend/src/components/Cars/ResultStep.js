@@ -15,22 +15,27 @@ const ResultStep = props => {
     parameter: { values },
     file: { files },
     showErrDialog,
+    showLoading,
   } = props;
 
   const [data, loadData] = useFetch('/api/car/optimal', {}, { method: 'POST' });
 
   const [detail, loadDetail] = useFetch('/api/car/optimal', {});
   const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const handleOpenDetailModal = ccn => {
-    setDetailModalOpen(true);
-    loadDetail({ params: ccn });
+  const handleOpenDetailModal = async ccn => {
+    try {
+      showLoading(true);
+      setDetailModalOpen(true);
+      await loadDetail({ params: ccn });
+    } catch (e) {
+      showErrDialog(e.message);
+    }
+    setDetailModalOpen(false);
+    showLoading(false);
   };
   const handleCloseDetailModal = () => setDetailModalOpen(false);
 
-  const [sensitivity, loadSensitivity] = useFetch(
-    '/api/car/sensitivity',
-    {},
-  );
+  const [sensitivity, loadSensitivity] = useFetch('/api/car/sensitivity', {});
   const [priceSensitiveModalOpen, setPriceSensitiveModalOpen] = useState(false);
   const handleOpenParamsModal = () => {
     setPriceSensitiveModalOpen(true);
@@ -61,13 +66,22 @@ const ResultStep = props => {
     columns = data.columns.map(firstColAsLink);
   }
 
+  const onClickOptimalBtn = async () => {
+    try {
+      showLoading(true);
+      await loadData();
+    } catch (e) {
+      showErrDialog(e.message);
+    }
+    showLoading(false);
+  };
   return (
     <React.Fragment>
       <Button
         className={classes.button}
         variant="contained"
         color="primary"
-        onClick={() => loadData()}
+        onClick={onClickOptimalBtn}
       >
         最佳化資源配置
       </Button>

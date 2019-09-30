@@ -15,6 +15,7 @@ const ResultStep = props => {
     parameter: { values },
     file: { files },
     showErrDialog,
+    showLoading,
   } = props;
 
   const classes = useStyles()();
@@ -53,10 +54,12 @@ const ResultStep = props => {
       formData.append(fileName, files[fileName], `${fileName}.xlsx`);
     });
     try {
+      showLoading(true);
       await loadData({ headers: {}, body: formData });
     } catch (e) {
       showErrDialog(e.message);
     }
+    showLoading(false);
   };
 
   return (
