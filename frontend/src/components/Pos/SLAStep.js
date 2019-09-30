@@ -40,6 +40,8 @@ const SLAStep = props => {
     parameter: {
       values: { serviceQuality },
     },
+    showErrDialog,
+    showLoading,
   } = props;
   const classes = useStyles()();
 
@@ -63,10 +65,15 @@ const SLAStep = props => {
       },
     });
   }
+
   useEffect(() => {
     async function fetchData() {
-      await loadLocations();
-      await loadData({ query: { serviceQuality } });
+      try {
+        await loadLocations();
+        await loadData({ query: { serviceQuality } });
+      } catch (e) {
+        showErrDialog(e.message);
+      }
     }
     fetchData();
   }, []);

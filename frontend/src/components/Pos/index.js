@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 
+import { IndexContext } from '../../App';
 import useLocalStorage from '../../utils/useLocalStorage';
 import StepsComp from '../../widget/StepsComp';
-import LoadingMask from '../../widget/LoadingMask';
 import DrivingTimeStep from './DrivingTimeStep';
 import ParamterStep from './ParameterStep';
 import FileStep from './FileStep';
@@ -29,6 +23,7 @@ const steps = [
 ];
 
 const Pos = props => {
+  const { showLoading, showErrDialog } = props;
   const [values, setValues] = useLocalStorage('pos-parameters', {
     fuelCost: '',
     serviceQuality: '',
@@ -39,15 +34,6 @@ const Pos = props => {
 
   const [files, setFiles] = useState({});
 
-  const [errDialogOpen, setErrDialogOpen] = useState(false);
-  const [errMsg, setErrMsg] = useState('');
-  const showErrDialog = errMsg => {
-    setErrDialogOpen(true);
-    setErrMsg(errMsg);
-  };
-
-  const [loading, showLoading] = useState(false);
-
   return (
     <PosContext.Provider
       value={{
@@ -57,29 +43,15 @@ const Pos = props => {
         showLoading,
       }}
     >
-      <LoadingMask show={loading} />
       <StepsComp steps={steps} />
-      <Dialog
-        open={errDialogOpen}
-        onClose={() => setErrDialogOpen(false)}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">錯誤訊息</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{errMsg}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setErrDialogOpen(false)}
-            color="primary"
-            autoFocus
-          >
-            關閉
-          </Button>
-        </DialogActions>
-      </Dialog>
     </PosContext.Provider>
   );
 };
 
-export default Pos;
+const withContext = () => (
+  <IndexContext.Consumer>
+    {props => <Pos {...props} />}
+  </IndexContext.Consumer>
+);
+
+export default withContext;
