@@ -27,7 +27,7 @@ const getSla = async (req, res) => {
   // sla.py should export sla.xlsx as result
   try {
     const { stdout, stderr } = await execAsync(
-      `python3 -c 'import SLA; print SLA.SLAcheck(${serviceQuality}, "movetime.xlsx")'`,
+      `python3 -c 'import SLA; SLA.SLAcheck(${serviceQuality}, "movetime.xlsx")'`,
     );
     const workbook = xlsx.readFile('./needAdjust.xlsx');
     const wsname = workbook.SheetNames[0];
@@ -38,8 +38,9 @@ const getSla = async (req, res) => {
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
 
     res.json({ columns, rows });
-  } catch (err) {
-    res.status(500).json({ errMsg: err.message });
+  } catch (e) {
+    console.log(e.stack);
+    res.status(500).json({ errMsg: e.message });
   }
 };
 
@@ -56,8 +57,9 @@ const putSla = async (req, res) => {
     xlsx.writeFile(workbook, './needAdjustOK.xlsx');
 
     res.json({ columns, rows });
-  } catch (err) {
-    res.status(500).json({ err: err.message });
+  } catch (e) {
+    console.log(e.stack);
+    res.status(500).json({ errMsg: e.message });
   }
 };
 

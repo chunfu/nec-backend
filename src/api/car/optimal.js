@@ -32,7 +32,7 @@ const getOptimal = async (req, res) => {
     */
     /* Mark it out temporarily
     const { stdout, stderr } = await execAsync(
-      `python3 -c 'import NEC_OptCCModel2_OptModel; print NEC_OptCCModel2_OptModel.OptModel("mrData.xlsx", "workerData.xlsx", "officeAddress.xlsx", ${office})'`,
+      `python3 -c 'import NEC_OptCCModel2_OptModel; NEC_OptCCModel2_OptModel.OptModel("mrData.xlsx", "workerData.xlsx", "officeAddress.xlsx", ${office})'`,
     );
     */
 
@@ -47,6 +47,7 @@ const getOptimal = async (req, res) => {
 
     res.json({ columns, rows });
   } catch (e) {
+    console.log(e.stack);
     res.status(500).json({ errMsg: e.message });
   }
 };
@@ -72,6 +73,7 @@ const getOptimalDetail = async (req, res) => {
 
     res.json({ columns, rows });
   } catch (e) {
+    console.log(e.stack);
     res.status(500).json({ errMsg: e.message });
   }
 };

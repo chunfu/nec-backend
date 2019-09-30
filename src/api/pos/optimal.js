@@ -24,10 +24,11 @@ const getOptimal = async (req, res) => {
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
     console.log('rs', reservationSite)
     const { stdout, stderr } = await execAsync(
-      `python3 -c 'import optModel; print optModel.optModel(${oilprice}, [${reservationSite}], "reachable.xlsx", "needAdjustOK.xlsx", "movetime.xlsx", "expectedCalls.xlsx", "historyCalls.xlsx", "siteInfo.xlsx")'`,
+      `python3 -c 'import optModel; optModel.optModel(${oilprice}, [${reservationSite}], "reachable.xlsx", "needAdjustOK.xlsx", "movetime.xlsx", "expectedCalls.xlsx", "historyCalls.xlsx", "siteInfo.xlsx")'`,
     );
     res.json({ msg: 1 });
   } catch (e) {
+    console.log(e.stack);
     res.status(500).json({ errMsg: e.message });
   }
 };

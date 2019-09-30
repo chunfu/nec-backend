@@ -19,13 +19,14 @@ const getPath = async (req, res) => {
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
     /* Mark it out temporarily
     const { stdout, stderr } = await execAsync(
-      `python3 -c 'import NEC_OptCCModel1_PathDist; print NEC_OptCCModel1_PathDist.PathDist("mrData.xlsx", "workerData.xlsx", "officeAddress.xlsx", "${office}")'`,
+      `python3 -c 'import NEC_OptCCModel1_PathDist; NEC_OptCCModel1_PathDist.PathDist("mrData.xlsx", "workerData.xlsx", "officeAddress.xlsx", "${office}")'`,
     );
     */
 
     // output 2 files: pathDistDetail.xlsx, pathDistAnaly.xlsx
     res.json({ msg: 1 });
   } catch (e) {
+    console.log(e.stack);
     res.status(500).json({ errMsg: e.message });
   }
 };

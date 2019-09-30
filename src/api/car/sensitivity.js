@@ -23,7 +23,7 @@ const getSensitivity = async (req, res) => {
     */
     /* Mark it out temporarily
     const { stdout, stderr } = await execAsync(
-      `python3 -c 'import NEC_OptCCModel3_PPcarsPS; print NEC_OptCCModel3_PPcarsPS.PPcarsPS()'`,
+      `python3 -c 'import NEC_OptCCModel3_PPcarsPS; NEC_OptCCModel3_PPcarsPS.PPcarsPS()'`,
     );
     */
 
@@ -38,6 +38,7 @@ const getSensitivity = async (req, res) => {
 
     res.json({ columns, rows });
   } catch (e) {
+    console.log(e.stack);
     res.status(500).json({ errMsg: e.message });
   }
 };
