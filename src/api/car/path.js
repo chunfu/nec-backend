@@ -24,11 +24,43 @@ const getPath = async (req, res) => {
     */
 
     // output 2 files: pathDistDetail.xlsx, pathDistAnaly.xlsx
-    res.json({ msg: 1 });
+    const workbook = xlsx.readFile('./loc_PathDist_analy.xlsx');
+    const wsname = workbook.SheetNames[0];
+    const ws = workbook.Sheets[wsname];
+    const rows = xlsx.utils.sheet_to_json(ws);
+    const columns =
+      rows.length &&
+      Object.keys(rows[0]).map(key => ({ title: key, field: key }));
+
+    res.json({ columns, rows });
   } catch (e) {
     console.log(e.stack);
     res.status(500).json({ errMsg: e.message });
   }
 };
 
-export { getPath };
+const getPathDetail = async (req, res) => {
+  const {
+    params: { pathId },
+  } = req;
+  try {
+    if (!pathId) throw new Error('Path Id is not passed');
+
+    // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
+    const workbook = xlsx.readFile('./loc_PathDist_detail.xlsx');
+    const wsname = workbook.SheetNames[0];
+    const ws = workbook.Sheets[wsname];
+    let rows = xlsx.utils.sheet_to_json(ws);
+    const columns =
+      rows.length &&
+      Object.keys(rows[0]).map(key => ({ title: key, field: key }));
+    // ccn is string, CCcars_num is integer
+    rows = rows.filter(({ Unique_PathID }) => Unique_PathID === pathId);
+
+    res.json({ columns, rows });
+  } catch (e) {
+    console.log(e.stack);
+    res.status(500).json({ errMsg: e.message });
+  }};
+
+export { getPath, getPathDetail };

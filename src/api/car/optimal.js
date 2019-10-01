@@ -1,4 +1,7 @@
 import * as xlsx from 'xlsx';
+import * as util from 'util';
+import { exec } from 'child_process';
+const execAsync = util.promisify(exec);
 
 const getOptimal = async (req, res) => {
   const {
@@ -12,10 +15,10 @@ const getOptimal = async (req, res) => {
       privateCarDistance = '', // basic_Mileage
       privateCarBonus = '', // below_PCcarsFuel
       privateCarExtraBonus = '', // upper_PCcarsFuel
+      office = '', // office
     },
   } = req;
   try {
-    /*
     if (!files) throw new Error('無上傳任何檔案');
     const { taxiCost } = files;
     // error handling here
@@ -28,13 +31,11 @@ const getOptimal = async (req, res) => {
     if (!privateCarDistance) throw new Error('私車基本里程數 未指定');
     if (!privateCarBonus) throw new Error('私車基本里程數內單位補貼 未指定');
     if (!privateCarExtraBonus) throw new Error('私車基本里程數外單位補貼 未指定');
+    if (!office) throw new Error('據點 未指定');
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
-    */
-    /* Mark it out temporarily
     const { stdout, stderr } = await execAsync(
-      `python3 -c 'import NEC_OptCCModel2_OptModel; NEC_OptCCModel2_OptModel.OptModel("mrData.xlsx", "workerData.xlsx", "officeAddress.xlsx", ${office})'`,
+      `python3 -c 'import NEC_OptCCModel2_OptModel; NEC_OptCCModel2_OptModel.OptModel(${comapnyCarNumber}, ${privateCarNumber}, ${restTime}, ${comapnyCarFuelConsumption}, ${comapnyCarAnnualCost}, ${privateCarDistance}, ${privateCarBonus}, ${privateCarExtraBonus}, ${office}, "taxiCost.xlsx", "loc_PathDist_analy.xlsx")'`,
     );
-    */
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
     const workbook = xlsx.readFile('./loc_DailyAssign_cost.xlsx');
@@ -58,7 +59,7 @@ const getOptimalDetail = async (req, res) => {
   } = req;
   try {
     const ccnInt = parseInt(ccn, 10);
-    if (!ccnInt) throw new Error('Company car number is not a number');
+    if (ccnInt === NaN) throw new Error('Company car number is not a number');
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
     const workbook = xlsx.readFile('./loc_DailyAssign_detail.xlsx');

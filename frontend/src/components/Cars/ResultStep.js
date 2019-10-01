@@ -30,16 +30,21 @@ const ResultStep = props => {
     } catch (e) {
       showErrDialog(e.message);
     }
-    setDetailModalOpen(false);
     showLoading(false);
   };
   const handleCloseDetailModal = () => setDetailModalOpen(false);
 
   const [sensitivity, loadSensitivity] = useFetch('/api/car/sensitivity', {});
   const [priceSensitiveModalOpen, setPriceSensitiveModalOpen] = useState(false);
-  const handleOpenParamsModal = () => {
-    setPriceSensitiveModalOpen(true);
-    loadSensitivity({ query: values });
+  const handleOpenParamsModal = async () => {
+    try {
+      setPriceSensitiveModalOpen(true);
+      showLoading(true);
+      await loadSensitivity({ query: values });
+    } catch (e) {
+      showErrDialog(e.message);
+    }
+    showLoading(false);
   };
   const handleCloseParamsModal = () => setPriceSensitiveModalOpen(false);
 
@@ -69,7 +74,14 @@ const ResultStep = props => {
   const onClickOptimalBtn = async () => {
     try {
       showLoading(true);
-      await loadData();
+      let formData = new FormData();
+      Object.keys(values).forEach(valueName => {
+        formData.append(valueName, values[valueName]);
+      });
+      ['taxiCost'].forEach(fileName => {
+        formData.append(fileName, files[fileName], `${fileName}.xlsx`);
+      });
+      await loadData({ headers: {}, body: formData });
     } catch (e) {
       showErrDialog(e.message);
     }
