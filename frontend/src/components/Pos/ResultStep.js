@@ -21,8 +21,18 @@ const ResultStep = props => {
   const classes = useStyles()();
   const [data, loadData] = useFetch('/api/pos/optimal', {}, { method: 'POST' });
 
+  const [detail, loadDetail] = useFetch('/api/pos/optimal', {});
   const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const handleOpenDetailModal = () => setDetailModalOpen(true);
+  const handleOpenDetailModal = async officeName => {
+    try {
+      showLoading(true);
+      setDetailModalOpen(true);
+      await loadDetail({ params: officeName });
+    } catch (e) {
+      showErrDialog(e.message);
+    }
+    showLoading(false);
+  };
   const handleCloseDetailModal = () => setDetailModalOpen(false);
 
   const firstColAsLink = (col, idx) => {
@@ -30,7 +40,10 @@ const ResultStep = props => {
     const render =
       idx === 0 &&
       (rowData => (
-        <Link onClick={handleOpenDetailModal} className={classes.link}>
+        <Link
+          onClick={() => handleOpenDetailModal(rowData[field])}
+          className={classes.link}
+        >
           {rowData[field]}
         </Link>
       ));
@@ -90,8 +103,8 @@ const ResultStep = props => {
           >
             <MaterialTable
               title="該據點客戶分配"
-              columns={data.columns}
-              data={data.rows}
+              columns={detail.columns}
+              data={detail.rows}
               {...tableConfig}
             />
           </Dialog>

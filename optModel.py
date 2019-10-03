@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 '''
 Optimization module
 呼叫範例:
@@ -22,15 +20,14 @@ def reg(df_historyCalls):
 
 def updateSLAtable(df_reachable, df_needAdjustOK, df_officeMapping): 
     for idx in df_needAdjustOK.index:
-#         print(df_needAdjustOK['CustomerID'].iloc[idx])
-#         print(df_needAdjustOK['location'].iloc[idx])
+
         cusID = df_needAdjustOK['CustomerID'].iloc[idx]
         loc = df_needAdjustOK['location'].iloc[idx]
-        idx2 = df_officeMapping.index[df_officeMapping['id']==loc].tolist()[0]
-        setTrueSite = df_officeMapping['name'].iloc[idx2]
-        idx3 = df_reachable.index[df_reachable['客戶ID']==cusID].tolist()[0]
-#         print(df_reachable[setTrueSite].iloc[idx3])            
-        df_reachable[setTrueSite].iloc[idx3] = True
+        mapping_idx = df_officeMapping.index[df_officeMapping['name']==loc].tolist()[0]
+        cus_Site = df_officeMapping['name'].iloc[mapping_idx]
+        cus_idx = df_reachable.index[df_reachable['客戶ID']==cusID].tolist()[0]           
+        df_reachable[cus_Site].iloc[cus_idx] = True
+        
     return df_reachable
 
 
@@ -68,7 +65,7 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
     f = df_siteInfo[['前進據點成本','固定據點成本']].values
     h = df_expectedCalls['預期年服務次數'].values
     d = df_movetime[df_movetime.columns[4:]].values
-    A = df_reachableOK.values
+    A = df_reachableOK[df_reachableOK.columns[4:]].values
     
     numofSite = len(df_siteInfo)
     numofCustomer = len(df_expectedCalls)
@@ -78,6 +75,12 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
     scales=[0,1]
     locations=[i for i in range(numofSite)]
     customers=[i for i in range(numofCustomer)]
+
+    # 保留據點: 將簡稱對應到index 
+    reservationSite_idx = []
+    for rsvSite in reservationSite:
+        reservationSite_idx.append(df_officeMapping.index[df_officeMapping['name']==rsvSite].tolist()[0])
+
 
     # model
     model = Model('Integer Program')
@@ -94,7 +97,7 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
     model.addConstrs(w[j] <= x[j,0]+M[j]*x[j,1] for j in locations)
     model.addConstrs(w[j] >= x[j,0]+x[j,1] for j in locations)
     model.addConstrs(w[j] >= g*(quicksum(h[i]*y[i,j] for i in customers))+s for j in locations)
-    model.addConstrs(x[j-1,1] == 1 for j in reservationSite) 
+    model.addConstrs(x[j,1] == 1 for j in reservationSite_idx) 
                 
     # update model
     model.update()
@@ -107,19 +110,26 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
     model.optimize()
 
     # outcome display
-    siteScale = []
+    siteScale = ['不蓋據點' for i in range(numofSite)]
     assignSite = []
     siteEmp = []
+
+    count=0 
     for v in model.getVars():
     #     print('%s %g' % (v.varName, v.x))
+        var_result = v.Varname
         if v.x == 1:
-            var_result = v.Varname
             if var_result[0] == 'x':
-                siteScale.append(int((var_result.split(','))[-1].strip(']')))
+                if int(var_result.split(',')[-1].strip(']')) == 0:
+                    siteScale[int(count/2)] = '前進據點'
+                elif int(var_result.split(',')[-1].strip(']')) == 1:
+                    siteScale[int(count/2)] = '固定據點'
             if var_result[0] == 'y':
                 assignSite.append(int((var_result.split(','))[-1].strip(']')))
-        if v.Varname[0] == 'w':
+        if var_result[0] == 'w':
             siteEmp.append(int(v.x))
+        if count < numofSite*2:
+            count = count+1
 
     df_site = pd.DataFrame(siteName, columns = ['siteName'])
 
@@ -135,7 +145,8 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
     for site in siteName:
         dict_assign[site]=df_assign[df_assign['assignSite']==site]
         
-    return df_site, dict_assign
+    df_assign.to_excel('assign.xlsx', encoding='utf-8', index=False)
+    return df_site.to_excel('site.xlsx', encoding='utf-8', index=False), dict_assign
 
 
 

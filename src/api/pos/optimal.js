@@ -4,6 +4,8 @@ import { exec } from 'child_process';
 import * as path from 'path';
 const execAsync = util.promisify(exec);
 
+import { excel2json } from '../../lib/util';
+
 const getOptimal = async (req, res) => {
   const {
     files,
@@ -20,17 +22,41 @@ const getOptimal = async (req, res) => {
     if (!oilprice) throw new Error('油錢未指定');
     if (!reservationSite) throw new Error('必須保留據點未指定');
 
-    const rs = reservationSite.split(',').map(rs => `"${rs}"`).join(',');
+    const rs = reservationSite
+      .split(',')
+      .map(rs => `"${rs}"`)
+      .join(',');
     // save files on server
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
     const { stdout, stderr } = await execAsync(
       `python3 -c 'import optModel; optModel.optModel(${oilprice}, [${rs}], "reachable.xlsx", "needAdjustOK.xlsx", "movetime.xlsx", "expectedCalls.xlsx", "historyCalls.xlsx", "siteInfo.xlsx", "officeMapping.xlsx")'`,
     );
-    res.json({ msg: 1 });
+
+    const [rows] = excel2json('./site.xlsx');
+    const columns =
+      rows.length &&
+      Object.keys(rows[0]).map(key => ({ title: key, field: key }));
+    res.json({ columns, rows });
   } catch (e) {
     console.log(e.stack);
     res.status(500).json({ errMsg: e.message });
   }
 };
 
-export { getOptimal };
+const getOptimalDetail = async (req, res) => {
+  const { officeName } = req.params;
+  try {
+    if (!officeName) throw new Error('officeName is not passed');
+    let [rows] = excel2json('./assign.xlsx');
+    const columns =
+      rows.length &&
+      Object.keys(rows[0]).map(key => ({ title: key, field: key }));
+    rows = rows.filter(({ assignSite }) => assignSite === officeName);
+    res.json({ columns, rows });
+  } catch (e) {
+    console.log(e.stack);
+    res.status(500).json({ errMsg: e.message });
+  }
+};
+
+export { getOptimal, getOptimalDetail };

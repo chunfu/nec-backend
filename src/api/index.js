@@ -2,7 +2,7 @@ import { version } from '../../package.json';
 import { Router } from 'express';
 import { getMoveTime, putMoveTime } from './pos/movetime';
 import { getSla, putSla } from './pos/sla';
-import { getOptimal } from './pos/optimal';
+import { getOptimal, getOptimalDetail } from './pos/optimal';
 import { getLocations } from './pos/locations';
 import { getPath, getPathDetail } from './car/path';
 import {
@@ -74,6 +74,7 @@ export default ({ config, db }) => {
   api.put('/pos/sla', putSla);
 
   api.post('/pos/optimal', getOptimal);
+  api.get('/pos/optimal/:officeName', getOptimalDetail);
 
   api.get('/pos/locations', getLocations);
 
