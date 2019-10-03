@@ -26,8 +26,8 @@ const Location = ({ onChange = () => null, options }) => {
           id: 'location',
         }}
       >
-        {options.map(({ id, name }) => (
-          <MenuItem value={id}>{name}</MenuItem>
+        {options.map(({ name }) => (
+          <MenuItem value={name}>{name}</MenuItem>
         ))}
       </Select>
     </FormControl>

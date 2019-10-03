@@ -1,6 +1,7 @@
 import * as xlsx from 'xlsx';
 import * as _ from 'lodash';
 import { API_KEY } from '../../lib/const';
+import { excel2json } from '../../lib/util';
 
 const MOVETIME_FILE_PATH = './movetime.xlsx';
 
@@ -10,10 +11,7 @@ const gmap = require('@google/maps').createClient({
 });
 
 const getMoveTime = (req, res) => {
-  const workbook = xlsx.readFile(MOVETIME_FILE_PATH);
-  const wsname = workbook.SheetNames[0];
-  const ws = workbook.Sheets[wsname];
-  const rows = xlsx.utils.sheet_to_json(ws);
+  const [rows] = excel2json(MOVETIME_FILE_PATH);
   const columns =
     rows.length &&
     Object.keys(rows[0]).map(key => ({ title: key, field: key }));
@@ -35,18 +33,25 @@ const calcDuration = async (origins, destinations) => {
   return response;
 };
 
-const newCustomerDuration = async ({ columns, rows, newCustomerAddresses }) => {
+const newCustomerDuration = async ({
+  columns,
+  rows,
+  newCustomerAddresses,
+  officeAddressesList,
+}) => {
   try {
     // existing office locations
-    const destinations = columns.slice(4);
+    // [{ name, address }, ...]
+    const destinations = columns
+      .slice(4)
+      .map(c => officeAddressesList.find(({ name }) => name === c));
     // all new addresses from req.body
     const origins = newCustomerAddresses.map(addr => addr.customerAddress);
-    let response = await calcDuration(origins, destinations);
-    /*
-      response.json.rows[0].elements[0].duration.value
-      rows === origins
-      elements === destinations
-      */
+    let response = await calcDuration(
+      origins,
+      destinations.map(d => d.address),
+    );
+
     const values = response.json.rows;
     const newAddressRecords = newCustomerAddresses.map((newAddress, i) => {
       const { customerId, customerName, customerAddress } = newAddress;
@@ -57,7 +62,7 @@ const newCustomerDuration = async ({ columns, rows, newCustomerAddresses }) => {
         [columns[3]]: customerAddress,
       };
       return destinations.reduce((acc, col, idx) => {
-        acc[col] = (durationArr[idx] / 60).toFixed(2);
+        acc[col.name] = (durationArr[idx] / 60).toFixed(2);
         return acc;
       }, newAddressObj);
     });
@@ -71,18 +76,21 @@ const newCustomerDuration = async ({ columns, rows, newCustomerAddresses }) => {
 
 const newOfficeDuration = async ({ columns, rows, newOfficeAddresses }) => {
   try {
-    // origins is officeAddress
+    // origins is all customer addresses
     const origins = rows.map(r => r[columns[3]]);
-    // destinations is all customer addresses
-    const destinations = newOfficeAddresses.map(addr => addr.officeAddress);
+    // destinations is officeAddress
+    const destinations = newOfficeAddresses;
 
-    const response = await calcDuration(origins, destinations);
+    const response = await calcDuration(
+      origins,
+      destinations.map(addr => addr.officeAddress),
+    );
     const values = response.json.rows;
 
     return rows.map((row, i) => {
       const durationArr = values[i].elements.map(e => e.duration.value);
       const newOfficeObj = destinations.reduce((acc, col, idx) => {
-        acc[col] = (durationArr[idx] / 60).toFixed(2);
+        acc[col.officeName] = (durationArr[idx] / 60).toFixed(2);
         return acc;
       }, {});
       return {
@@ -103,54 +111,60 @@ const putMoveTime = async (req, res) => {
   );
   const newOfficeAddresses = officeAddresses.filter(addr => addr.officeAddress);
   try {
-    console.log('before read', new Date());
+    let [officeAddressesList, omWorkBook] = excel2json('./officeMapping.xlsx');
+    // update officeMapping first
+    if (newOfficeAddresses.length) {
+      const total = officeAddressesList.length;
+      officeAddressesList = officeAddressesList.concat(
+        // add new office address to officeMapping file
+        newOfficeAddresses.map((add, idx) => ({
+          id: add.officeId || total + idx + 1,
+          name: add.officeName,
+          address: add.officeAddress,
+        })),
+      );
+      const omSheetNew = xlsx.utils.json_to_sheet(officeAddressesList, {
+        header: ['id', 'address'],
+      });
+      omWorkBook.Sheets[omWorkBook.SheetNames[0]] = omSheetNew;
+      xlsx.writeFile(omWorkBook, 'officeMapping.xlsx');
+    }
+
     const workbook = xlsx.readFile(MOVETIME_FILE_PATH);
-    console.log('after read', new Date());
     const wsname = workbook.SheetNames[0];
     const ws = workbook.Sheets[wsname];
     let rows = xlsx.utils.sheet_to_json(ws);
     let columns = rows.length && Object.keys(rows[0]);
 
     if (newCustomerAddresses.length) {
-      rows = await newCustomerDuration({ columns, rows, newCustomerAddresses });
+      rows = await newCustomerDuration({
+        columns,
+        rows,
+        newCustomerAddresses,
+        officeAddressesList,
+      });
     }
+
     if (newOfficeAddresses.length) {
-      rows = await newOfficeDuration({ columns, rows, newOfficeAddresses });
-      columns = columns.concat(
-        newOfficeAddresses.map(add => add.officeAddress),
-      );
-
-      // add new office address to officeMapping file
-      const omWorkBook = xlsx.readFile('./officeMapping.xlsx');
-      const omSheetName = omWorkBook.SheetNames[0];
-      const omSheet = omWorkBook.Sheets[omSheetName];
-      let officeAddressesList = xlsx.utils.sheet_to_json(omSheet);
-      const total = officeAddressesList.length;
-      officeAddressesList = officeAddressesList.concat(
-        newOfficeAddresses.map((add, idx) => ({
-          id: add.officeId || (total + idx + 1),
-          name: add.officeName,
-          address: add.officeAddress,
-        })),
-      );
-      const omSheetNew = xlsx.utils.json_to_sheet(officeAddressesList, { header: ['id', 'address'] });
-      omWorkBook.Sheets[omSheetName] = omSheetNew;
-      xlsx.writeFile(omWorkBook, 'officeMapping.xlsx');
+      rows = await newOfficeDuration({
+        columns,
+        rows,
+        newOfficeAddresses,
+      });
+      columns = columns.concat(newOfficeAddresses.map(add => add.officeName));
     }
 
-    console.log('before write', new Date());
     const newws = xlsx.utils.json_to_sheet(rows, { header: columns });
     workbook.Sheets[wsname] = newws;
     // don't know why can't have path like './movetime.xlsx'
     xlsx.writeFile(workbook, 'movetime.xlsx');
-    console.log('after write', new Date());
     res.json({
       columns: columns.map(key => ({ title: key, field: key })),
       rows,
     });
   } catch (e) {
     console.log(e.stack);
-    res.status(500).json({ msg: e.message });
+    res.status(500).json({ errMsg: e.message });
   }
 };
 

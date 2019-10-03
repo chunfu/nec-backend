@@ -20,11 +20,11 @@ const getOptimal = async (req, res) => {
     if (!oilprice) throw new Error('油錢未指定');
     if (!reservationSite) throw new Error('必須保留據點未指定');
 
+    const rs = reservationSite.split(',').map(rs => `"${rs}"`).join(',');
     // save files on server
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
-    console.log('rs', reservationSite)
     const { stdout, stderr } = await execAsync(
-      `python3 -c 'import optModel; optModel.optModel(${oilprice}, [${reservationSite}], "reachable.xlsx", "needAdjustOK.xlsx", "movetime.xlsx", "expectedCalls.xlsx", "historyCalls.xlsx", "siteInfo.xlsx")'`,
+      `python3 -c 'import optModel; optModel.optModel(${oilprice}, [${rs}], "reachable.xlsx", "needAdjustOK.xlsx", "movetime.xlsx", "expectedCalls.xlsx", "historyCalls.xlsx", "siteInfo.xlsx", "officeMapping.xlsx")'`,
     );
     res.json({ msg: 1 });
   } catch (e) {

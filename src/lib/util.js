@@ -1,3 +1,4 @@
+import * as xlsx from 'xlsx';
 
 /**	Creates a callback that proxies node callback style arguments to an Express Response object.
  *	@param {express.Response} res	Express HTTP Response
@@ -17,4 +18,11 @@ export function toRes(res, status=200) {
 		}
 		res.status(status).json(thing);
 	};
+}
+
+export function excel2json(path) {
+  const workbook = xlsx.readFile(path);
+  const wsname = workbook.SheetNames[0];
+  const ws = workbook.Sheets[wsname];
+  return [xlsx.utils.sheet_to_json(ws), workbook];
 }

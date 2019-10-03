@@ -103,13 +103,13 @@ const ParameterStep = props => {
             <FormControl component="fieldset" className={classes.formControl}>
               <FormLabel>必須保留的據點</FormLabel>
               <FormGroup className={classes.horizontalFormGroup}>
-                {locations.map(({ id, name }) => (
+                {locations.map(({ name }) => (
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={!!values.reservationSite.find(l => l === id)}
-                        onChange={handleLocationChange(id)}
-                        value={id}
+                        checked={!!values.reservationSite.find(l => l === name)}
+                        onChange={handleLocationChange(name)}
+                        value={name}
                         color="primary"
                       />
                     }

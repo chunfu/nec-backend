@@ -70,7 +70,7 @@ const ResultStep = props => {
         color="primary"
         onClick={onClickOptimalButton}
       >
-        最佳化資源配置
+        服務據點選擇最佳化
       </Button>
       {data.columns && (
         <div className={classes.table}>
