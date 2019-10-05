@@ -23,7 +23,7 @@ const getSensitivity = async (req, res) => {
     */
     /* Mark it out temporarily
     const { stdout, stderr } = await execAsync(
-      `python -c 'import NEC_OptCCModel3_PPcarsPS; NEC_OptCCModel3_PPcarsPS.PPcarsPS()'`,
+      `python -c "import NEC_OptCCModel3_PPcarsPS; NEC_OptCCModel3_PPcarsPS.PPcarsPS()"`,
     );
     */
 
