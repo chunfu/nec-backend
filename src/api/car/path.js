@@ -3,6 +3,8 @@ import * as util from 'util';
 import { exec } from 'child_process';
 const execAsync = util.promisify(exec);
 
+import { excel2json } from '../../lib/util';
+
 const getPath = async (req, res) => {
   const {
     files,
@@ -17,17 +19,12 @@ const getPath = async (req, res) => {
     if (!officeAddress) throw new Error('各據點地址資訊 未上傳');
     if (!office) throw new Error('據點未指定');
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
-    /* Mark it out temporarily
     const { stdout, stderr } = await execAsync(
       `python3 -c 'import NEC_OptCCModel1_PathDist; NEC_OptCCModel1_PathDist.PathDist("mrData.xlsx", "workerData.xlsx", "officeAddress.xlsx", "${office}")'`,
     );
-    */
 
     // output 2 files: pathDistDetail.xlsx, pathDistAnaly.xlsx
-    const workbook = xlsx.readFile('./loc_PathDist_analy.xlsx');
-    const wsname = workbook.SheetNames[0];
-    const ws = workbook.Sheets[wsname];
-    const rows = xlsx.utils.sheet_to_json(ws);
+    const rows = excel2json('./loc_PathDist_analy.xlsx');
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));

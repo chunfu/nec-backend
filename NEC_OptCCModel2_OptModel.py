@@ -7,11 +7,10 @@ Created on  Sep
 Topic: NEC_system_OptModel_module
 
 Input ex:
-    PathDist(4, 6, 0, 2.42, 173700.0, 800.0, 6.0, 4.0, '嘉義', 
-    'C:\\Users\\User\\Desktop\\190822_NEC_system\\TW_TXcars_cost.xlsx', 各地區計程車費率
-    'C:\\Users\\User\\Desktop\\190822_NEC_system\\loc_PathDist_analy.xlsx')
+    OptModel(4, 3, 30, 2.42, 173700.0, 800.0, 6.0, 4.0, '嘉義', 
+    'C:\\Users\\User\\Desktop\\190923_NEC_system\\Input_DATA\\TW_TXcars_cost.xlsx',
+    'C:\\Users\\User\\Desktop\\190923_NEC_system\\Output_DATA_CYex\\CY_PathDist_analy.xlsx')
 """
-
 # packages import
 import pandas as pd
 import numpy as np
@@ -19,7 +18,7 @@ import numpy as np
 from gurobipy import *
 
 def OptModel(CCcars_num, PCcars_num, works_buffer, CCcars_Fuel, CCcars_Rent, basic_Mileage, below_PCcarsFuel, upper_PCcarsFuel, office, TXcost_File, loc_PathFile):
-    
+
     '''
     <input>
     CCcars_num: int                   # company_car_numbers
@@ -32,21 +31,24 @@ def OptModel(CCcars_num, PCcars_num, works_buffer, CCcars_Fuel, CCcars_Rent, bas
     upper_PCcarsFuel: flost           # private_car_upper_basicM_fuel_cost_$/km
     office: string                    
     TXcost_File: string [file path]  
-    loc_PathFile: string [file path]  ### df_loc_PathDist_analy // file path from previous module
+    loc_PathFile: string [file path]  ### df_loc_PathDist_analy
     
     <output>
-    df_loc_DailyAssign_detail: dataframe (table), each CCcar_num whole year DailyAssign cost (each day result) // click on CCcar_num to match detail here
-    df_loc_DailyAssign_cost: dataframe (table), each CCcar_num whole year DailyAssign cost (whole year result) // main table in result page
+    df_loc_DailyAssign_detail: dataframe (table), each CCcar_num whole year DailyAssign cost (each day result)
+    df_loc_DailyAssign_cost: dataframe (table), each CCcar_num whole year DailyAssign cost (whole year result)
+    
     '''
     
     TXcost_Data = pd.read_excel(TXcost_File)
-    loc_PathData = pd.read_excel(loc_PathFile)
     
     office_EGnm = TXcost_Data.loc[TXcost_Data.actgr_office == office]['actgr'].item()
     TXcars_start_M = TXcost_Data.loc[TXcost_Data.actgr_office == office]['initial_TXmileage(m)'].item()	# taxi_car_basic_Mileage_m
     initial_TXcars = TXcost_Data.loc[TXcost_Data.actgr_office == office]['initial_Txcost($)'].item()	# taxi_car_basic_cost_$
     add_TXcars = TXcost_Data.loc[TXcost_Data.actgr_office == office]['add_Txcost($/km)'].item()			# taxi_car_addtional_cost_$/km
-
+    
+    loc_PathData = pd.read_excel(loc_PathFile)
+    
+    
     ########### create loc param table
     servDay = list(set(loc_PathData['Out_Day']))
     servDay.sort()
@@ -98,28 +100,25 @@ def OptModel(CCcars_num, PCcars_num, works_buffer, CCcars_Fuel, CCcars_Rent, bas
     runCar_end = CCcars_num*2+1
     
     # loc yearly Total_cost_analysis data
-    loc_CostAnaly_data = np.zeros((runCar_end, 8))
-    df_loc_DailyAssign_cost = pd.DataFrame(loc_CostAnaly_data ,columns=['CCcars_num','FixedCost_rent','CCcars_fuel','PCcars_fuel','TXcars_fuel','VarCost_fuel','TotalCost','Taxi_prob'])
+    loc_CostAnaly_data = np.zeros((runCar_end, 7))
+    df_loc_DailyAssign_cost = pd.DataFrame(loc_CostAnaly_data ,columns=['CCcars_num','FixedCost_rent','CCcars_fuel','PCcars_fuel','TXcars_fuel','VarCost_fuel','TotalCost'])
     df_loc_DailyAssign_cost['CCcars_num'] = range(runCar_start, runCar_end)
     
     for CCcars_now in range(runCar_start, runCar_end):
         # loc daily_Mileage data
-        loc_TolWDays = len(Path_files)
+        loc_TolWDays = numDay
         loc_DailyAssign_data = np.zeros((loc_TolWDays, 10))
         loc_DailyAssign_df = pd.DataFrame(loc_DailyAssign_data,columns=['Work_date','CCcars_num','CCcars_mileage', 'PCcars_mileage','TXcars_mileage', 'Tol_mileage','CCcars_fuel', 'PCcars_fuel','TXcars_fuel','Tol_fuel'])
         
         # basic setting
         index_df = 0
-        accu_PCcarsMileage = 0.0
-        accu_TolMileage = 0.0
-        sol_feasible = 0    # infeasible solution or not
         
     	# daily run for one year
         for d in servDay: 
             # reassign accu_Prvfuel every month
             WorkDay = str(d)
             if WorkDay[-1] == "1" and WorkDay[-2] == "0":
-                accu_PCcarsFuel = 0.0
+                accu_PCcarsMileage = 0.0 
             
     		# model param setting
             m = int(loc_param.loc['param_m', d])
@@ -257,8 +256,8 @@ def OptModel(CCcars_num, PCcars_num, works_buffer, CCcars_Fuel, CCcars_Rent, bas
         df_loc_DailyAssign_cost['TXcars_fuel'][(df_loc_DailyAssign_cost.CCcars_num == CCcars_now)] = df_loc_DailyAssign_detail_CARNOW['TXcars_fuel'].sum()
         df_loc_DailyAssign_cost['VarCost_fuel'][(df_loc_DailyAssign_cost.CCcars_num == CCcars_now)] = df_loc_DailyAssign_detail_CARNOW['Tol_fuel'].sum()
         df_loc_DailyAssign_cost['TotalCost'][(df_loc_DailyAssign_cost.CCcars_num == CCcars_now)] = df_loc_DailyAssign_cost['FixedCost_rent'][(df_loc_DailyAssign_cost.CCcars_num == CCcars_now)] + df_loc_DailyAssign_cost['VarCost_fuel'][(df_loc_DailyAssign_cost.CCcars_num == CCcars_now)]
-        taxi_day = (df_loc_DailyAssign_detail_CARNOW.loc[df_loc_DailyAssign_detail_CARNOW['TXcars_fuel'] != 0]).count()
-        total_day = df_loc_DailyAssign_detail_CARNOW['TXcars_fuel'].count() 
+        #taxi_day = (df_loc_DailyAssign_detail_CARNOW.loc[df_loc_DailyAssign_detail_CARNOW['TXcars_fuel'] != 0]).count()
+        #total_day = df_loc_DailyAssign_detail_CARNOW['TXcars_fuel'].count() 
         #df_loc_DailyAssign_cost['Taxi_prob'][(df_loc_DailyAssign_cost.CCcars_num == CCcars_now)] = taxi_day / total_day
-
-        return df_loc_DailyAssign_detail, df_loc_DailyAssign_cost
+    
+    return df_loc_DailyAssign_cost.to_excel('C:\\Users\\User\\Desktop\\190923_NEC_system\\Output_DATA_CYex\\loc_DailyAssign_cost.xlsx', encoding='utf-8', index=False), df_loc_DailyAssign_detail.to_excel('C:\\Users\\User\\Desktop\\190923_NEC_system\\Output_DATA_CYex\\loc_DailyAssign_detail.xlsx', encoding='utf-8', index=False) 

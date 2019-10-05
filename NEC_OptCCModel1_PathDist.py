@@ -7,10 +7,10 @@ Created on  Sep
 Topic: NEC_system_PathDist_module
 
 Input ex:
-    PathDist('C:\\Users\\User\\Desktop\\190822_NEC_system\\2018_MRDATA_original.xlsx', 歷史服務記錄
-    'C:\\Users\\User\\Desktop\\190822_NEC_system\\2018_workerDATA.xlsx', 年度員工服務紀錄
-    'C:\\Users\\User\\Desktop\\190822_NEC_system\\NEC_TWoffice_address.xlsx', 各據點地址資訊
-    '嘉義') 據點選擇的值
+    PathDist('C:\\Users\\User\\Desktop\\190822_NEC_system\\2018_MRDATA_original.xlsx',
+    'C:\\Users\\User\\Desktop\\190923_NEC_system\\Input_DATA\\2018_workerDATA.xlsx',
+    'C:\\Users\\User\\Desktop\\190923_NEC_system\\Input_DATA\\NEC_TWoffice_address.xlsx',
+    '嘉義')
 """
 
 # packages import 
@@ -28,8 +28,8 @@ def PathDist(Service_File, Worker_File, Office_File, office):
     office: string
     
     <output>
-    df_loc_PathDist_detail: dataframe (table), original MRDATA resort with path labeled // click on next file Path_ID, show detail information here
-    df_loc_PathDist_analy: dataframe (table), each uniquePath info with Out_date, Path_ID/order, MoveDist_GO/BACK/TOL, Begin/End_time columns // 路徑資訊頁面主要表格
+    df_loc_PathDist_detail: dataframe (table), original MRDATA resort with path labeled
+    df_loc_PathDist_analy: dataframe (table), each uniquePath info with Out_date, Path_ID/order, MoveDist_GO/BACK/TOL, Begin/End_time columns
     '''
     
     # read original MR_DATA files
@@ -83,11 +83,11 @@ def PathDist(Service_File, Worker_File, Office_File, office):
         
     df_loc_PathDist_detail['Daily_PathID'] = Daily_PathID
     df_loc_PathDist_detail['Daily_PathOrder'] = Daily_PathOrder
-    df_loc_PathDist_detail['UniquePathID'] = UniquePathID
+    df_loc_PathDist_detail['Unique_PathID'] = UniquePathID
     
     # get Google maps distance
     gmaps = googlemaps.Client(key='AIzaSyDFkfki70KWhABw5gMuqRRfkNwsyv7x6Ak')
-    loc_PathID = list(set(df_loc_PathDist_detail['UniquePathID']))
+    loc_PathID = list(set(df_loc_PathDist_detail['Unique_PathID']))
     loc_PathID.sort()
     Path_count = len(loc_PathID)
     
@@ -108,7 +108,7 @@ def PathDist(Service_File, Worker_File, Office_File, office):
     
     for i in range(0, Path_count):
         print('round_i'+str(i))
-        EachPath_Data =  df_loc_PathDist_detail.loc[df_loc_PathDist_detail['UniquePathID'] == loc_PathID[i]]
+        EachPath_Data =  df_loc_PathDist_detail.loc[df_loc_PathDist_detail['Unique_PathID'] == loc_PathID[i]]
         EachPath_count = EachPath_Data.shape[0]
         EachPath_GoDist_accu = 0
         EachPath_BackDist_accu = 0
@@ -157,4 +157,6 @@ def PathDist(Service_File, Worker_File, Office_File, office):
     df_loc_PathDist_detail['BackMove_Dist'] = BackMove_Dist
     df_loc_PathDist_analy = df_loc_PathDist_analy.sort_values(['Out_Day','Order'], ascending=[True,True])
     
-    return df_loc_PathDist_detail, df_loc_PathDist_analy
+    return df_loc_PathDist_detail.to_excel('loc_PathDist_detail.xlsx', encoding='utf-8', index=False), df_loc_PathDist_analy.to_excel('loc_PathDist_analy.xlsx', encoding='utf-8', index=False)
+    
+    

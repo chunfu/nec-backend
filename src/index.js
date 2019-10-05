@@ -11,7 +11,9 @@ import api from './api';
 import config from './config.json';
 
 let app = express();
-app.server = http.createServer(app);
+let server = http.createServer(app);
+app.server = server;
+app.server.timeout = 60 * 1000 * 3; //(60 * 60 * 1000);
 
 // logger
 app.use(morgan('dev'));
