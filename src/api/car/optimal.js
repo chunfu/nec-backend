@@ -34,7 +34,7 @@ const getOptimal = async (req, res) => {
     if (!office) throw new Error('據點 未指定');
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
     const { stdout, stderr } = await execAsync(
-      `python3 -c 'import NEC_OptCCModel2_OptModel; NEC_OptCCModel2_OptModel.OptModel(${comapnyCarNumber}, ${privateCarNumber}, ${restTime}, ${comapnyCarFuelConsumption}, ${comapnyCarAnnualCost}, ${privateCarDistance}, ${privateCarBonus}, ${privateCarExtraBonus}, "${office}", "taxiCost.xlsx", "loc_PathDist_analy.xlsx")'`,
+      `python -c 'import NEC_OptCCModel2_OptModel; NEC_OptCCModel2_OptModel.OptModel(${comapnyCarNumber}, ${privateCarNumber}, ${restTime}, ${comapnyCarFuelConsumption}, ${comapnyCarAnnualCost}, ${privateCarDistance}, ${privateCarBonus}, ${privateCarExtraBonus}, "${office}", "taxiCost.xlsx", "loc_PathDist_analy.xlsx")'`,
     );
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail

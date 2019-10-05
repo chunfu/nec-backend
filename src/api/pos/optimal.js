@@ -29,7 +29,7 @@ const getOptimal = async (req, res) => {
     // save files on server
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
     const { stdout, stderr } = await execAsync(
-      `python3 -c 'import optModel; optModel.optModel(${oilprice}, [${rs}], "reachable.xlsx", "needAdjustOK.xlsx", "movetime.xlsx", "expectedCalls.xlsx", "historyCalls.xlsx", "siteInfo.xlsx", "officeMapping.xlsx")'`,
+      `python -c 'import optModel; optModel.optModel(${oilprice}, [${rs}], "reachable.xlsx", "needAdjustOK.xlsx", "movetime.xlsx", "expectedCalls.xlsx", "historyCalls.xlsx", "siteInfo.xlsx", "officeMapping.xlsx")'`,
     );
 
     const [rows] = excel2json('./site.xlsx');

@@ -27,7 +27,7 @@ const getSla = async (req, res) => {
   // sla.py should export sla.xlsx as result
   try {
     const { stdout, stderr } = await execAsync(
-      `python3 -c 'import SLA; SLA.SLAcheck(${serviceQuality}, "movetime.xlsx")'`,
+      `python -c 'import SLA; SLA.SLAcheck(${serviceQuality}, "movetime.xlsx")'`,
     );
     const workbook = xlsx.readFile('./needAdjust.xlsx');
     const wsname = workbook.SheetNames[0];
