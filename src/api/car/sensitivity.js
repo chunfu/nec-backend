@@ -13,22 +13,18 @@ const getSensitivity = async (req, res) => {
     },
   } = req;
   try {
-    /*
     // error handling here
     if (!comapnyCarNumber) throw new Error('目前據點社車供應 未指定');
     if (!privateCarNumber) throw new Error('目前據點私車供應 未指定');
     if (!comapnyCarAnnualCost) throw new Error('社車年租賃費用 未指定');
     if (!privateCarDistance) throw new Error('私車基本里程數 未指定');
     // loc_DailyAssign_detail.xlsx
-    */
-    /* Mark it out temporarily
     const { stdout, stderr } = await execAsync(
-      `python -c "import NEC_OptCCModel3_PPcarsPS; NEC_OptCCModel3_PPcarsPS.PPcarsPS()"`,
+      `python -c "import NEC_OptCCModel3_PPcarsPS; NEC_OptCCModel3_PPcarsPS.PPcarsPS(${comapnyCarNumber}, ${privateCarNumber}, ${privateCarDistance}, ${comapnyCarAnnualCost}, 'loc_DailyAssign_detail.xlsx')"`,
     );
-    */
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    const workbook = xlsx.readFile('./loc_PPcars_PriceSensitivity_cost.xlsx');
+    const workbook = xlsx.readFile('./loc_Costsens.xlsx');
     const wsname = workbook.SheetNames[0];
     const ws = workbook.Sheets[wsname];
     const rows = xlsx.utils.sheet_to_json(ws);

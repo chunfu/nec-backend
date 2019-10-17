@@ -149,6 +149,7 @@ def OptModel(CCcars_num, PCcars_num, works_buffer, CCcars_Fuel, CCcars_Rent, bas
             
             # model
             model = Model('NEC_model_EXTENS')
+            model.Params.OutputFlag = 0
             
             # variable
             jobs_pairs =  [(j1,j2) for j1 in jobs for j2 in jobs if j1 != j2]

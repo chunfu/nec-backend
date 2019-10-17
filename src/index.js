@@ -13,7 +13,8 @@ import config from './config.json';
 let app = express();
 let server = http.createServer(app);
 app.server = server;
-app.server.timeout = 60 * 1000 * 3; //(60 * 60 * 1000);
+server.setTimeout(60 * 60 * 1000);
+server.on('timeout', () => console.log('timeout'));
 
 // logger
 app.use(morgan('dev'));
