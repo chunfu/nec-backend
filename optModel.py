@@ -54,6 +54,7 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
     df_needAdjustOK = pd.read_excel(needAdjustOKPath)
     siteName = df_siteInfo['據點'].values
     customerID = df_expectedCalls['客戶ID'].values
+    df_movetime.astype({'客戶ID': 'str'}).dtypes
 
     
     # update 客戶表
@@ -144,6 +145,44 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
     dict_assign = {}
     for site in siteName:
         dict_assign[site]=df_assign[df_assign['assignSite']==site]
+
+
+    setCost = [0 for i in range(numofSite)]
+    empCost = [0 for i in range(numofSite)]
+    serviceCost = [0 for i in range(numofSite)]
+    totalCost = [0 for i in range(numofSite)]
+
+    for i in range(len(siteName)):
+        site = siteName[i]
+        if df_site['規模'][df_site.index[df_site['據點']==site].tolist()[0]] != '不蓋據點':
+    #         print(site)
+            sCost = 0
+            for i in range(len(dict_assign[site]['customerID'])):
+                cusid = dict_assign[site]['customerID'].iloc[i]
+                cusidx = df_movetime.index[df_movetime['客戶ID']==cusid].tolist()[0] 
+                mt = df_movetime[site].iloc[cusidx]
+                sCost += mt*oilprice
+            print(sCost)
+            serviceCost[i] = sCost
+    df_site['服務成本']=serviceCost
+
+    df_site['建置成本']=setCost
+    df_site['員工成本']=empCost
+    df_site['總成本']=totalCost
+    for idx in df_site.index:
+        if df_site['規模'].iloc[idx] == '固定據點':
+            df_site['建置成本'].iloc[idx] = df_SiteInfo['固定據點成本'].iloc[idx]
+        elif df_site['規模'].iloc[idx] == '前進據點':
+            df_site['建置成本'].iloc[idx] = df_SiteInfo['前進據點成本'].iloc[idx]
+        else:
+            df_site['建置成本'].iloc[idx] = 0
+        
+        df_site['員工成本'].iloc[idx] = df_site['員工數'].iloc[idx]*df_SiteInfo['每人年成本'].iloc[idx]
+        
+        df_site['服務成本'].iloc[idx]
+            
+        df_site['總成本'].iloc[idx] = df_cost['建置成本'].iloc[idx]+df_site['員工成本'].iloc[idx]+df_site['服務成本'].iloc[idx]
+    
         
     df_assign.to_excel('assign.xlsx', encoding='utf-8', index=False)
     return df_site.to_excel('site.xlsx', encoding='utf-8', index=False), dict_assign
