@@ -27,7 +27,8 @@ const InfoStep = props => {
           formData.append(valueName, values[valueName]);
         });
         ['mrData', 'workerData', 'officeAddress'].forEach(fileName => {
-          formData.append(fileName, files[fileName], `${fileName}.xlsx`);
+          if (files[fileName])
+            formData.append(fileName, files[fileName], `${fileName}.xlsx`);
         });
         showLoading(true);
         await loadData({ headers: {}, body: formData });
