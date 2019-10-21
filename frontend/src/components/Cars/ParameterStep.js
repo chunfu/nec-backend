@@ -74,16 +74,6 @@ const ParameterStep = props => {
               variant="outlined"
             />
             <TextField
-              label="社車年租賃費用"
-              placeholder="X 元/輛"
-              value={values.comapnyCarAnnualCost}
-              onChange={handleChange('comapnyCarAnnualCost')}
-              type="number"
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField
               label="社車每單位行使油耗"
               placeholder="X 元/公里"
               value={values.comapnyCarFuelConsumption}
@@ -191,6 +181,16 @@ const ParameterStep = props => {
               ))}
             </Select>
           </FormControl>
+          <TextField
+            label="社車年租賃費用"
+            placeholder="X 元/輛"
+            value={values.comapnyCarAnnualCost}
+            onChange={handleChange('comapnyCarAnnualCost')}
+            type="number"
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
         </DialogContent>
         <DialogActions>
           <Button
