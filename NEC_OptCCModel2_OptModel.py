@@ -261,4 +261,4 @@ def OptModel(CCcars_num, PCcars_num, works_buffer, CCcars_Fuel, CCcars_Rent, bas
         #total_day = df_loc_DailyAssign_detail_CARNOW['TXcars_fuel'].count() 
         #df_loc_DailyAssign_cost['Taxi_prob'][(df_loc_DailyAssign_cost.CCcars_num == CCcars_now)] = taxi_day / total_day
     
-    return df_loc_DailyAssign_cost.to_excel('C:\\Users\\User\\Desktop\\190923_NEC_system\\Output_DATA_CYex\\loc_DailyAssign_cost.xlsx', encoding='utf-8', index=False), df_loc_DailyAssign_detail.to_excel('C:\\Users\\User\\Desktop\\190923_NEC_system\\Output_DATA_CYex\\loc_DailyAssign_detail.xlsx', encoding='utf-8', index=False) 
+    return df_loc_DailyAssign_cost.to_excel('loc_DailyAssign_cost.xlsx', encoding='utf-8', index=False), df_loc_DailyAssign_detail.to_excel('loc_DailyAssign_detail.xlsx', encoding='utf-8', index=False) 
