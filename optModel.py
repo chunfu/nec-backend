@@ -132,10 +132,10 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
         if count < numofSite*2:
             count = count+1
 
-    df_site = pd.DataFrame(siteName, columns = ['siteName'])
+    df_site = pd.DataFrame(siteName, columns = ['據點'])
 
-    df_site['scale'] = siteScale
-    df_site['numofEmp'] = siteEmp
+    df_site['規模'] = siteScale
+    df_site['員工數'] = siteEmp
 
     assignSiteName = []
     for a in assignSite:
