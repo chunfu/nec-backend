@@ -9,8 +9,7 @@ import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
 import tableConfig from '../../const/tableConfig';
 
-const Location = ({ onChange = () => null, options }) => {
-  const [value, setValue] = useState('');
+const Location = ({ onChange = () => null, options, value, setValue }) => {
   const onChangeSelect = e => {
     const v = e.target.value;
     setValue(v);
@@ -49,6 +48,7 @@ const SLAStep = props => {
 
   const [_, putSla] = useFetch('/api/pos/sla', {}, { method: 'PUT' });
   const [data, loadData] = useFetch('/api/pos/sla', {});
+  const [locationSelections, updateLocationSelections] = useState([]);
   let { columns, rows } = data;
   if (columns) {
     columns = columns.concat({
@@ -60,6 +60,12 @@ const SLAStep = props => {
           <Location
             onChange={(e, v) => (rows[i]['location'] = v)}
             options={locations}
+            value={locationSelections[i]}
+            setValue={(v) => {
+              let newSelections = locationSelections.slice();
+              newSelections[i] = v;
+              updateLocationSelections(newSelections);
+            }}
           />
         );
       },
