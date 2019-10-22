@@ -3,6 +3,8 @@ import * as util from 'util';
 import { exec } from 'child_process';
 const execAsync = util.promisify(exec);
 
+import { excel2json } from '../../lib/util';
+
 const getOptimal = async (req, res) => {
   const {
     files,
@@ -38,10 +40,7 @@ const getOptimal = async (req, res) => {
     );
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    const workbook = xlsx.readFile('./loc_DailyAssign_cost.xlsx');
-    const wsname = workbook.SheetNames[0];
-    const ws = workbook.Sheets[wsname];
-    const rows = xlsx.utils.sheet_to_json(ws);
+    const [rows] = excel2json('./loc_DailyAssign_cost.xlsx');
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
@@ -62,10 +61,7 @@ const getOptimalDetail = async (req, res) => {
     if (ccnInt === NaN) throw new Error('Company car number is not a number');
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    const workbook = xlsx.readFile('./loc_DailyAssign_detail.xlsx');
-    const wsname = workbook.SheetNames[0];
-    const ws = workbook.Sheets[wsname];
-    let rows = xlsx.utils.sheet_to_json(ws);
+    let [rows] = excel2json('./loc_DailyAssign_detail.xlsx');
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));

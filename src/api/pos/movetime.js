@@ -130,10 +130,7 @@ const putMoveTime = async (req, res) => {
       xlsx.writeFile(omWorkBook, 'officeMapping.xlsx');
     }
 
-    const workbook = xlsx.readFile(MOVETIME_FILE_PATH);
-    const wsname = workbook.SheetNames[0];
-    const ws = workbook.Sheets[wsname];
-    let rows = xlsx.utils.sheet_to_json(ws);
+    let [rows, workbook] = excel2json(MOVETIME_FILE_PATH);
     let columns = rows.length && Object.keys(rows[0]);
 
     if (newCustomerAddresses.length) {

@@ -11,7 +11,6 @@ const getPath = async (req, res) => {
     body: { office },
   } = req;
   try {
-    /*
     if (!files) throw new Error('無上傳任何檔案');
     const { mrData, workerData, officeAddress } = files;
     // error handling here
@@ -20,7 +19,6 @@ const getPath = async (req, res) => {
     if (!officeAddress) throw new Error('各據點地址資訊 未上傳');
     if (!office) throw new Error('據點未指定');
     Object.values(files).forEach(f => f.mv(`./${f.name}`));
-    */
     /*
     const { stdout, stderr } = await execAsync(
       `python -c "import NEC_OptCCModel1_PathDist; NEC_OptCCModel1_PathDist.PathDist('mrData.xlsx', 'workerData.xlsx', 'officeAddress.xlsx', '${office}')"`,
@@ -48,10 +46,7 @@ const getPathDetail = async (req, res) => {
     if (!pathId) throw new Error('Path Id is not passed');
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    const workbook = xlsx.readFile('./loc_PathDist_detail.xlsx');
-    const wsname = workbook.SheetNames[0];
-    const ws = workbook.Sheets[wsname];
-    let rows = xlsx.utils.sheet_to_json(ws);
+    let [rows] = excel2json('./loc_PathDist_detail.xlsx');
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));

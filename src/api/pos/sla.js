@@ -2,6 +2,7 @@ import * as xlsx from 'xlsx';
 import * as util from 'util';
 import { exec } from 'child_process';
 const execAsync = util.promisify(exec);
+import { excel2json } from '../../lib/util';
 
 // material-table will pollute original data with additional tableData property
 // we have to remove it before export to needAdjustOK.xlsx
@@ -29,10 +30,7 @@ const getSla = async (req, res) => {
     const { stdout, stderr } = await execAsync(
       `python -c "import SLA; SLA.SLAcheck(${serviceQuality}, 'movetime.xlsx')"`,
     );
-    const workbook = xlsx.readFile('./needAdjust.xlsx');
-    const wsname = workbook.SheetNames[0];
-    const ws = workbook.Sheets[wsname];
-    const rows = xlsx.utils.sheet_to_json(ws);
+    const [rows] = excel2json('./needAdjust.xlsx');
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));

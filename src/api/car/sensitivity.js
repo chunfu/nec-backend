@@ -3,6 +3,8 @@ import * as util from 'util';
 import { exec } from 'child_process';
 const execAsync = util.promisify(exec);
 
+import { excel2json } from '../../lib/util';
+
 const getSensitivity = async (req, res) => {
   const {
     query: {
@@ -24,10 +26,7 @@ const getSensitivity = async (req, res) => {
     );
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    const workbook = xlsx.readFile('./loc_Costsens.xlsx');
-    const wsname = workbook.SheetNames[0];
-    const ws = workbook.Sheets[wsname];
-    const rows = xlsx.utils.sheet_to_json(ws);
+    const [rows] = excel2json('./loc_Costsens.xlsx');
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
