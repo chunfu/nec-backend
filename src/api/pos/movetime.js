@@ -1,9 +1,11 @@
 import * as xlsx from 'xlsx';
 import * as _ from 'lodash';
 import { API_KEY } from '../../lib/const';
-import { excel2json } from '../../lib/util';
+import { excel2json, fullPath } from '../../lib/util';
 
-const MOVETIME_FILE_PATH = './movetime.xlsx';
+const MOVETIME_FILE_PATH = fullPath('movetime.xlsx');
+const OFFICE_MAPPING_PATH = fullPath('officeMapping.xlsx');
+console.log('*****', MOVETIME_FILE_PATH);
 
 const gmap = require('@google/maps').createClient({
   key: API_KEY,
@@ -111,7 +113,7 @@ const putMoveTime = async (req, res) => {
   );
   const newOfficeAddresses = officeAddresses.filter(addr => addr.officeAddress);
   try {
-    let [officeAddressesList, omWorkBook] = excel2json('./officeMapping.xlsx');
+    let [officeAddressesList, omWorkBook] = excel2json(OFFICE_MAPPING_PATH);
     // update officeMapping first
     if (newOfficeAddresses.length) {
       const total = officeAddressesList.length;
@@ -127,7 +129,7 @@ const putMoveTime = async (req, res) => {
         header: ['id', 'address'],
       });
       omWorkBook.Sheets[omWorkBook.SheetNames[0]] = omSheetNew;
-      xlsx.writeFile(omWorkBook, 'officeMapping.xlsx');
+      xlsx.writeFile(omWorkBook, OFFICE_MAPPING_PATH);
     }
 
     let [rows, workbook] = excel2json(MOVETIME_FILE_PATH);
@@ -152,9 +154,9 @@ const putMoveTime = async (req, res) => {
     }
 
     const newws = xlsx.utils.json_to_sheet(rows, { header: columns });
-    workbook.Sheets[wsname] = newws;
+    workbook.Sheets[workbook.SheetNames[0]] = newws;
     // don't know why can't have path like './movetime.xlsx'
-    xlsx.writeFile(workbook, 'movetime.xlsx');
+    xlsx.writeFile(workbook, MOVETIME_FILE_PATH);
     res.json({
       columns: columns.map(key => ({ title: key, field: key })),
       rows,
