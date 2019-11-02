@@ -1,11 +1,8 @@
 import * as xlsx from 'xlsx';
 import * as _ from 'lodash';
 import { API_KEY } from '../../lib/const';
-import { excel2json, fullPath } from '../../lib/util';
-
-const MOVETIME_FILE_PATH = fullPath('movetime.xlsx');
-const OFFICE_MAPPING_PATH = fullPath('officeMapping.xlsx');
-console.log('*****', MOVETIME_FILE_PATH);
+import { excel2json } from '../../lib/util';
+import { MOVETIME_FILE_PATH, OFFICE_MAPPING_PATH } from '../../lib/files';
 
 const gmap = require('@google/maps').createClient({
   key: API_KEY,

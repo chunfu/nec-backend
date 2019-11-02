@@ -5,6 +5,7 @@ import * as path from 'path';
 const execAsync = util.promisify(exec);
 
 import { excel2json } from '../../lib/util';
+import * as futil from '../../lib/files';
 
 const getOptimal = async (req, res) => {
   const {
@@ -27,12 +28,12 @@ const getOptimal = async (req, res) => {
       .map(rs => `'${rs}'`)
       .join(',');
     // save files on server
-    Object.values(files).forEach(f => f.mv(`./${f.name}`));
+    Object.values(files).forEach(f => f.mv(futil.fullPath(f.name)));
     const { stdout, stderr } = await execAsync(
-      `python -c "import optModel; optModel.optModel(${oilprice}, [${rs}], 'reachable.xlsx', 'needAdjustOK.xlsx', 'movetime.xlsx', 'expectedCalls.xlsx', 'historyCalls.xlsx', 'siteInfo.xlsx', 'officeMapping.xlsx')"`,
+      `cd modules && python -c "import optModel; optModel.optModel(${oilprice}, [${rs}], '${futil.REACHABLE_PATH}', '${futil.NEED_ADJUST_OK_PATH}', '${futil.MOVETIME_FILE_PATH}', '${futil.EXPECTED_CALLS_PATH}', '${futil.HISTORY_CALLS_PATH}', '${futil.SITE_INFO_PATH}', '${futil.OFFICE_MAPPING_PATH}')"`,
     );
 
-    const [rows] = excel2json('./site.xlsx');
+    const [rows] = excel2json(futil.SITE_PATH);
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
@@ -47,7 +48,7 @@ const getOptimalDetail = async (req, res) => {
   const { officeName } = req.params;
   try {
     if (!officeName) throw new Error('officeName is not passed');
-    let [rows] = excel2json('./assign.xlsx');
+    let [rows] = excel2json(futil.ASSIGN_PATH);
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));

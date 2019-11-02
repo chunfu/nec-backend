@@ -1,6 +1,9 @@
+import "@babel/polyfill";
+
 import http from 'http';
 import path from 'path';
 import express from 'express';
+import history from 'connect-history-api-fallback';
 import cors from 'cors';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
@@ -30,6 +33,7 @@ app.use(bodyParser.json({
 
 app.use(fileUpload());
 
+app.use(history());
 // serve frontend built files
 app.use(express.static(__dirname + '/build'));
 

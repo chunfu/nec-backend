@@ -1,5 +1,4 @@
 import * as xlsx from 'xlsx';
-import findRoot from 'find-root';
 
 /**	Creates a callback that proxies node callback style arguments to an Express Response object.
  *	@param {express.Response} res	Express HTTP Response
@@ -26,8 +25,4 @@ export function excel2json(path) {
   const wsname = workbook.SheetNames[0];
   const ws = workbook.Sheets[wsname];
   return [xlsx.utils.sheet_to_json(ws, { raw: false }), workbook];
-}
-
-export function fullPath(path) {
-	return `${findRoot(__dirname)}/${path}`;
 }
