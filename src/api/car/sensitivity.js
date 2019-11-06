@@ -3,6 +3,7 @@ import * as util from 'util';
 import { exec } from 'child_process';
 const execAsync = util.promisify(exec);
 
+import * as futil from '../../lib/files';
 import { excel2json } from '../../lib/util';
 
 const getSensitivity = async (req, res) => {
@@ -22,11 +23,11 @@ const getSensitivity = async (req, res) => {
     if (!privateCarDistance) throw new Error('私車基本里程數 未指定');
     // loc_DailyAssign_detail.xlsx
     const { stdout, stderr } = await execAsync(
-      `python -c "import NEC_OptCCModel3_PPcarsPS; NEC_OptCCModel3_PPcarsPS.PPcarsPS(${comapnyCarNumber}, ${privateCarNumber}, ${privateCarDistance}, ${comapnyCarAnnualCost}, 'loc_DailyAssign_detail.xlsx')"`,
+      `cd modules && python -c "import NEC_OptCCModel3_PPcarsPS; NEC_OptCCModel3_PPcarsPS.PPcarsPS(${comapnyCarNumber}, ${privateCarNumber}, ${privateCarDistance}, ${comapnyCarAnnualCost}, '${futil.LOC_DAILY_ASSIGN_DETAIL_PATH}')"`,
     );
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    const [rows] = excel2json('./loc_Costsens.xlsx');
+    const [rows] = excel2json(futil.LOC_COST_SENS_PATH);
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));

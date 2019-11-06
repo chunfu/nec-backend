@@ -3,6 +3,7 @@ import * as util from 'util';
 import { exec } from 'child_process';
 const execAsync = util.promisify(exec);
 
+import * as futil from '../../lib/files';
 import { excel2json } from '../../lib/util';
 
 const getOptimal = async (req, res) => {
@@ -34,13 +35,13 @@ const getOptimal = async (req, res) => {
     if (!privateCarBonus) throw new Error('私車基本里程數內單位補貼 未指定');
     if (!privateCarExtraBonus) throw new Error('私車基本里程數外單位補貼 未指定');
     if (!office) throw new Error('據點 未指定');
-    Object.values(files).forEach(f => f.mv(`./${f.name}`));
+    Object.values(files).forEach(f => f.mv(futil.fullPath(f.name)));
     const { stdout, stderr } = await execAsync(
-      `python -c "import NEC_OptCCModel2_OptModel; NEC_OptCCModel2_OptModel.OptModel(${comapnyCarNumber}, ${privateCarNumber}, ${restTime}, ${comapnyCarFuelConsumption}, ${comapnyCarAnnualCost}, ${privateCarDistance}, ${privateCarBonus}, ${privateCarExtraBonus}, '${office}', 'taxiCost.xlsx', 'loc_PathDist_analy.xlsx')"`,
+      `cd modules && python -c "import NEC_OptCCModel2_OptModel; NEC_OptCCModel2_OptModel.OptModel(${comapnyCarNumber}, ${privateCarNumber}, ${restTime}, ${comapnyCarFuelConsumption}, ${comapnyCarAnnualCost}, ${privateCarDistance}, ${privateCarBonus}, ${privateCarExtraBonus}, '${office}', '${futil.TAXI_COST_PATH}', '${futil.LOC_PATH_DIST_ANALY_PATH}')"`,
     );
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    const [rows] = excel2json('./loc_DailyAssign_cost.xlsx');
+    const [rows] = excel2json(futil.LOC_DAILY_ASSIGN_COST_PATH);
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
@@ -61,7 +62,7 @@ const getOptimalDetail = async (req, res) => {
     if (ccnInt === NaN) throw new Error('Company car number is not a number');
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    let [rows] = excel2json('./loc_DailyAssign_detail.xlsx');
+    let [rows] = excel2json(futil.LOC_DAILY_ASSIGN_DETAIL_PATH);
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
