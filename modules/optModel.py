@@ -170,31 +170,36 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
 	        sumofCalls += float(df_expectedCalls['預期年服務次數'][df_expectedCalls.index[df_expectedCalls['客戶ID']==cus].tolist()[0]])
 	    annualCalls[i] = round(sumofCalls)
 	
-	df_site['建置成本']=setCost
-	df_site['服務成本']=serviceCost
-	df_site['員工成本']=empCost
-	df_site['總成本']=totalCost
+	df_site['建置成本($)']=setCost
+	df_site['服務成本($)']=serviceCost
+	df_site['員工成本($)']=empCost
+	df_site['總成本($)']=totalCost
 	df_site['年度總服務次數']=annualCalls
 
 	for idx in df_site.index:
 	    if df_site['規模'].iloc[idx] == '固定據點':
-	        df_site['建置成本'].iloc[idx] = int(round(df_SiteInfo['固定據點成本'].iloc[idx]))
+	        df_site['建置成本($)'].iloc[idx] = int(round(df_SiteInfo['固定據點成本'].iloc[idx]))
 	    elif df_site['規模'].iloc[idx] == '前進據點':
-	        df_site['建置成本'].iloc[idx] = int(round(df_SiteInfo['前進據點成本'].iloc[idx]))
+	        df_site['建置成本($)'].iloc[idx] = int(round(df_SiteInfo['前進據點成本'].iloc[idx]))
 	    else:
-	        df_site['建置成本'].iloc[idx] = 0
+	        df_site['建置成本($)'].iloc[idx] = 0
 	    
-	    df_site['員工成本'].iloc[idx] = int(round(df_site['員工數'].iloc[idx]*df_SiteInfo['每人年成本'].iloc[idx]))
+	    df_site['員工成本($)'].iloc[idx] = int(round(df_site['員工數'].iloc[idx]*df_SiteInfo['每人年成本'].iloc[idx]))
 	        
-	    df_site['總成本'].iloc[idx] = int(round(df_site['建置成本'].iloc[idx]+df_site['員工成本'].iloc[idx]+df_site['服務成本'].iloc[idx]))
+	    df_site['總成本($)'].iloc[idx] = int(round(df_site['建置成本($)'].iloc[idx]+df_site['員工成本($)'].iloc[idx]+df_site['服務成本($)'].iloc[idx]))
  
 	 for idx in df_site.index:
-	    df_site['建置成本'].iloc[idx] = format(df_site['建置成本'].iloc[idx], ',')
-	    df_site['員工成本'].iloc[idx] = format(df_site['員工成本'].iloc[idx], ',')
-	    df_site['服務成本'].iloc[idx] = format(df_site['服務成本'].iloc[idx], ',')
-	    df_site['總成本'].iloc[idx] = format(df_site['總成本'].iloc[idx], ',')
+	    df_site['建置成本($)'].iloc[idx] = format(df_site['建置成本($)'].iloc[idx], ',')
+	    df_site['員工成本($)'].iloc[idx] = format(df_site['員工成本($)'].iloc[idx], ',')
+	    df_site['服務成本($)'].iloc[idx] = format(df_site['服務成本($)'].iloc[idx], ',')
+	    df_site['總成本($)'].iloc[idx] = format(df_site['總成本($)'].iloc[idx], ',')
 	    df_site['年度總服務次數'].iloc[idx] = format(df_site['年度總服務次數'].iloc[idx], ',')
     
         
     df_assign.to_excel('assign.xlsx', encoding='utf-8', index=False)
     return df_site.to_excel('site.xlsx', encoding='utf-8', index=False), dict_assign
+
+
+
+
+
