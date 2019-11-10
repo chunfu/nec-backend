@@ -34,11 +34,15 @@ const Pos = props => {
 
   const [files, setFiles] = useState({});
 
+  const [prevData, setPrevData] = useState({});
+
   return (
     <PosContext.Provider
       value={{
         parameter: { values, setValues },
         file: { files, setFiles },
+        prevData,
+        setPrevData,
         showErrDialog,
         showLoading,
       }}

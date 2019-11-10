@@ -50,6 +50,6 @@
 1. gmap set deaprture time
 1. ~~show unit in label~~
 1. ~~display file name & validation msg~~
-1. click button to request api
-1. show opt result in advance
-1. show needAdjustOk in advance
+1. ~~click button to request api~~
+1. ~~show opt result in advance~~
+1. ~~show needAdjustOk in advance~~

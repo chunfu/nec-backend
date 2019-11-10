@@ -4,6 +4,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import MaterialTable from 'material-table';
+import * as _ from 'lodash';
+
 import { PosContext } from '.';
 import useFetch from '../../utils/useFetch';
 import useStyles from '../../utils/useStyles';
@@ -39,17 +41,22 @@ const SLAStep = props => {
     parameter: {
       values: { serviceQuality },
     },
+    prevData,
+    setPrevData,
     showErrDialog,
     showLoading,
   } = props;
+  const slaPrevData = prevData.slaStep || {};
   const classes = useStyles()();
 
   const [locations, loadLocations] = useFetch('/api/pos/locations', []);
 
-  const [_, putSla] = useFetch('/api/pos/sla', {}, { method: 'PUT' });
+  const [dummy, putSla] = useFetch('/api/pos/sla', {}, { method: 'PUT' });
   const [data, loadData] = useFetch('/api/pos/sla', {});
   const [locationSelections, updateLocationSelections] = useState([]);
-  let { columns, rows } = data;
+
+  const renderedData = _.isEmpty(data) ? slaPrevData : data;
+  let { columns, rows } = renderedData;
   if (columns) {
     columns = columns.concat({
       title: '服務據點',
@@ -61,7 +68,7 @@ const SLAStep = props => {
             onChange={(e, v) => (rows[i]['location'] = v)}
             options={locations}
             value={locationSelections[i]}
-            setValue={(v) => {
+            setValue={v => {
               let newSelections = locationSelections.slice();
               newSelections[i] = v;
               updateLocationSelections(newSelections);
@@ -72,19 +79,17 @@ const SLAStep = props => {
     });
   }
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        showLoading(true);
-        await loadLocations();
-        await loadData({ query: { serviceQuality } });
-      } catch (e) {
-        showErrDialog(e.message);
-      }
-      showLoading(false);
+  const onClickSlaBtn = async () => {
+    try {
+      showLoading(true);
+      await loadLocations();
+      const resp = await loadData({ query: { serviceQuality } });
+      setPrevData({ ...prevData, slaStep: resp });
+    } catch (e) {
+      showErrDialog(e.message);
     }
-    fetchData();
-  }, []);
+    showLoading(false);
+  };
 
   const onClickConfirmButton = async () => {
     try {
@@ -97,25 +102,35 @@ const SLAStep = props => {
   };
 
   return (
-    <div className={classes.table}>
-      {columns && (
-        <>
-          <Button
-            className={classes.button}
-            variant="contained"
-            onClick={onClickConfirmButton}
-          >
-            確認
-          </Button>
-          <MaterialTable
-            title="調整SLA無法滿足之客戶"
-            columns={columns}
-            data={rows}
-            {...tableConfig}
-          />
-        </>
-      )}
-    </div>
+    <>
+      <Button
+        className={classes.button}
+        variant="contained"
+        color="primary"
+        onClick={onClickSlaBtn}
+      >
+        調整SLA無法滿足之客戶
+      </Button>
+      <div className={classes.table}>
+        {columns && (
+          <>
+            <Button
+              className={classes.button}
+              variant="contained"
+              onClick={onClickConfirmButton}
+            >
+              確認
+            </Button>
+            <MaterialTable
+              title="調整SLA無法滿足之客戶"
+              columns={columns}
+              data={rows}
+              {...tableConfig}
+            />
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
