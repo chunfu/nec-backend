@@ -39,11 +39,15 @@ const Cars = props => {
 
   const [files, setFiles] = useState({});
 
+  const [prevData, setPrevData] = useState({});
+
   return (
     <CarContext.Provider
       value={{
         parameter: { values, setValues },
         file: { files, setFiles },
+        prevData,
+        setPrevData,
         showErrDialog,
         showLoading,
       }}

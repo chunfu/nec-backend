@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
+import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Dialog from '@material-ui/core/Dialog';
+import * as _ from 'lodash';
 
 import { CarContext } from '.';
 import useFetch from '../../utils/useFetch';
@@ -13,32 +15,35 @@ const InfoStep = props => {
   const {
     parameter: { values },
     file: { files },
+    prevData,
+    setPrevData,
     showErrDialog,
     showLoading,
   } = props;
+  const infoPrevData = prevData.infoStep || {};
+
   // show fake data for now
   const [data, loadData] = useFetch('/api/car/path', {}, { method: 'POST' });
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        // request pathDist
-        let formData = new FormData();
-        Object.keys(values).forEach(valueName => {
-          formData.append(valueName, values[valueName]);
-        });
-        ['mrData', 'workerData', 'officeAddress'].forEach(fileName => {
-          if (files[fileName])
-            formData.append(fileName, files[fileName], `${fileName}.xlsx`);
-        });
-        showLoading(true);
-        await loadData({ headers: {}, body: formData });
-      } catch (e) {
-        showErrDialog(e.message);
-      }
-      showLoading(false);
+
+  const onClickPathBtn = async () => {
+    try {
+      // request pathDist
+      let formData = new FormData();
+      Object.keys(values).forEach(valueName => {
+        formData.append(valueName, values[valueName]);
+      });
+      ['mrData', 'workerData', 'officeAddress'].forEach(fileName => {
+        if (files[fileName])
+          formData.append(fileName, files[fileName], `${fileName}.xlsx`);
+      });
+      showLoading(true);
+      const resp = await loadData({ headers: {}, body: formData });
+      setPrevData({ ...prevData, infoStep: resp });
+    } catch (e) {
+      showErrDialog(e.message);
     }
-    fetchData();
-  }, []);
+    showLoading(false);
+  };
 
   const [detail, loadDetail] = useFetch('/api/car/path', {});
   const [detailModalOpen, setDetailModalOpen] = useState(false);
@@ -71,19 +76,28 @@ const InfoStep = props => {
     };
   };
 
+  const renderedData = _.isEmpty(data) ? infoPrevData : data;
   let columns = [];
-  if (data.columns) {
-    columns = data.columns.map(thirdColAsLink);
+  if (renderedData.columns) {
+    columns = renderedData.columns.map(thirdColAsLink);
   }
 
   return (
     <React.Fragment>
+      <Button
+        className={classes.button}
+        variant="contained"
+        color="primary"
+        onClick={onClickPathBtn}
+      >
+        還原工作服務路徑
+      </Button>
       <div className={classes.table}>
-        {data.columns && (
+        {renderedData.columns && (
           <MaterialTable
             title="還原工作服務路徑"
             columns={columns}
-            data={data.rows}
+            data={renderedData.rows}
             {...tableConfig}
           />
         )}

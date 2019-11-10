@@ -27,6 +27,7 @@ const useFetch = (url, defaultData, defaultOptions = {}) => {
       throw new Error(json.errMsg);
     }
     updateData(json);
+    return json;
   };
 
   return [data, loadData];

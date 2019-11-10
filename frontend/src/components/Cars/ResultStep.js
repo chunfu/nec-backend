@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Dialog from '@material-ui/core/Dialog';
 import MaterialTable from 'material-table';
+import * as _ from 'lodash';
 
 import { CarContext } from '.';
 import useFetch from '../../utils/useFetch';
@@ -14,9 +15,13 @@ const ResultStep = props => {
   const {
     parameter: { values },
     file: { files },
+    prevData,
+    setPrevData,
     showErrDialog,
     showLoading,
   } = props;
+  const resultPrevData = prevData.resultStep || {};
+
 
   const [data, loadData] = useFetch('/api/car/optimal', {}, { method: 'POST' });
 
@@ -66,27 +71,31 @@ const ResultStep = props => {
     };
   };
 
-  let columns = [];
-  if (data.columns) {
-    columns = data.columns.map(firstColAsLink);
-  }
-
   const onClickOptimalBtn = async () => {
     try {
-      showLoading(true);
       let formData = new FormData();
       Object.keys(values).forEach(valueName => {
         formData.append(valueName, values[valueName]);
       });
       ['taxiCost'].forEach(fileName => {
-        formData.append(fileName, files[fileName], `${fileName}.xlsx`);
+        if (files[fileName])
+          formData.append(fileName, files[fileName], `${fileName}.xlsx`);
       });
-      await loadData({ headers: {}, body: formData });
+      showLoading(true);
+      const resp = await loadData({ headers: {}, body: formData });
+      setPrevData({ ...prevData, resultStep: resp });
     } catch (e) {
       showErrDialog(e.message);
     }
     showLoading(false);
   };
+
+  const renderedData = _.isEmpty(data) ? resultPrevData : data;
+  let columns = [];
+  if (renderedData.columns) {
+    columns = renderedData.columns.map(firstColAsLink);
+  }
+
   return (
     <React.Fragment>
       <Button
@@ -97,7 +106,7 @@ const ResultStep = props => {
       >
         最佳化資源配置
       </Button>
-      {data.columns && (
+      {renderedData.columns && (
         <React.Fragment>
           <Button
             className={classes.button}
@@ -110,7 +119,7 @@ const ResultStep = props => {
             <MaterialTable
               title="年度社車供應成本表"
               columns={columns}
-              data={data.rows}
+              data={renderedData.rows}
               {...tableConfig}
             />
           </div>
