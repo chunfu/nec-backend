@@ -64,7 +64,7 @@ const ParameterStep = props => {
         <DialogContent>
           <form noValidate autoComplete="off">
             <TextField
-              label="車輛工作間隔時間下限"
+              label="車輛工作間隔時間下限(X 分鐘)"
               placeholder="X 分鐘"
               value={values.restTime}
               onChange={handleChange('restTime')}
@@ -74,7 +74,7 @@ const ParameterStep = props => {
               variant="outlined"
             />
             <TextField
-              label="社車每單位行使油耗"
+              label="社車每單位行使油耗(X 元/公里)"
               placeholder="X 元/公里"
               value={values.comapnyCarFuelConsumption}
               onChange={handleChange('comapnyCarFuelConsumption')}
@@ -84,7 +84,7 @@ const ParameterStep = props => {
               variant="outlined"
             />
             <TextField
-              label="私車基本里程數"
+              label="私車基本里程數(X 公里)"
               placeholder="X 公里"
               value={values.privateCarDistance}
               onChange={handleChange('privateCarDistance')}
@@ -94,7 +94,7 @@ const ParameterStep = props => {
               variant="outlined"
             />
             <TextField
-              label="私車基本里程數內單位補貼"
+              label="私車基本里程數內單位補貼(X 元/公里)"
               placeholder="X 元/公里"
               value={values.privateCarBonus}
               onChange={handleChange('privateCarBonus')}
@@ -104,7 +104,7 @@ const ParameterStep = props => {
               variant="outlined"
             />
             <TextField
-              label="私車基本里程數外單位補貼"
+              label="私車基本里程數外單位補貼(X 元/公里)"
               placeholder="X 元/公里"
               value={values.privateCarExtraBonus}
               onChange={handleChange('privateCarExtraBonus')}
@@ -143,26 +143,6 @@ const ParameterStep = props => {
       >
         <DialogTitle>讀取日常參數</DialogTitle>
         <DialogContent className={classes.inputContainer}>
-          <TextField
-            label="目前據點社車供應"
-            placeholder="X 輛"
-            value={values.comapnyCarNumber}
-            onChange={handleChange('comapnyCarNumber')}
-            type="number"
-            className={classes.textField}
-            margin="normal"
-            variant="outlined"
-          />
-          <TextField
-            label="目前據點私車供應"
-            placeholder="X 輛"
-            value={values.privateCarNumber}
-            onChange={handleChange('privateCarNumber')}
-            type="number"
-            className={classes.textField}
-            margin="normal"
-            variant="outlined"
-          />
           <FormControl
             margin="normal"
             className={classes.formControl}
@@ -181,16 +161,6 @@ const ParameterStep = props => {
               ))}
             </Select>
           </FormControl>
-          <TextField
-            label="社車年租賃費用"
-            placeholder="X 元/輛"
-            value={values.comapnyCarAnnualCost}
-            onChange={handleChange('comapnyCarAnnualCost')}
-            type="number"
-            className={classes.textField}
-            margin="normal"
-            variant="outlined"
-          />
         </DialogContent>
         <DialogActions>
           <Button

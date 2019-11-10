@@ -34,3 +34,22 @@
 1. display formatted value in excel
 1. download excel file
 1. call module
+
+# cars
+1. ~~display file name & validation msg~~
+1. tooltip for parameters
+1. ~~show unit in label~~
+1. ~~remove 3 parameters, leave location selection~~
+1. execute after click button
+1. in model2.py remove CCcars_num, PCcars_num, CCcars_Rent, read one more file: office.xlsx
+1. all sensitivity result
+1. add color to specific row
+1. load files generated before in step 3 & 4
+
+# pos
+1. gmap set deaprture time
+1. ~~show unit in label~~
+1. ~~display file name & validation msg~~
+1. click button to request api
+1. show opt result in advance
+1. show needAdjustOk in advance

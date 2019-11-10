@@ -81,7 +81,7 @@ const ParameterStep = props => {
         <DialogContent>
           <form noValidate autoComplete="off">
             <TextField
-              label="油錢"
+              label="油錢(X 元/公里)"
               placeholder="X 元/公里"
               value={values.oilprice}
               onChange={handleChange('oilprice')}
@@ -91,7 +91,7 @@ const ParameterStep = props => {
               variant="outlined"
             />
             <TextField
-              label="服務水準"
+              label="服務水準(X 分鐘)"
               placeholder="X 分鐘內抵達"
               value={values.serviceQuality}
               onChange={handleChange('serviceQuality')}
