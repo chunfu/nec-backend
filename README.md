@@ -45,6 +45,7 @@
 1. all sensitivity result
 1. add color to specific row
 1. ~~load files generated before in step 3 & 4~~
+1. model output file path
 
 # pos
 1. gmap set deaprture time
@@ -53,3 +54,4 @@
 1. ~~click button to request api~~
 1. ~~show opt result in advance~~
 1. ~~show needAdjustOk in advance~~
+1. model output file path

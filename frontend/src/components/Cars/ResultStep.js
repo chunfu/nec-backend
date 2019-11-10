@@ -22,7 +22,6 @@ const ResultStep = props => {
   } = props;
   const resultPrevData = prevData.resultStep || {};
 
-
   const [data, loadData] = useFetch('/api/car/optimal', {}, { method: 'POST' });
 
   const [detail, loadDetail] = useFetch('/api/car/optimal', {});
@@ -96,6 +95,18 @@ const ResultStep = props => {
     columns = renderedData.columns.map(firstColAsLink);
   }
 
+  /** to be adjustified */
+  const rowStyle = {
+    ...tableConfig.options,
+    rowStyle: rowData => {
+      if (rowData.CCcars_num === '2') {
+        return {
+          backgroundColor: 'red',
+        };
+      }
+    },
+  };
+
   return (
     <React.Fragment>
       <Button
@@ -120,7 +131,7 @@ const ResultStep = props => {
               title="年度社車供應成本表"
               columns={columns}
               data={renderedData.rows}
-              {...tableConfig}
+              options={rowStyle}
             />
           </div>
           <Dialog

@@ -4,6 +4,9 @@ import { API_KEY } from '../../lib/const';
 import { excel2json } from '../../lib/util';
 import { MOVETIME_FILE_PATH, OFFICE_MAPPING_PATH } from '../../lib/files';
 
+/*** to be adjustified ***/
+const now = new Date().getTime() + 60 * 60 * 1000;
+const departure_time = Math.round(now / 1000);
 const gmap = require('@google/maps').createClient({
   key: API_KEY,
   Promise: Promise,
@@ -27,6 +30,7 @@ const calcDuration = async (origins, destinations) => {
       origins,
       destinations,
       language: 'zh-TW',
+      departure_time,
     })
     .asPromise();
   return response;
