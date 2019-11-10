@@ -1,5 +1,3 @@
-import "@babel/polyfill";
-
 import http from 'http';
 import path from 'path';
 import express from 'express';
@@ -33,7 +31,6 @@ app.use(bodyParser.json({
 
 app.use(fileUpload());
 
-app.use(history());
 // serve frontend built files
 app.use(express.static(__dirname + '/build'));
 
@@ -45,6 +42,8 @@ initializeDb( db => {
 
 	// api router
 	app.use('/api', api({ config, db }));
+
+	app.use(history());
 
 	app.server.listen(process.env.PORT || config.port, () => {
 		console.log(`Started on port ${app.server.address().port}`);

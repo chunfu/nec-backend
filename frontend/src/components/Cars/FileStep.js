@@ -51,6 +51,7 @@ const FileStep = props => {
               inputClass={classes.input}
               buttonClass={classes.button}
               onChange={onFileChange('mrData')}
+              selectedFile={files['mrData']}
             />
             <UploadButton
               id="workerData"
@@ -58,6 +59,7 @@ const FileStep = props => {
               inputClass={classes.input}
               buttonClass={classes.button}
               onChange={onFileChange('workerData')}
+              selectedFile={files['workerData']}
             />
             <UploadButton
               id="officeAddress"
@@ -65,6 +67,7 @@ const FileStep = props => {
               inputClass={classes.input}
               buttonClass={classes.button}
               onChange={onFileChange('officeAddress')}
+              selectedFile={files['officeAddress']}
             />
             <UploadButton
               id="taxiCost"
@@ -72,6 +75,7 @@ const FileStep = props => {
               inputClass={classes.input}
               buttonClass={classes.button}
               onChange={onFileChange('taxiCost')}
+              selectedFile={files['taxiCost']}
             />
           </form>
         </DialogContent>

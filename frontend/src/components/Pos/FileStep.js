@@ -51,6 +51,7 @@ const FileStep = props => {
               inputClass={classes.input}
               buttonClass={classes.button}
               onChange={onFileChange('siteInfo')}
+              selectedFile={files['siteInfo']}
             />
             <UploadButton
               id="historyCalls"
@@ -58,6 +59,7 @@ const FileStep = props => {
               inputClass={classes.input}
               buttonClass={classes.button}
               onChange={onFileChange('historyCalls')}
+              selectedFile={files['historyCalls']}
             />
             <UploadButton
               id="expectedCalls"
@@ -65,6 +67,7 @@ const FileStep = props => {
               inputClass={classes.input}
               buttonClass={classes.button}
               onChange={onFileChange('expectedCalls')}
+              selectedFile={files['expectedCalls']}
             />
           </form>
         </DialogContent>
