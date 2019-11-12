@@ -91,17 +91,24 @@ const ResultStep = props => {
 
   const renderedData = _.isEmpty(data) ? resultPrevData : data;
   let columns = [];
+  let minCost = 9999999;
   if (renderedData.columns) {
     columns = renderedData.columns.map(firstColAsLink);
+    renderedData.rows.forEach(({ TotalCost }) => {
+      if (TotalCost < minCost) {
+        minCost = TotalCost;
+      }
+    });
   }
 
   /** to be adjustified */
+  // find minimum TotalCost
   const rowStyle = {
     ...tableConfig.options,
     rowStyle: rowData => {
-      if (rowData.CCcars_num === '2') {
+      if (rowData.TotalCost == minCost) {
         return {
-          backgroundColor: 'red',
+          backgroundColor: '#cfcfcf',
         };
       }
     },
