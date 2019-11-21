@@ -114,4 +114,4 @@ def PPcarsPS(CCcars_num, PCcars_num, basic_Mileage, CCcars_Rent, loc_DailyAssign
                 loc_CarNsens_df.loc[ [below] ,[upper] ] = int(min_CCcarnum)
                 loc_Costsens_df.loc[ [below] ,[upper] ] = round(min_CCcarCost,2)
                 
-    return loc_Costsens_df.to_excel('loc_Costsens.xlsx', encoding='utf-8', index=False)
+    return loc_Costsens_df.to_excel('../docs/loc_Costsens.xlsx', encoding='utf-8', index=False)

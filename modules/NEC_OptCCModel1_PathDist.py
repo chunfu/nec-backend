@@ -157,6 +157,6 @@ def PathDist(Service_File, Worker_File, Office_File, office):
     df_loc_PathDist_detail['BackMove_Dist'] = BackMove_Dist
     df_loc_PathDist_analy = df_loc_PathDist_analy.sort_values(['Out_Day','Order'], ascending=[True,True])
     
-    return df_loc_PathDist_detail.to_excel('loc_PathDist_detail.xlsx', encoding='utf-8', index=False), df_loc_PathDist_analy.to_excel('loc_PathDist_analy.xlsx', encoding='utf-8', index=False)
+    return df_loc_PathDist_detail.to_excel('../docs/loc_PathDist_detail.xlsx', encoding='utf-8', index=False), df_loc_PathDist_analy.to_excel('../docs/loc_PathDist_analy.xlsx', encoding='utf-8', index=False)
     
     

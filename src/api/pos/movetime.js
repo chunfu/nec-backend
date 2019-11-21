@@ -6,7 +6,7 @@ import { MOVETIME_FILE_PATH, OFFICE_MAPPING_PATH } from '../../lib/files';
 
 /*** to be adjustified ***/
 const now = new Date().getTime() + 60 * 60 * 1000;
-const departure_time = Math.round(now / 1000);
+const departure_time = 24 * 60 * 60 * 8 * 365 * 49 + 60 * 60 * (24 + 9);
 const gmap = require('@google/maps').createClient({
   key: API_KEY,
   Promise: Promise,

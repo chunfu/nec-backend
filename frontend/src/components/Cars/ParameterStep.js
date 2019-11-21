@@ -30,7 +30,9 @@ const locations = [
 
 const ParameterStep = props => {
   const classes = useStyles()();
-  const { parameter: { values, setValues }} = props;
+  const {
+    parameter: { values, setValues },
+  } = props;
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
@@ -114,6 +116,31 @@ const ParameterStep = props => {
               variant="outlined"
             />
           </form>
+          <p>
+            1. 車輛工作間隔時間下限（分鐘）：
+            每一輛車（社車/私車）所負責之工作中相鄰兩項工作之間需要預留的準備時間
+            e.g. 輸入範例 – 30 （分鐘）
+          </p>
+          <p>
+            2. 社車單位行駛油耗成本（元/公里）：
+            平均每一輛社車行駛每一公里所需要耗費的油錢成本 e.g. 輸入範例 –
+            2.42（元/公里）
+          </p>
+          <p>
+            3. 私車基本里程數門檻（公里）：
+            公司所定義之分段式補貼分界點，每一輛私車每月所累積總行駛量低於或高於該門檻值，每行駛一單位公司所補助額度會不同。
+            e.g. 輸入範例 – 800.0 （公里）
+          </p>
+          <p>
+            4. 私車「里程數內」補助額度（元/公里）：
+            每輛私車每月所累積總行駛量「低於」公司設定門檻值（基本里程數），每行駛一單位公司所補助的額度。
+            e.g. 輸入範例 – 6.0（元/公里）
+          </p>
+          <p>
+            5. 私車「里程數外」補助額度（元/公里）：
+            每輛私車每月所累積總行駛量「高於」公司設定門檻值（基本里程數），每行駛一單位公司所補助的額度。
+            e.g. 輸入範例 – 4.0（元/公里）
+          </p>
         </DialogContent>
         <DialogActions>
           <Button
@@ -142,7 +169,7 @@ const ParameterStep = props => {
         maxWidth="lg"
       >
         <DialogTitle>讀取日常參數</DialogTitle>
-        <DialogContent className={classes.inputContainer}>
+        <DialogContent>
           <FormControl
             margin="normal"
             className={classes.formControl}
@@ -161,6 +188,9 @@ const ParameterStep = props => {
               ))}
             </Select>
           </FormControl>
+          <div>
+            <p>1. 據點選擇： 選擇本次需要最佳化配置的目標據點</p>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button

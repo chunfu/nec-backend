@@ -160,9 +160,10 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
 	            cusid = dict_assign[site]['客戶ID'].iloc[j]
 	            cusidx = df_movetime.index[df_movetime['客戶ID']==cusid].tolist()[0] 
 	            mt = df_movetime[site].iloc[cusidx]
-	            sCost += mt*oilprice
+	            sCost += mt*oilprice*df_expectedCalls['預期年服務次數'].iloc[cusidx]
 	
 	        serviceCost[i] = round(sCost)
+            
 	# 增加各據點每年總服務次數 = 加總客戶預期服務次數
 	for i in range(len(siteName)):
 	    sumofCalls = 0
@@ -196,8 +197,8 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
 	    df_site['年度總服務次數'].iloc[idx] = format(df_site['年度總服務次數'].iloc[idx], ',')
     
         
-    df_assign.to_excel('assign.xlsx', encoding='utf-8', index=False)
-    return df_site.to_excel('site.xlsx', encoding='utf-8', index=False), dict_assign
+    df_assign.to_excel('../docs/assign.xlsx', encoding='utf-8', index=False)
+    return df_site.to_excel('../docs/site.xlsx', encoding='utf-8', index=False), dict_assign
 
 
 

@@ -70,6 +70,15 @@ const FileStep = props => {
               selectedFile={files['expectedCalls']}
             />
           </form>
+          <p>
+            1. 各據點成本資訊：包含據點名稱、前進據點成本、固定據點成本、每人年成本、最大容納人數四個欄位，檔名為siteInfo.xlsx。據點名稱排序要跟車行時間表的排序相同。
+          </p>
+          <p>
+            2. 各據點歷年員工數與服務次數：包含年份、據點名稱、員工數、服務次數三個欄位，不同年份直接往下填加即可，檔名為historyCalls.xlsx。
+          </p>
+          <p>
+            3. 各客戶預期未來年服務次數：包含客戶ID及客戶預期服務次數兩個欄位，檔名為expectedCalls.xlsx。客戶ID排序要跟車行時間表的排序相同。
+          </p>
         </DialogContent>
         <DialogActions>
           <Button

@@ -78,6 +78,10 @@ const FileStep = props => {
               selectedFile={files['taxiCost']}
             />
           </form>
+          <p>1. 年度歷史工作紀錄：MR各項服務明細紀錄</p>
+          <p>2. 年度員工服務紀錄：服務編號與員工配對資訊</p>
+          <p>3. 各據點地址資訊：NEC全台各據點地址與車輛資訊</p>
+          <p>4. 各地區計程車費率：全台各據點所在地區計程車收費標準</p>
         </DialogContent>
         <DialogActions>
           <Button
