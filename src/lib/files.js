@@ -1,7 +1,7 @@
 import findRoot from 'find-root';
 
 export function fullPath(path) {
-  return `${findRoot(__dirname)}/docs/${path}`;
+  return `${findRoot(__dirname).replace(/\\/g, '/')}/docs/${path}`;
 }
 
 const MOVETIME_FILE_PATH = fullPath('movetime.xlsx');
