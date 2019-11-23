@@ -1,4 +1,4 @@
-import "@babel/polyfill";
+import '@babel/polyfill';
 
 import http from 'http';
 import path from 'path';
@@ -23,33 +23,36 @@ server.on('timeout', () => console.log('timeout'));
 app.use(morgan('dev'));
 
 // 3rd party middleware
-app.use(cors({
-	exposedHeaders: config.corsHeaders
-}));
+app.use(
+  cors({
+    exposedHeaders: config.corsHeaders,
+  }),
+);
 
-app.use(bodyParser.json({
-	limit : config.bodyLimit
-}));
+app.use(
+  bodyParser.json({
+    limit: config.bodyLimit,
+  }),
+);
 
 app.use(fileUpload());
 
-// serve frontend built files
-app.use(express.static(__dirname + '/build'));
-
 // connect to db
-initializeDb( db => {
+initializeDb(db => {
+  // internal middleware
+  app.use(middleware({ config, db }));
 
-	// internal middleware
-	app.use(middleware({ config, db }));
+  // api router
+  app.use('/api', api({ config, db }));
 
-	// api router
-	app.use('/api', api({ config, db }));
+  app.use(history());
 
-	app.use(history());
+  // serve frontend built files
+  app.use(express.static(__dirname + '/build'));
 
-	app.server.listen(process.env.PORT || config.port, () => {
-		console.log(`Started on port ${app.server.address().port}`);
-	});
+  app.server.listen(process.env.PORT || config.port, () => {
+    console.log(`Started on port ${app.server.address().port}`);
+  });
 });
 
 export default app;
