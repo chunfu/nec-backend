@@ -7,35 +7,41 @@ Created on  Sep
 Topic: NEC_system_PPcarsPS_module
 
 Input ex:
-     PPcarsPS(4, 3, 800.0, 173700.0,  
-    'C:\\Users\\User\\Desktop\\190923_NEC_system\\Output_DATA_CYex\\loc_DailyAssign_detail.xlsx')
+     PPcarsPS( 800.0, '台中',
+     'C:\\Users\\User\\Desktop\\20191111_NEC_system\\Input_DATA\\NEC_TWoffice_address.xlsx',
+     'C:\\Users\\User\\Desktop\\20191111_NEC_system\\Output_DATA_TCex\\loc_DailyAssign_detail.xlsx')
 """
 
 import numpy as np
 import pandas as pd
 
-def PPcarsPS(CCcars_num, PCcars_num, basic_Mileage, CCcars_Rent, loc_DailyAssign_file):
+def PPcarsPS(basic_Mileage, office, Office_File, loc_DailyAssign_file):
     
     '''
     <input>
-    CCcars_num: int                              # company_car_numbers
-    PCcars_num: int                              # private_car_numbers
     basic_Mileage: float                         # private_car_monthly_basic_Mileage_km
-    CCcars_Rent: float                           # company_car_yearly_rental_cost_$/car
-    loc_DailyAssign_file: string [file path]     # df_loc_DailyAssign_detail
+    office: string
+    Office_File: string [file path]              ### NEC_TWoffice_address
+    loc_DailyAssign_file: string [file path]     ### loc_DailyAssign_detail
+    
+    
     
     <output>
     df_loc_PScost: dataframe (table), loc_PPcars_PriceSensitivity_cost 
     '''
 
     # loc PCcars_OptNumber_sensitivity
-    loc_CarNsens_data = np.zeros((7, 9))
-    loc_CarNsens_df = pd.DataFrame(loc_CarNsens_data, columns = ['AddPrice$2' , 'AddPrice$3', 'AddPrice$4' , 'AddPrice$5' , 'AddPrice$6', 'AddPrice$7', 'AddPrice$8', 'AddPrice$9', 'AddPrice$10'], index=['BasePrice$4', 'BasePrice$5', 'BasePrice$6' , 'BasePrice$7' , 'BasePrice$8', 'BasePrice$9', 'BasePrice$10'])
+    #loc_CarNsens_data = np.zeros((7, 9))
+    #loc_CarNsens_df = pd.DataFrame(loc_CarNsens_data, columns = ['AddPrice$2' , 'AddPrice$3', 'AddPrice$4' , 'AddPrice$5' , 'AddPrice$6', 'AddPrice$7', 'AddPrice$8', 'AddPrice$9', 'AddPrice$10'], index=['BasePrice$4', 'BasePrice$5', 'BasePrice$6' , 'BasePrice$7' , 'BasePrice$8', 'BasePrice$9', 'BasePrice$10'])
     # loc PCcars_OptCost_sensitivity
     loc_Costsens_data = np.zeros((7, 9))
-    loc_Costsens_df = pd.DataFrame(loc_Costsens_data, columns = ['AddPrice$2' , 'AddPrice$3', 'AddPrice$4' , 'AddPrice$5' , 'AddPrice$6', 'AddPrice$7', 'AddPrice$8', 'AddPrice$9', 'AddPrice$10'], index=['BasePrice$4', 'BasePrice$5', 'BasePrice$6' , 'BasePrice$7' , 'BasePrice$8', 'BasePrice$9', 'BasePrice$10'])
+    loc_Costsens_df = pd.DataFrame(loc_Costsens_data, columns = ['里程數外_單位補助$2' , '里程數外_單位補助$3', '里程數外_單位補助$4' , '里程數外_單位補助$5' , '里程數外_單位補助$6', '里程數外_單位補助$7', '里程數外_單位補助$8', '里程數外_單位補助$9', '里程數外_單位補助$10'], index=['里程數內_單位補助$4', '里程數內_單位補助$5', '里程數內_單位補助$6' , '里程數內_單位補助$7' , '里程數內_單位補助$8', '里程數內_單位補助$9', '里程數內_單位補助$10'])
     
     loc_DailyAssign_df = pd.read_excel(loc_DailyAssign_file)
+    Office_Data = pd.read_excel(Office_File)
+    CCcars_num = Office_Data.loc[Office_Data.actgr_office == office]['actgr_CCcarsNum'].item()          # loc_company_car_supply_num
+    PCcars_num = Office_Data.loc[Office_Data.actgr_office == office]['actgr_PCcarsNum'].item()          # loc_private_car_supply_num
+    CCcars_Rent = Office_Data.loc[Office_Data.actgr_office == office]['actgr_CCcarsRent'].item()        # loc_company_car_rental_$
 
     ########## PCcars_sensitivity
     runCar_start = 0
@@ -52,21 +58,21 @@ def PPcarsPS(CCcars_num, PCcars_num, basic_Mileage, CCcars_Rent, loc_DailyAssign
                 #for cars run
                 for CCcars_now in range(runCar_start, runCar_end):
                     # daily assignment info
-                    loc_DailyAssign_carNow =  loc_DailyAssign_df.loc[(loc_DailyAssign_df.CCcars_num == CCcars_now),['Work_date','CCcars_num','CCcars_mileage','PCcars_mileage','TXcars_mileage','CCcars_fuel','TXcars_fuel']]
+                    loc_DailyAssign_carNow =  loc_DailyAssign_df.loc[(loc_DailyAssign_df['據點社車數量(輛)'] == CCcars_now),['服務日期','據點社車數量(輛)','據點社車累計行駛量(公里)','據點私車累計行駛量(公里)','據點計程車累計行駛量(公里)','社車當日油耗成本(元)','計程車當日使用成本(元)']]
                         
                     # variables setting
                     below_PCcarsFuel = base_price
                     upper_PCcarsFuel = add_price
         				
                     # CCcars & TXcars fuel cost
-                    CCcars_total_Fuel = loc_DailyAssign_carNow['CCcars_fuel'].sum()
-                    TXcars_total_Fuel = loc_DailyAssign_carNow['TXcars_fuel'].sum()
+                    CCcars_total_Fuel = loc_DailyAssign_carNow['社車當日油耗成本(元)'].sum()
+                    TXcars_total_Fuel = loc_DailyAssign_carNow['計程車當日使用成本(元)'].sum()
                         
                     # compute PCcars fuel
                     PCcars_total_Fuel = 0.0
                         
                     # daily run for one year
-                    servDay_carNow = list(loc_DailyAssign_carNow['Work_date'])
+                    servDay_carNow = list(loc_DailyAssign_carNow['服務日期'])
                     for d in servDay_carNow: 
                         # reassign accu_Prvfuel every month
                         WorkDay = str(d)
@@ -75,7 +81,7 @@ def PPcarsPS(CCcars_num, PCcars_num, basic_Mileage, CCcars_Rent, loc_DailyAssign
                                 
                         if PCcars_num != 0:
                             # loc for private cars
-                            PCcars_mileage_workday = loc_DailyAssign_carNow['PCcars_mileage'][(loc_DailyAssign_carNow.Work_date == d)].item()
+                            PCcars_mileage_workday = loc_DailyAssign_carNow['據點私車累計行駛量(公里)'][(loc_DailyAssign_carNow.服務日期 == d)].item()
                             Avg_PCcarsMileage = PCcars_mileage_workday / PCcars_num
                             accu_PCcarsMileage =  accu_PCcarsMileage + Avg_PCcarsMileage
                             if accu_PCcarsMileage <= basic_Mileage:
@@ -107,11 +113,11 @@ def PPcarsPS(CCcars_num, PCcars_num, basic_Mileage, CCcars_Rent, loc_DailyAssign
                     #loc_CostAnaly_df.to_csv('C:\\Users\\User\Desktop\\NEC_CarModel\\190722_ExtOutput_PS_BXAX_Costdetail\\HC_CostInfo_B'+str(base_price)+'_A'+str(add_price)+'.csv')
             
                 # record best cars_num and cost
-                min_CCcarnum = loc_CostAnaly_df.loc[loc_CostAnaly_df['TotalCost'].idxmin()]['CCcars_num']
+                #min_CCcarnum = loc_CostAnaly_df.loc[loc_CostAnaly_df['TotalCost'].idxmin()]['CCcars_num']
                 min_CCcarCost = loc_CostAnaly_df.loc[loc_CostAnaly_df['TotalCost'].idxmin()]['TotalCost']
-                below = "BasePrice$"+str(int(base_price))
-                upper = "AddPrice$"+str(int(add_price))
-                loc_CarNsens_df.loc[ [below] ,[upper] ] = int(min_CCcarnum)
-                loc_Costsens_df.loc[ [below] ,[upper] ] = round(min_CCcarCost,2)
+                below = "里程數內_單位補助$"+str(int(base_price))
+                upper = "里程數外_單位補助$"+str(int(add_price))
+                #loc_CarNsens_df.loc[ [below] ,[upper] ] = int(min_CCcarnum)
+                loc_Costsens_df.loc[ [below] ,[upper] ] = '$ '+ format(int(min_CCcarCost), ',')
                 
-    return loc_Costsens_df.to_excel('../docs/loc_Costsens.xlsx', encoding='utf-8', index=False)
+    return loc_Costsens_df.to_excel('../docs/loc_PriceSens_cost.xlsx', encoding='utf-8', index=True)

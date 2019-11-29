@@ -9,21 +9,17 @@ import { excel2json } from '../../lib/util';
 const getSensitivity = async (req, res) => {
   const {
     query: {
-      comapnyCarNumber = '', // CCcars_num
-      privateCarNumber = '', // PCcars_num
       privateCarDistance = '', // basic_Mileage
-      comapnyCarAnnualCost = '', // CCcars_Rent
+      office = '',
     },
   } = req;
   try {
     // error handling here
-    if (!comapnyCarNumber) throw new Error('目前據點社車供應 未指定');
-    if (!privateCarNumber) throw new Error('目前據點私車供應 未指定');
-    if (!comapnyCarAnnualCost) throw new Error('社車年租賃費用 未指定');
     if (!privateCarDistance) throw new Error('私車基本里程數 未指定');
+    if (!office) throw new Error('據點 未指定');
     // loc_DailyAssign_detail.xlsx
     const { stdout, stderr } = await execAsync(
-      `cd modules && python -c "import NEC_OptCCModel3_PPcarsPS; NEC_OptCCModel3_PPcarsPS.PPcarsPS(${comapnyCarNumber}, ${privateCarNumber}, ${privateCarDistance}, ${comapnyCarAnnualCost}, '${futil.LOC_DAILY_ASSIGN_DETAIL_PATH}')"`,
+      `cd modules && python -c "import NEC_OptCCModel_3_PPcarsPS; NEC_OptCCModel_3_PPcarsPS.PPcarsPS(${privateCarDistance}, '${office}', '${futil.OFFICE_ADDRESS_PATH}', '${futil.LOC_DAILY_ASSIGN_DETAIL_PATH}')"`,
     );
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
