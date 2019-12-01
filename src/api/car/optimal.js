@@ -31,7 +31,7 @@ const getOptimal = async (req, res) => {
     if (!office) throw new Error('據點 未指定');
     Object.values(files).forEach(f => f.mv(futil.fullPath(f.name)));
     const { stdout, stderr } = await execAsync(
-      `cd modules && python -c "import NEC_OptCCModel_2_OptModule; NEC_OptCCModel_2_OptModule.OptModel(${restTime}, ${comapnyCarFuelConsumption}, ${privateCarDistance}, ${privateCarBonus}, ${privateCarExtraBonus}, '${office}', '${futil.TAXI_COST_PATH}', '${futil.OFFICE_ADDRESS_PATH}', '${futil.LOC_PATH_DIST_ANALY_PATH}')"`,
+      `cd ${futil.projectRoot}/modules && python -c "import NEC_OptCCModel_2_OptModule; NEC_OptCCModel_2_OptModule.OptModel(${restTime}, ${comapnyCarFuelConsumption}, ${privateCarDistance}, ${privateCarBonus}, ${privateCarExtraBonus}, '${office}', '${futil.TAXI_COST_PATH}', '${futil.OFFICE_ADDRESS_PATH}', '${futil.LOC_PATH_DIST_ANALY_PATH}')"`,
     );
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail

@@ -30,7 +30,7 @@ const getOptimal = async (req, res) => {
     // save files on server
     Object.values(files).forEach(f => f.mv(futil.fullPath(f.name)));
     const { stdout, stderr } = await execAsync(
-      `cd modules && python -c "import optModel; optModel.optModel(${oilprice}, [${rs}], '${futil.REACHABLE_PATH}', '${futil.NEED_ADJUST_OK_PATH}', '${futil.MOVETIME_FILE_PATH}', '${futil.EXPECTED_CALLS_PATH}', '${futil.HISTORY_CALLS_PATH}', '${futil.SITE_INFO_PATH}', '${futil.OFFICE_MAPPING_PATH}')"`,
+      `cd ${futil.projectRoot}/modules && python -c "import optModel; optModel.optModel(${oilprice}, [${rs}], '${futil.REACHABLE_PATH}', '${futil.NEED_ADJUST_OK_PATH}', '${futil.MOVETIME_FILE_PATH}', '${futil.EXPECTED_CALLS_PATH}', '${futil.HISTORY_CALLS_PATH}', '${futil.SITE_INFO_PATH}', '${futil.OFFICE_MAPPING_PATH}')"`,
     );
 
     const [rows] = excel2json(futil.SITE_PATH);

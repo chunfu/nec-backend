@@ -33,7 +33,7 @@ const getSla = async (req, res) => {
   // sla.py should export sla.xlsx as result
   try {
     const { stdout, stderr } = await execAsync(
-      `cd modules && python -c "import SLA; SLA.SLAcheck(${serviceQuality}, '${MOVETIME_FILE_PATH}')"`,
+      `cd ${futil.projectRoot}/modules && python -c "import SLA; SLA.SLAcheck(${serviceQuality}, '${MOVETIME_FILE_PATH}')"`,
     );
     const [rows] = excel2json(NEED_ADJUST_PATH);
     const columns =

@@ -91,12 +91,14 @@ const ResultStep = props => {
 
   const renderedData = _.isEmpty(data) ? resultPrevData : data;
   let columns = [];
-  let minCost = 9999999;
+  let minCost = 9999999999;
   if (renderedData.columns) {
     columns = renderedData.columns.map(firstColAsLink);
-    renderedData.rows.forEach(({ TotalCost }) => {
-      if (TotalCost < minCost) {
-        minCost = TotalCost;
+    renderedData.rows.forEach((row) => {
+      let totalCost = row['總成本(元)'];
+      totalCost = parseInt(totalCost.replace(/,/g, ''), 10);
+      if (totalCost < minCost) {
+        minCost = totalCost;
       }
     });
   }
@@ -106,7 +108,9 @@ const ResultStep = props => {
   const rowStyle = {
     ...tableConfig.options,
     rowStyle: rowData => {
-      if (rowData.TotalCost == minCost) {
+      let totalCost = rowData['總成本(元)'];
+      totalCost = parseInt(totalCost.replace(/,/g, ''), 10);
+      if (totalCost == minCost) {
         return {
           backgroundColor: '#cfcfcf',
         };

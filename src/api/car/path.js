@@ -22,7 +22,7 @@ const getPath = async (req, res) => {
     Object.values(files).forEach(f => f.mv(futil.fullPath(f.name)));
     /*
     const { stdout, stderr } = await execAsync(
-      `cd modules && python -c "import NEC_OptCCModel1_PathDist; NEC_OptCCModel1_PathDist.PathDist('${futil.MR_DATA_PATH}', '${futil.WORKER_DATA_PATH}', '${futil.OFFICE_ADDRESS_PATH}', '${office}')"`,
+      `cd ${futil.projectRoot}/modules && python -c "import NEC_OptCCModel1_PathDist; NEC_OptCCModel1_PathDist.PathDist('${futil.MR_DATA_PATH}', '${futil.WORKER_DATA_PATH}', '${futil.OFFICE_ADDRESS_PATH}', '${office}')"`,
     );
     */
 
