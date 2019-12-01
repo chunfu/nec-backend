@@ -1,6 +1,7 @@
 import * as xlsx from 'xlsx';
 import * as util from 'util';
 import { exec } from 'child_process';
+import * as fs from 'fs';
 const execAsync = util.promisify(exec);
 
 import * as futil from '../../lib/files';
@@ -34,13 +35,16 @@ const getOptimal = async (req, res) => {
       `cd ${futil.projectRoot}/modules && python -c "import NEC_OptCCModel_2_OptModule; NEC_OptCCModel_2_OptModule.OptModel(${restTime}, ${comapnyCarFuelConsumption}, ${privateCarDistance}, ${privateCarBonus}, ${privateCarExtraBonus}, '${office}', '${futil.TAXI_COST_PATH}', '${futil.OFFICE_ADDRESS_PATH}', '${futil.LOC_PATH_DIST_ANALY_PATH}')"`,
     );
 
+    // read CarOpt_Conclusion.txt
+    var text = fs.readFileSync(futil.CAROPT_CONCLUSION_PATH, "utf-8");
+
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
     const [rows] = excel2json(futil.LOC_DAILY_ASSIGN_COST_PATH);
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
 
-    res.json({ columns, rows });
+    res.json({ columns, rows, messages: text.split('\n') });
   } catch (e) {
     console.log(e.stack);
     res.status(500).json({ errMsg: e.message });

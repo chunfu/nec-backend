@@ -25,6 +25,7 @@ const LOC_DAILY_ASSIGN_COST_PATH = fullPath('loc_DailyAssign_cost.xlsx');
 const LOC_DAILY_ASSIGN_DETAIL_PATH = fullPath('loc_DailyAssign_detail.xlsx');
 const LOC_COST_SENS_PATH = fullPath('loc_PriceSens_cost.xlsx');
 const TAXI_COST_PATH = fullPath('taxiCost.xlsx');
+const CAROPT_CONCLUSION_PATH = fullPath('CarOpt_Conclusion.txt');
 
 export {
   MOVETIME_FILE_PATH,
@@ -46,4 +47,5 @@ export {
   LOC_DAILY_ASSIGN_DETAIL_PATH,
   LOC_COST_SENS_PATH,
   TAXI_COST_PATH,
+  CAROPT_CONCLUSION_PATH,
 };

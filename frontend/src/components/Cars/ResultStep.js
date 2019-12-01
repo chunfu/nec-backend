@@ -144,6 +144,9 @@ const ResultStep = props => {
               data={renderedData.rows}
               options={rowStyle}
             />
+            <pre style={{ paddingBottom: '10px' }}>
+              {renderedData.messages.join('\n')}
+            </pre>
           </div>
           <Dialog
             aria-labelledby="detail-modal-title"
