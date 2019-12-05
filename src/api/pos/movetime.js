@@ -56,9 +56,13 @@ const newCustomerDuration = async ({
     );
 
     const values = response.json.rows;
+
     const newAddressRecords = newCustomerAddresses.map((newAddress, i) => {
       const { customerId, customerName, customerAddress } = newAddress;
-      const durationArr = values[i].elements.map(e => e.duration.value);
+      const durationArr = values[i].elements.map(e => {
+        if (e.status !== 'OK') return 0;
+        return e.duration.value;
+      });
       let newAddressObj = {
         [columns[1]]: customerId,
         [columns[2]]: customerName,
@@ -89,9 +93,11 @@ const newOfficeDuration = async ({ columns, rows, newOfficeAddresses }) => {
       destinations.map(addr => addr.officeAddress),
     );
     const values = response.json.rows;
-
     return rows.map((row, i) => {
-      const durationArr = values[i].elements.map(e => e.duration.value);
+      const durationArr = values[i].elements.map(e => {
+        if (e.status !== 'OK') return 0;
+        return e.duration.value;
+      });
       const newOfficeObj = destinations.reduce((acc, col, idx) => {
         acc[col.officeName] = (durationArr[idx] / 60).toFixed(2);
         return acc;
