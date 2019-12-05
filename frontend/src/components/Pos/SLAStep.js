@@ -79,10 +79,22 @@ const SLAStep = props => {
     });
   }
 
+  useEffect(() => {
+    async function fetchData() {
+      // load location everytime comes in
+      await loadLocations();
+
+      // initialize location selection first
+      const renderedData = _.isEmpty(data) ? slaPrevData : data;
+      const { rows } = renderedData;
+      updateLocationSelections((rows || []).map(({ location }) => location));
+    }
+    fetchData();
+  }, []);
+
   const onClickSlaBtn = async () => {
     try {
       showLoading(true);
-      await loadLocations();
       const resp = await loadData({ query: { serviceQuality } });
       setPrevData({ ...prevData, slaStep: resp });
     } catch (e) {
