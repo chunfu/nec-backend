@@ -9,7 +9,7 @@ import {
   getOptimal as getCarOptimal,
   getOptimalDetail as getCarOptimalDetail,
 } from './car/optimal';
-import { getSensitivity } from './car/sensitivity';
+import { getSensitivity, getAllSensitivity } from './car/sensitivity';
 
 export default ({ config, db }) => {
   let api = Router();
@@ -33,6 +33,7 @@ export default ({ config, db }) => {
   api.post('/car/optimal', getCarOptimal);
   api.get('/car/optimal/:ccn', getCarOptimalDetail);
   api.get('/car/sensitivity', getSensitivity);
+  api.post('/car/sensitivity/all', getAllSensitivity);
   // perhaps expose some API metadata at the root
   api.get('/', (req, res) => {
     res.json({ version });

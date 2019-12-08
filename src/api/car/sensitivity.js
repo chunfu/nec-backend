@@ -35,4 +35,34 @@ const getSensitivity = async (req, res) => {
   }
 };
 
-export { getSensitivity };
+const getAllSensitivity = async (req, res) => {
+  const {
+    body: {
+      privateCarDistance = '', // basic_Mileage
+      office = '',
+    },
+  } = req;
+  try {
+    // error handling here
+    if (!privateCarDistance) throw new Error('私車基本里程數 未指定');
+    if (!office) throw new Error('據點 未指定');
+    /*
+    const { stdout, stderr } = await execAsync(
+      `cd ${futil.projectRoot}/modules && python -c "import NEC_OptCCModel_3_PPcarsPS; NEC_OptCCModel_3_PPcarsPS.PPcarsPS(${privateCarDistance}, '${office}', '${futil.OFFICE_ADDRESS_PATH}', '${futil.LOC_DAILY_ASSIGN_DETAIL_PATH}')"`,
+    );
+    */
+
+    // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
+    const [rows] = excel2json(futil.LOC_COST_SENS_PATH);
+    const columns =
+      rows.length &&
+      Object.keys(rows[0]).map(key => ({ title: key, field: key }));
+
+    res.json({ columns, rows });
+  } catch (e) {
+    console.log(e.stack);
+    res.status(500).json({ errMsg: e.message });
+  }
+};
+
+export { getSensitivity, getAllSensitivity };
