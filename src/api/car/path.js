@@ -20,11 +20,9 @@ const getPath = async (req, res) => {
     if (!officeAddress) throw new Error('各據點地址資訊 未上傳');
     if (!office) throw new Error('據點未指定');
     Object.values(files).forEach(f => f.mv(futil.fullPath(f.name)));
-    /*
     const { stdout, stderr } = await execAsync(
       `cd ${futil.projectRoot}/modules && python -c "import NEC_OptCCModel1_PathDist; NEC_OptCCModel1_PathDist.PathDist('${futil.MR_DATA_PATH}', '${futil.WORKER_DATA_PATH}', '${futil.OFFICE_ADDRESS_PATH}', '${office}')"`,
     );
-    */
 
     // output 2 files: pathDistDetail.xlsx, pathDistAnaly.xlsx
     const [rows] = excel2json(futil.LOC_PATH_DIST_ANALY_PATH(office));
