@@ -7,15 +7,15 @@ Created on  Sep
 Topic: NEC_system_PPcarsPS_module
 
 Input ex:
-     PPcarsPS( 800.0, '台中',
-     'C:\\Users\\User\\Desktop\\20191111_NEC_system\\Input_DATA\\NEC_TWoffice_address.xlsx',
-     'C:\\Users\\User\\Desktop\\20191111_NEC_system\\Output_DATA_TCex\\loc_DailyAssign_detail.xlsx')
+     PPcarsPS( 800.0, 'CY',
+     'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\TW_sites_address.xlsx',
+     'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_30_mins\\CY_DailyAssign_detail.xlsx')
 """
 
 import numpy as np
 import pandas as pd
 
-def PPcarsPS(basic_Mileage, office, Office_File, loc_DailyAssign_file):
+def PPcarsPS(basic_Mileage, office_EGnm, Office_File, loc_DailyAssign_file):
     
     '''
     <input>
@@ -39,6 +39,7 @@ def PPcarsPS(basic_Mileage, office, Office_File, loc_DailyAssign_file):
     
     loc_DailyAssign_df = pd.read_excel(loc_DailyAssign_file)
     Office_Data = pd.read_excel(Office_File)
+    office = Office_Data.loc[Office_Data.actgr == office_EGnm]['actgr_office'].item()
     CCcars_num = Office_Data.loc[Office_Data.actgr_office == office]['actgr_CCcarsNum'].item()          # loc_company_car_supply_num
     PCcars_num = Office_Data.loc[Office_Data.actgr_office == office]['actgr_PCcarsNum'].item()          # loc_private_car_supply_num
     CCcars_Rent = Office_Data.loc[Office_Data.actgr_office == office]['actgr_CCcarsRent'].item()        # loc_company_car_rental_$
@@ -76,7 +77,7 @@ def PPcarsPS(basic_Mileage, office, Office_File, loc_DailyAssign_file):
                     for d in servDay_carNow: 
                         # reassign accu_Prvfuel every month
                         WorkDay = str(d)
-                        if WorkDay[-1] == "1" and WorkDay[-2] == "0":
+                        if (WorkDay[-1] == "1" and WorkDay[-2] == "0") or (d == servDay_carNow[0]):
                             accu_PCcarsMileage = 0.0
                                 
                         if PCcars_num != 0:
@@ -120,4 +121,4 @@ def PPcarsPS(basic_Mileage, office, Office_File, loc_DailyAssign_file):
                 #loc_CarNsens_df.loc[ [below] ,[upper] ] = int(min_CCcarnum)
                 loc_Costsens_df.loc[ [below] ,[upper] ] = '$ '+ format(int(min_CCcarCost), ',')
                 
-    return loc_Costsens_df.to_excel('../docs/loc_PriceSens_cost.xlsx', encoding='utf-8', index=True)
+    return loc_Costsens_df.to_excel('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_30_mins\\'+ office_EGnm +'_PriceSens_cost_TRY.xlsx', encoding='utf-8', index=True)

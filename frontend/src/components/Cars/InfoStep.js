@@ -51,7 +51,7 @@ const InfoStep = props => {
     try {
       showLoading(true);
       setDetailModalOpen(true);
-      await loadDetail({ params: pathId });
+      await loadDetail({ params: pathId, query: { office: values.office } });
     } catch (e) {
       showErrDialog(e.message);
     }

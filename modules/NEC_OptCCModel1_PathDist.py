@@ -10,7 +10,7 @@ Input ex:
     PathDist('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\2018_MRDATA_original.xlsx',
     'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\2018_workerDATA.xlsx',
     'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\TW_sites_address.xlsx',
-    '淡水')
+    'TS')
 """
 
 # packages import 
@@ -19,7 +19,7 @@ import numpy as np
 import googlemaps
 import time
 
-def PathDist(Service_File, Worker_File, Office_File, office):
+def PathDist(Service_File, Worker_File, Office_File, office_EGnm):
     
     '''
     <input>
@@ -44,7 +44,7 @@ def PathDist(Service_File, Worker_File, Office_File, office):
     Data = pd.merge(Service_Data, Worker_Data, on='case_no')
     
     # office select and resort --> PathData
-    office_EGnm = Office_Data.loc[Office_Data.actgr_office == office]['actgr'].item()
+    office = Office_Data.loc[Office_Data.actgr == office_EGnm]['actgr_office'].item()
     office_addr = Office_Data.loc[Office_Data.actgr_office == office]['actgr_address'].item()
     office_nm = Office_Data.loc[Office_Data.actgr_office == office]['actgr_name'].item()
     loc_Data =  Data[Data['actgr_nm'] == office_nm]

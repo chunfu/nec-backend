@@ -27,7 +27,7 @@ const getPath = async (req, res) => {
     */
 
     // output 2 files: pathDistDetail.xlsx, pathDistAnaly.xlsx
-    const [rows] = excel2json(futil.LOC_PATH_DIST_ANALY_PATH);
+    const [rows] = excel2json(futil.LOC_PATH_DIST_ANALY_PATH(office));
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
@@ -42,12 +42,13 @@ const getPath = async (req, res) => {
 const getPathDetail = async (req, res) => {
   const {
     params: { pathId },
+    query: { office },
   } = req;
   try {
     if (!pathId) throw new Error('Path Id is not passed');
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    let [rows] = excel2json(futil.LOC_PATH_DIST_DETAIL_PATH);
+    let [rows] = excel2json(futil.LOC_PATH_DIST_DETAIL_PATH(office));
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));

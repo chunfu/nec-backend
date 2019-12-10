@@ -18,15 +18,15 @@ def SLAcheck(minSLA, movetimePath):
     '''
 
     df_movetime = pd.read_excel(movetimePath)
-    df_tempfilter = df_movetime[df_movetime.columns[4:]].astype('int')<minSLA
-    df_reachable = pd.concat([df_movetime[df_movetime.columns[:4]], df_tempfilter],axis=1)
+    df_tempfilter = df_movetime[df_movetime.columns[3:]].astype('int')<minSLA
+    df_reachable = pd.concat([df_movetime[df_movetime.columns[:3]], df_tempfilter],axis=1)
     needAdjust = []
     # 列出所有都是False的客戶
     for customer in df_reachable.values:
         if True in customer:
             continue
         else: 
-            needAdjust.append([customer[1],customer[2],customer[3]])
+            needAdjust.append([customer[0],customer[1],customer[2]])
     
     df_needAdjust = pd.DataFrame(needAdjust, columns=['CustomerID', 'CustomerName', 'CustomerAddress'], copy=True)
     # print(df_needAdjust)

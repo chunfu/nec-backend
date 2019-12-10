@@ -15,17 +15,17 @@ import { CarContext } from '.';
 import useStyles from '../../utils/useStyles';
 
 const locations = [
-  '淡水',
-  '桃園',
-  '新竹',
-  '台中',
-  '嘉義',
-  '台南',
-  '高雄',
-  '屏東',
-  '台東',
-  '花蓮',
-  '宜蘭',
+  { value: 'PT', label: '屏東' },
+  { value: 'CY', label: '嘉義' },
+  { value: 'TT', label: '台東' },
+  { value: 'KS', label: '高雄' },
+  { value: 'TC', label: '台中' },
+  { value: 'TN', label: '台南' },
+  { value: 'HC', label: '新竹' },
+  { value: 'TS', label: '淡水' },
+  { value: 'TY', label: '桃園' },
+  { value: 'HL', label: '花蓮' },
+  { value: 'YL', label: '宜蘭' },
 ];
 
 const ParameterStep = props => {
@@ -183,8 +183,8 @@ const ParameterStep = props => {
                 <OutlinedInput labelWidth="60" name="office" id="office" />
               }
             >
-              {locations.map(l => (
-                <MenuItem value={l}>{l}</MenuItem>
+              {locations.map(({ value, label }) => (
+                <MenuItem value={value}>{label}</MenuItem>
               ))}
             </Select>
           </FormControl>

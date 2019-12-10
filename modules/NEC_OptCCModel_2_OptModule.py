@@ -7,10 +7,10 @@ Created on  Sep
 Topic: NEC_system_OptModel_module
 
 Input ex:
-    OptModel(30, 2.42, 800.0, 6.0, 4.0, '台中', 
-    'C:\\Users\\User\\Desktop\\20191111_NEC_system\\Input_DATA\\TW_TXcars_cost.xlsx',
-    'C:\\Users\\User\\Desktop\\20191111_NEC_system\\Input_DATA\\NEC_TWoffice_address.xlsx',
-    'C:\\Users\\User\\Desktop\\20191111_NEC_system\\Output_DATA_TCex\\loc_PathData_analys.xlsx')
+    OptModel(0, 2.42, 800.0, 6.0, 4.0, 'HC', 
+    'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\TW_TXcars_cost.xlsx',
+    'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\TW_sites_address.xlsx',
+    'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\HC_PathDist_analy.xlsx')
 """
 
 # packages import
@@ -20,7 +20,7 @@ import numpy as np
 from gurobipy import *
 import time
 
-def OptModel(works_buffer, CCcars_Fuel, basic_Mileage, below_PCcarsFuel, upper_PCcarsFuel, office, TXcost_File, Office_File, loc_PathFile):
+def OptModel(works_buffer, CCcars_Fuel, basic_Mileage, below_PCcarsFuel, upper_PCcarsFuel, office_EGnm, TXcost_File, Office_File, loc_PathFile):
 
     '''
     <input>
@@ -44,7 +44,7 @@ def OptModel(works_buffer, CCcars_Fuel, basic_Mileage, below_PCcarsFuel, upper_P
     # variables & files reading
     TXcost_Data = pd.read_excel(TXcost_File)
         
-    #office_EGnm = TXcost_Data.loc[TXcost_Data.actgr_office == office]['actgr'].item()
+    office = TXcost_Data.loc[TXcost_Data.actgr == office_EGnm]['actgr_office'].item()
     TXcars_start_M = TXcost_Data.loc[TXcost_Data.actgr_office == office]['initial_TXmileage(m)'].item()	# taxi_car_basic_Mileage_m
     initial_TXcars = TXcost_Data.loc[TXcost_Data.actgr_office == office]['initial_Txcost($)'].item()	# taxi_car_basic_cost_$
     add_TXcars = TXcost_Data.loc[TXcost_Data.actgr_office == office]['add_Txcost($/km)'].item()			# taxi_car_addtional_cost_$/km
@@ -125,7 +125,7 @@ def OptModel(works_buffer, CCcars_Fuel, basic_Mileage, below_PCcarsFuel, upper_P
         for d in servDay: 
             # reassign accu_Prvfuel every month
             WorkDay = str(d)
-            if WorkDay[-1] == "1" and WorkDay[-2] == "0":
+            if (WorkDay[-1] == "1" and WorkDay[-2] == "0") or (d == servDay[0]):
                 accu_PCcarsMileage = 0.0 
                 
         	# model param setting
@@ -145,8 +145,8 @@ def OptModel(works_buffer, CCcars_Fuel, basic_Mileage, below_PCcarsFuel, upper_P
             ls_M = loc_param.loc['param_M', d].split(',')
             for j in range(n):
                 n_index = j+1
-                W[n_index] = int(ls_W[j])
-                S[n_index] = int(ls_S[j])
+                W[n_index] = int(float(ls_W[j]))
+                S[n_index] = int(float(ls_S[j]))
                 M[n_index] = float(ls_M[j])
                 Total_M = Total_M + M[n_index]
         
@@ -269,10 +269,12 @@ def OptModel(works_buffer, CCcars_Fuel, basic_Mileage, below_PCcarsFuel, upper_P
     # conclusion
     min_CCcarnum = df_loc_DailyAssign_cost.loc[df_loc_DailyAssign_cost['TotalCost'].idxmin()]['CCcars_num']
     min_CCcarCost = df_loc_DailyAssign_cost.loc[df_loc_DailyAssign_cost['TotalCost'].idxmin()]['TotalCost']
-    final_result = ' 本年度 「' + office + '據點」 車輛最佳配置結果：\n 在私車基本里程數門檻為 ' + str(basic_Mileage) + ' 公里，基本里程數內/外單位(每公里)補助額度各為($' + str(below_PCcarsFuel) + ', $' + str(upper_PCcarsFuel) + ')的情況下，\n 若該據點的「私車目前供應」為 ' + str(PCcars_num) + ' 輛，\n 則「社車最佳供應」為 '+ str(int(min_CCcarnum)) + ' 輛，年度總成本為 $' + str(format(round(min_CCcarCost,0), ',')) + '。'
-    final_result_utf8 = final_result.encode('utf-8')
-    with open("../docs/CarOpt_Conclusion.txt", "w") as text_file:
-        text_file.write(final_result_utf8.decode('utf-8', 'strict'))
+    final_result = ' 本年度 「' + office + '據點」 車輛最佳配置結果：\n 在私車基本里程數門檻為 ' + str(basic_Mileage) + ' 公里，基本里程數內/外單位(每公里)補助額度各為($' + str(below_PCcarsFuel) + ', $' + str(upper_PCcarsFuel) + ')的情況下，\n 若該據點的「私車目前供應」為 ' + str(PCcars_num) + ' 輛，\n 則「社車最佳供應」為 '+ str(int(min_CCcarnum)) + ' 輛，年度總成本為 $' + str(format(int(min_CCcarCost), ',')) + '。'
+    #final_result_utf8 = final_result.encode('UTF-8')
+    with open('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\'+ office_EGnm +'_CarOpt_Conclusion.txt', "w") as text_file:
+        #text_file.write(final_result_utf8.decode('UTF-8','strict'))
+        text_file.write(final_result)
+        
         
     # format cells values: df_loc_DailyAssign_cost, df_loc_DailyAssign_detail
     float_col_1 = df_loc_DailyAssign_cost.select_dtypes(include = ['float64'])
@@ -293,4 +295,4 @@ def OptModel(works_buffer, CCcars_Fuel, basic_Mileage, below_PCcarsFuel, upper_P
     tEnd = time.time()#計時結束
     print ("It cost %f sec" % (tEnd - tStart))#會自動做近位
     
-    return df_loc_DailyAssign_cost.to_excel('../docs/loc_DailyAssign_cost.xlsx', encoding='utf-8', index=False), df_loc_DailyAssign_detail.to_excel('../docs/loc_DailyAssign_detail.xlsx', encoding='utf-8', index=False) 
+    return df_loc_DailyAssign_cost.to_excel('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\'+ office_EGnm +'_DailyAssign_cost.xlsx', encoding='utf-8', index=False), df_loc_DailyAssign_detail.to_excel('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\'+ office_EGnm +'_DailyAssign_detail.xlsx', encoding='utf-8', index=False) 
