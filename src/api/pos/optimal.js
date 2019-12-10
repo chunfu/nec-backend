@@ -52,7 +52,7 @@ const getOptimalDetail = async (req, res) => {
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
-    rows = rows.filter(({ assignSite }) => assignSite === officeName);
+    rows = rows.filter(({ 指派據點 }) => 指派據點 === officeName);
     res.json({ columns, rows });
   } catch (e) {
     console.log(e.stack);

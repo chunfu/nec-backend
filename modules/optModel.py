@@ -203,8 +203,7 @@ def optModel(oilprice, reservationSite, reachablePath, needAdjustOKPath, movetim
         df_site['總成本($)'].iloc[idx] = format(df_site['總成本($)'].iloc[idx], ',')
         df_site['年度總服務次數'].iloc[idx] = format(df_site['年度總服務次數'].iloc[idx], ',')
 
-    df_assign.to_excel('../docs/assign.xlsx', encoding='utf-8', index=False)
-    return df_site.to_excel('../docs/site.xlsx', encoding='utf-8', index=False), dict_assign
+    return df_site.to_excel('../docs/site.xlsx', encoding='utf-8', index=False), df_assign.to_excel('../docs/assign.xlsx', encoding='utf-8', index=False)
 
 
 
