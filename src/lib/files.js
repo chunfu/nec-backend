@@ -23,9 +23,12 @@ const LOC_PATH_DIST_ANALY_PATH = location =>
   fullPath(`${location}_PathDist_analy.xlsx`);
 const LOC_PATH_DIST_DETAIL_PATH = location =>
   fullPath(`${location}_PathDist_detail.xlsx`);
-const LOC_DAILY_ASSIGN_COST_PATH = fullPath('loc_DailyAssign_cost.xlsx');
-const LOC_DAILY_ASSIGN_DETAIL_PATH = fullPath('loc_DailyAssign_detail.xlsx');
-const LOC_COST_SENS_PATH = fullPath('loc_PriceSens_cost.xlsx');
+const LOC_DAILY_ASSIGN_COST_PATH = location =>
+  fullPath(`${location}_DailyAssign_cost.xlsx`);
+const LOC_DAILY_ASSIGN_DETAIL_PATH = location =>
+  fullPath(`${location}_DailyAssign_detail.xlsx`);
+const LOC_COST_SENS_PATH = location =>
+  fullPath(`${location}loc_PriceSens_cost.xlsx`);
 const TAXI_COST_PATH = fullPath('taxiCost.xlsx');
 const CAROPT_CONCLUSION_PATH = fullPath('CarOpt_Conclusion.txt');
 

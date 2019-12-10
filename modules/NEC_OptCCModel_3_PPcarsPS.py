@@ -121,4 +121,4 @@ def PPcarsPS(basic_Mileage, office_EGnm, Office_File, loc_DailyAssign_file):
                 #loc_CarNsens_df.loc[ [below] ,[upper] ] = int(min_CCcarnum)
                 loc_Costsens_df.loc[ [below] ,[upper] ] = '$ '+ format(int(min_CCcarCost), ',')
                 
-    return loc_Costsens_df.to_excel('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_30_mins\\'+ office_EGnm +'_PriceSens_cost_TRY.xlsx', encoding='utf-8', index=True)
+    return loc_Costsens_df.to_excel('../docs/'+ office_EGnm +'_PriceSens_cost_TRY.xlsx', encoding='utf-8', index=True)

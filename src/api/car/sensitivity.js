@@ -23,7 +23,7 @@ const getSensitivity = async (req, res) => {
     );
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    const [rows] = excel2json(futil.LOC_COST_SENS_PATH);
+    const [rows] = excel2json(futil.LOC_COST_SENS_PATH(office));
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
@@ -53,7 +53,7 @@ const getAllSensitivity = async (req, res) => {
     */
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    const [rows] = excel2json(futil.LOC_COST_SENS_PATH);
+    const [rows] = excel2json(futil.LOC_COST_SENS_PATH(office));
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));

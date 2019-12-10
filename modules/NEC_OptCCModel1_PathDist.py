@@ -58,7 +58,7 @@ def PathDist(Service_File, Worker_File, Office_File, office_EGnm):
     loc_Data_resort = loc_Data_resort[~loc_Data_resort['out_dt'].isnull()]
     
     # read loc_custDist data
-    custDist_file = 'C:\\Users\\User\\Desktop\\20191128_NEC_system\\loc_CustAddr_Dist\\' + office_EGnm + '_df_custAddr_dist.xlsx'
+    custDist_file = '../docs/loc_CustAddr_Dist/' + office_EGnm + '_df_custAddr_dist.xlsx'
     custDist_Data = pd.read_excel(custDist_file)
     
     #loc_Data_resort.to_excel('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\TS_PathDist_detail_try.xlsx', encoding='utf-8', index=False)
@@ -388,7 +388,7 @@ def PathDist(Service_File, Worker_File, Office_File, office_EGnm):
     tEnd = time.time()#計時結束
     print ("It cost %f sec" % (tEnd - tStart))#會自動做近位
     
-    return df_final_Data.to_excel('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\'+ office_EGnm +'_PathDist_detail.xlsx', encoding='utf-8', index=False), loc_PathData_df.to_excel('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\'+ office_EGnm +'_PathDist_analy.xlsx', encoding='utf-8', index=False), custDist_Data.to_excel(custDist_file , encoding='utf-8')
+    return df_final_Data.to_excel('../docs/'+ office_EGnm +'_PathDist_detail.xlsx', encoding='utf-8', index=False), loc_PathData_df.to_excel('../docs/'+ office_EGnm +'_PathDist_analy.xlsx', encoding='utf-8', index=False), custDist_Data.to_excel(custDist_file , encoding='utf-8')
         
 
     

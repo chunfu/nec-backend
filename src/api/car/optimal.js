@@ -39,7 +39,7 @@ const getOptimal = async (req, res) => {
     var text = fs.readFileSync(futil.CAROPT_CONCLUSION_PATH, "utf-8");
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    const [rows] = excel2json(futil.LOC_DAILY_ASSIGN_COST_PATH);
+    const [rows] = excel2json(futil.LOC_DAILY_ASSIGN_COST_PATH(office));
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
@@ -54,13 +54,14 @@ const getOptimal = async (req, res) => {
 const getOptimalDetail = async (req, res) => {
   const {
     params: { ccn },
+    query: { office },
   } = req;
   try {
     const ccnInt = parseInt(ccn, 10);
     if (ccnInt === NaN) throw new Error('Company car number is not a number');
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
-    let [rows] = excel2json(futil.LOC_DAILY_ASSIGN_DETAIL_PATH);
+    let [rows] = excel2json(futil.LOC_DAILY_ASSIGN_DETAIL_PATH(office));
     const columns =
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));

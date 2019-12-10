@@ -271,7 +271,7 @@ def OptModel(works_buffer, CCcars_Fuel, basic_Mileage, below_PCcarsFuel, upper_P
     min_CCcarCost = df_loc_DailyAssign_cost.loc[df_loc_DailyAssign_cost['TotalCost'].idxmin()]['TotalCost']
     final_result = ' 本年度 「' + office + '據點」 車輛最佳配置結果：\n 在私車基本里程數門檻為 ' + str(basic_Mileage) + ' 公里，基本里程數內/外單位(每公里)補助額度各為($' + str(below_PCcarsFuel) + ', $' + str(upper_PCcarsFuel) + ')的情況下，\n 若該據點的「私車目前供應」為 ' + str(PCcars_num) + ' 輛，\n 則「社車最佳供應」為 '+ str(int(min_CCcarnum)) + ' 輛，年度總成本為 $' + str(format(int(min_CCcarCost), ',')) + '。'
     #final_result_utf8 = final_result.encode('UTF-8')
-    with open('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\'+ office_EGnm +'_CarOpt_Conclusion.txt', "w") as text_file:
+    with open('../docs'+ office_EGnm +'_CarOpt_Conclusion.txt', "w") as text_file:
         #text_file.write(final_result_utf8.decode('UTF-8','strict'))
         text_file.write(final_result)
         
@@ -295,4 +295,4 @@ def OptModel(works_buffer, CCcars_Fuel, basic_Mileage, below_PCcarsFuel, upper_P
     tEnd = time.time()#計時結束
     print ("It cost %f sec" % (tEnd - tStart))#會自動做近位
     
-    return df_loc_DailyAssign_cost.to_excel('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\'+ office_EGnm +'_DailyAssign_cost.xlsx', encoding='utf-8', index=False), df_loc_DailyAssign_detail.to_excel('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\'+ office_EGnm +'_DailyAssign_detail.xlsx', encoding='utf-8', index=False) 
+    return df_loc_DailyAssign_cost.to_excel('../docs/'+ office_EGnm +'_DailyAssign_cost.xlsx', encoding='utf-8', index=False), df_loc_DailyAssign_detail.to_excel('../docs/'+ office_EGnm +'_DailyAssign_detail.xlsx', encoding='utf-8', index=False) 
