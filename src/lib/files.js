@@ -30,7 +30,8 @@ const LOC_DAILY_ASSIGN_DETAIL_PATH = location =>
 const LOC_COST_SENS_PATH = location =>
   fullPath(`${location}_PriceSens_cost.xlsx`);
 const TAXI_COST_PATH = fullPath('taxiCost.xlsx');
-const CAROPT_CONCLUSION_PATH = fullPath('CarOpt_Conclusion.txt');
+const CAROPT_CONCLUSION_PATH = location =>
+  fullPath(`${location}_CarOpt_Conclusion.txt`);
 
 export {
   MOVETIME_FILE_PATH,

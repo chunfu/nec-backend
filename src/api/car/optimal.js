@@ -36,7 +36,7 @@ const getOptimal = async (req, res) => {
     );
 
     // read CarOpt_Conclusion.txt
-    var text = fs.readFileSync(futil.CAROPT_CONCLUSION_PATH, "utf-8");
+    var text = fs.readFileSync(futil.CAROPT_CONCLUSION_PATH(office), "utf-8");
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
     const [rows] = excel2json(futil.LOC_DAILY_ASSIGN_COST_PATH(office));
