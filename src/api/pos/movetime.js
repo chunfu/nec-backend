@@ -46,7 +46,7 @@ const newCustomerDuration = async ({
     // existing office locations
     // [{ name, address }, ...]
     const destinations = columns
-      .slice(4)
+      .slice(3)
       .map(c => officeAddressesList.find(({ name }) => name === c));
     // all new addresses from req.body
     const origins = newCustomerAddresses.map(addr => addr.customerAddress);
@@ -84,7 +84,7 @@ const newCustomerDuration = async ({
 const newOfficeDuration = async ({ columns, rows, newOfficeAddresses }) => {
   try {
     // origins is all customer addresses
-    const origins = rows.map(r => r[columns[3]]);
+    const origins = rows.map(r => r[columns[2]]);
     // destinations is officeAddress
     const destinations = newOfficeAddresses;
 
