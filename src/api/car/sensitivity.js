@@ -19,7 +19,7 @@ const getSensitivity = async (req, res) => {
     if (!office) throw new Error('據點 未指定');
     // loc_DailyAssign_detail.xlsx
     const { stdout, stderr } = await execAsync(
-      `cd ${futil.projectRoot}/modules && python -c "import NEC_OptCCModel_3_PPcarsPS; NEC_OptCCModel_3_PPcarsPS.PPcarsPS(${privateCarDistance}, '${office}', '${futil.OFFICE_ADDRESS_PATH}', '${futil.LOC_DAILY_ASSIGN_DETAIL_PATH}')"`,
+      `cd ${futil.projectRoot}/modules && python -c "import NEC_OptCCModel_3_PPcarsPS; NEC_OptCCModel_3_PPcarsPS.PPcarsPS(${privateCarDistance}, '${office}', '${futil.OFFICE_ADDRESS_PATH}', '${futil.LOC_DAILY_ASSIGN_DETAIL_PATH(office)}')"`,
     );
 
     // output 2 files: loc_DailyAssign_cost, loc_DailyAssign_detail
