@@ -51,7 +51,7 @@ const getPathDetail = async (req, res) => {
       rows.length &&
       Object.keys(rows[0]).map(key => ({ title: key, field: key }));
     // ccn is string, CCcars_num is integer
-    rows = rows.filter(({ Unique_PathID }) => Unique_PathID === pathId);
+    rows = rows.filter(({ 路徑編號 }) => 路徑編號 === pathId);
 
     res.json({ columns, rows });
   } catch (e) {
