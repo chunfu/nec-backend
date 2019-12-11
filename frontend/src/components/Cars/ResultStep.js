@@ -21,6 +21,7 @@ const ResultStep = props => {
     showLoading,
   } = props;
   const resultPrevData = prevData.resultStep || {};
+  const sensitivityPrevData = prevData.sensitivity || {};
 
   const [data, loadData] = useFetch('/api/car/optimal', {}, { method: 'POST' });
 
@@ -44,7 +45,11 @@ const ResultStep = props => {
     try {
       setPriceSensitiveModalOpen(true);
       showLoading(true);
-      await loadSensitivity({ query: values });
+      // make api call only when sensitivity data doesn't exist
+      if (!prevData.sensitivity) {
+        const resp = await loadSensitivity({ query: values });
+        setPrevData({ ...prevData, sensitivity: resp });
+      }
     } catch (e) {
       showErrDialog(e.message);
     }
@@ -82,7 +87,8 @@ const ResultStep = props => {
       });
       showLoading(true);
       const resp = await loadData({ headers: {}, body: formData });
-      setPrevData({ ...prevData, resultStep: resp });
+      // remove sensitivity data to make sure api call will be requested
+      setPrevData({ ...prevData, resultStep: resp, sensitivity: null });
     } catch (e) {
       showErrDialog(e.message);
     }
@@ -90,10 +96,11 @@ const ResultStep = props => {
   };
 
   const renderedData = _.isEmpty(data) ? resultPrevData : data;
+
   let columns = [];
   let minCost = 9999999999;
   if (renderedData.columns) {
-    columns = renderedData.columns.map(firstColAsLink);
+    columns = renderedData.columns;
     renderedData.rows.forEach((row) => {
       let totalCost = row['總成本(元)'];
       totalCost = parseInt(totalCost.replace(/,/g, ''), 10);
@@ -173,8 +180,8 @@ const ResultStep = props => {
           >
             <MaterialTable
               title="據點私車補貼價格敏感度分析表"
-              columns={sensitivity.columns}
-              data={sensitivity.rows}
+              columns={sensitivityPrevData.columns}
+              data={sensitivityPrevData.rows}
               {...tableConfig}
             />
           </Dialog>
