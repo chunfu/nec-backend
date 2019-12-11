@@ -28,7 +28,7 @@ const LOC_DAILY_ASSIGN_COST_PATH = location =>
 const LOC_DAILY_ASSIGN_DETAIL_PATH = location =>
   fullPath(`${location}_DailyAssign_detail.xlsx`);
 const LOC_COST_SENS_PATH = location =>
-  fullPath(`${location}loc_PriceSens_cost.xlsx`);
+  fullPath(`${location}_PriceSens_cost.xlsx`);
 const TAXI_COST_PATH = fullPath('taxiCost.xlsx');
 const CAROPT_CONCLUSION_PATH = fullPath('CarOpt_Conclusion.txt');
 
