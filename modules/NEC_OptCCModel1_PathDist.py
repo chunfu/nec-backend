@@ -7,10 +7,10 @@ Created on  Sep
 Topic: NEC_system_PathDist_module
 
 Input ex:
-    PathDist('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\2018_MRDATA_original.xlsx',
-    'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\2018_workerDATA.xlsx',
-    'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\TW_sites_address.xlsx',
-    'TS')
+    PathDist('D:\\nec-backend\\dist\\docs\\mrData.xlsx',
+    'D:\\nec-backend\\dist\\docs\\workerData.xlsx',
+    'D:\\nec-backend\\dist\\docs\\officeAddress.xlsx',
+    'TT')
 """
 
 # packages import 
@@ -59,7 +59,7 @@ def PathDist(Service_File, Worker_File, Office_File, office_EGnm):
     
     # read loc_custDist data
     custDist_file = '../docs/loc_CustAddr_Dist/' + office_EGnm + '_df_custAddr_dist.xlsx'
-    custDist_Data = pd.read_excel(custDist_file)
+    custDist_Data = pd.read_excel(custDist_file, index_col=0)
     
     #loc_Data_resort.to_excel('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_0_mins\\TS_PathDist_detail_try.xlsx', encoding='utf-8', index=False)
     
@@ -70,7 +70,7 @@ def PathDist(Service_File, Worker_File, Office_File, office_EGnm):
     
     # google map api 
     def distance_GM(origin_addr, destination_addr):
-        gmaps = googlemaps.Client(key='AIzaSyBbEPM3JxBb4eQuE_U05edVs5-dUQEPBYE')
+        gmaps = googlemaps.Client(key='AIzaSyDAaFOcsAx-48cmCeX3r-lKXe7ldIYN75I')
         result = gmaps.distance_matrix(origin_addr, destination_addr, mode = 'driving')['rows'][0]['elements'][0]
         if result['status'] == 'OK':
             Act_Dist = result['distance']['value']
@@ -388,7 +388,7 @@ def PathDist(Service_File, Worker_File, Office_File, office_EGnm):
     tEnd = time.time()#計時結束
     print ("It cost %f sec" % (tEnd - tStart))#會自動做近位
     
-    return df_final_Data.to_excel('../docs/'+ office_EGnm +'_PathDist_detail.xlsx', encoding='utf-8', index=False), loc_PathData_df.to_excel('../docs/'+ office_EGnm +'_PathDist_analy.xlsx', encoding='utf-8', index=False), custDist_Data.to_excel(custDist_file , encoding='utf-8')
+    return df_final_Data.to_excel('../docs/'+ office_EGnm +'_PathDist_detail.xlsx', encoding='utf-8', index=False), loc_PathData_df.to_excel('../docs/'+ office_EGnm +'_PathDist_analy.xlsx', encoding='utf-8', index=False), custDist_Data.to_excel(custDist_file , encoding='utf-8', index=True)
         
 
     

@@ -7,9 +7,9 @@ Created on  Sep
 Topic: NEC_system_PPcarsPS_module
 
 Input ex:
-     PPcarsPS( 800.0, 'CY',
-     'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\TW_sites_address.xlsx',
-     'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Output_DATA_30_mins\\CY_DailyAssign_detail.xlsx')
+     PPcarsPS( 800.0, 'TT',
+     'D:\\nec-backend\\dist\\docs\\officeAddress.xlsx',
+     'D:\\nec-backend\\dist\\docs\\TT_DailyAssign_detail.xlsx')
 """
 
 import numpy as np
@@ -121,4 +121,4 @@ def PPcarsPS(basic_Mileage, office_EGnm, Office_File, loc_DailyAssign_file):
                 #loc_CarNsens_df.loc[ [below] ,[upper] ] = int(min_CCcarnum)
                 loc_Costsens_df.loc[ [below] ,[upper] ] = '$ '+ format(int(min_CCcarCost), ',')
                 
-    return loc_Costsens_df.to_excel('../docs/'+ office_EGnm +'_PriceSens_cost_TRY.xlsx', encoding='utf-8', index=True)
+    return loc_Costsens_df.to_excel('../docs/'+ office_EGnm +'_PriceSens_cost.xlsx', encoding='utf-8', index=True)

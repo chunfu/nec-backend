@@ -7,10 +7,10 @@ Created on  Sep
 Topic: NEC_system_PathDist_module
 
 Input ex:
-    Run_TotalSites('C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\2018_MRDATA_original.xlsx',
-    'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\2018_workerDATA.xlsx',
-    'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\TW_sites_address.xlsx',
-    'C:\\Users\\User\\Desktop\\20191128_NEC_system\\Input_DATA\\TW_TXcars_cost.xlsx',
+    Run_TotalSites('D:\\nec-backend\\dist\\docs\\mrData.xlsx',
+    'D:\\nec-backend\\dist\\docs\\workerData.xlsx',
+    'D:\\nec-backend\\dist\\docs\\officeAddress.xlsx',
+    'D:\\nec-backend\\dist\\docs\\taxiCost.xlsx',
     30, 800.0, 6.0, 4.0, 2.42)
 """
 
@@ -80,14 +80,14 @@ def Run_TotalSites(Service_FN, Worker_FN, Office_FN, TXcost_FN, workTime_buffer,
         
         # read loc_custDist data
         custDist_file = '../docs/loc_CustAddr_Dist/' + office_EGnm + '_df_custAddr_dist.xlsx'
-        custDist_Data = pd.read_excel(custDist_file)   
+        custDist_Data = pd.read_excel(custDist_file, index_col=0)   
         
         ############################### GoogleMap API, distance/pathID labeled
         Service_count = loc_Data_resort.shape[0]
            
         # google map api 
         def distance_GM(origin_addr, destination_addr):
-            gmaps = googlemaps.Client(key='AIzaSyBbEPM3JxBb4eQuE_U05edVs5-dUQEPBYE')
+            gmaps = googlemaps.Client(key='AIzaSyDAaFOcsAx-48cmCeX3r-lKXe7ldIYN75I')
             result = gmaps.distance_matrix(origin_addr, destination_addr, mode = 'driving')['rows'][0]['elements'][0]
             if result['status'] == 'OK':
                 Act_Dist = result['distance']['value']
@@ -396,9 +396,9 @@ def Run_TotalSites(Service_FN, Worker_FN, Office_FN, TXcost_FN, workTime_buffer,
         loc_PathData_df = loc_PathData_df.sort_values(['服務日期','當日服務路徑順序'], ascending=[True,True])    
         
         # export excel files
-        custDist_Data.to_excel(custDist_file , encoding='utf-8')
-        df_final_Data.to_excel('../docs'+ office_EGnm +'_PathDist_detail.xlsx', encoding='utf-8', index=False)
-        loc_PathData_df.to_excel('../docs'+ office_EGnm +'_PathDist_analy.xlsx', encoding='utf-8', index=False)
+        custDist_Data.to_excel(custDist_file , encoding='utf-8', index=True)
+        df_final_Data.to_excel('../docs/'+ office_EGnm +'_PathDist_detail.xlsx', encoding='utf-8', index=False)
+        loc_PathData_df.to_excel('../docs/'+ office_EGnm +'_PathDist_analy.xlsx', encoding='utf-8', index=False)
         
         return loc_PathData_df   
         
@@ -800,6 +800,7 @@ def Run_TotalSites(Service_FN, Worker_FN, Office_FN, TXcost_FN, workTime_buffer,
     
     for sites_idx in range(0, len(sites)):   
         theSite = sites[sites_idx]
+        print(theSite)
         df_PathDist_analy = PathDist(Service_FN, Worker_FN, Office_FN, theSite)
         df_DailyAssign_cost, df_DailyAssign_detail = OptModel(workTime_buffer, CC_avgCost, PC_basicMilleage, PC_belowCost, PC_upperCost, theSite, TXcost_FN, Office_FN, df_PathDist_analy)
         df_PScost = PPcarsPS( PC_basicMilleage, theSite, Office_FN, df_DailyAssign_detail)
