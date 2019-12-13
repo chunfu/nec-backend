@@ -10,6 +10,7 @@ import {
   getOptimalDetail as getCarOptimalDetail,
 } from './car/optimal';
 import { getSensitivity, getAllSensitivity } from './car/sensitivity';
+import { upload } from './upload';
 
 export default ({ config, db }) => {
   let api = Router();
@@ -28,6 +29,7 @@ export default ({ config, db }) => {
 
   api.get('/pos/locations', getLocations);
 
+  api.post('/car/upload', upload);
   api.post('/car/path', getPath);
   api.get('/car/path/:pathId', getPathDetail);
   api.post('/car/optimal', getCarOptimal);

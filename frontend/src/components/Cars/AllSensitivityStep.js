@@ -26,16 +26,8 @@ const AllSensitivityStep = props => {
 
   const onClickAllSensitivityBtn = async () => {
     try {
-      let formData = new FormData();
-      Object.keys(values).forEach(valueName => {
-        formData.append(valueName, values[valueName]);
-      });
-      ['taxiCost'].forEach(fileName => {
-        if (files[fileName])
-          formData.append(fileName, files[fileName], `${fileName}.xlsx`);
-      });
       showLoading(true);
-      const resp = await loadData({ headers: {}, body: formData });
+      const resp = await loadData({ body: JSON.stringify(values) });
       setPrevData({ ...prevData, allSensitivityStep: resp });
     } catch (e) {
       showErrDialog(e.message);

@@ -1,7 +1,6 @@
 import '@babel/polyfill';
 
 import http from 'http';
-import path from 'path';
 import express from 'express';
 import history from 'connect-history-api-fallback';
 import cors from 'cors';
@@ -16,8 +15,8 @@ import config from './config.json';
 let app = express();
 let server = http.createServer(app);
 app.server = server;
-server.setTimeout(60 * 60 * 1000);
-server.on('timeout', () => console.log('timeout'));
+server.setTimeout(7 * 24 * 60 * 60 * 1000);
+server.on('timeout', () => console.log(arguments));
 
 // logger
 app.use(morgan('dev'));

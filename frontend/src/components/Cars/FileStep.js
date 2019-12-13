@@ -8,20 +8,27 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { CarContext } from '.';
 import UploadButton from '../../widget/UploadButton';
 import useStyles from '../../utils/useStyles';
+import useFetch from '../../utils/useFetch';
 
 const FileStep = props => {
+  const {
+    file: { files, setFiles },
+  } = props;
+
   const classes = useStyles()();
   const [fileModalOpen, setFileModalOpen] = useState(false);
   const handleOpenFileModal = () => setFileModalOpen(true);
   const handleCloseFileModal = () => setFileModalOpen(false);
 
-  const {
-    file: { files, setFiles },
-  } = props;
-  const onFileChange = name => e => {
+  const [_, upload] = useFetch('/api/car/upload', {}, { method: 'POST' });
+  const onFileChange = name => async e => {
+    const file = e.target.files[0];
+    let formData = new FormData();
+    formData.append(name, file, `${name}.xlsx`);
+    await upload({ headers: {}, body: formData });
     setFiles({
       ...files,
-      [name]: e.target.files[0],
+      [name]: file,
     });
   };
 
