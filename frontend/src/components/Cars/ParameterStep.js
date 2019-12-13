@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,20 +13,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 
 import { CarContext } from '.';
 import useStyles from '../../utils/useStyles';
-
-const locations = [
-  { value: 'PT', label: '屏東' },
-  { value: 'CY', label: '嘉義' },
-  { value: 'TT', label: '台東' },
-  { value: 'KS', label: '高雄' },
-  { value: 'TC', label: '台中' },
-  { value: 'TN', label: '台南' },
-  { value: 'HC', label: '新竹' },
-  { value: 'TS', label: '淡水' },
-  { value: 'TY', label: '桃園' },
-  { value: 'HL', label: '花蓮' },
-  { value: 'YL', label: '宜蘭' },
-];
+import useFetch from '../../utils/useFetch';
 
 const ParameterStep = props => {
   const classes = useStyles()();
@@ -45,6 +32,14 @@ const ParameterStep = props => {
   const [paramsModalOpen, setParamsModalOpen] = useState(false);
   const handleOpenParamsModal = () => setParamsModalOpen(true);
   const handleCloseParamsModal = () => setParamsModalOpen(false);
+
+  const [locations, loadLocations] = useFetch('/api/car/locations', []);
+  useEffect(() => {
+    async function fetchData() {
+      await loadLocations();
+    }
+    fetchData();
+  }, []);
   return (
     <React.Fragment>
       <Button
@@ -183,7 +178,7 @@ const ParameterStep = props => {
                 <OutlinedInput labelWidth="60" name="office" id="office" />
               }
             >
-              {locations.map(({ value, label }) => (
+              {locations.map(({ actgr: value, actgr_office: label }) => (
                 <MenuItem value={value}>{label}</MenuItem>
               ))}
             </Select>

@@ -10,6 +10,7 @@ import {
   getOptimalDetail as getCarOptimalDetail,
 } from './car/optimal';
 import { getSensitivity, getAllSensitivity } from './car/sensitivity';
+import { getCarLocations } from './car/locations';
 import { upload } from './upload';
 
 export default ({ config, db }) => {
@@ -30,6 +31,7 @@ export default ({ config, db }) => {
   api.get('/pos/locations', getLocations);
 
   api.post('/car/upload', upload);
+  api.get('/car/locations', getCarLocations);
   api.post('/car/path', getPath);
   api.get('/car/path/:pathId', getPathDetail);
   api.post('/car/optimal', getCarOptimal);
