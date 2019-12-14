@@ -28,9 +28,11 @@ const calcDuration = async (origins, destinations) => {
   let values = [];
   for (let i = 0; i < origins.length; i++) {
     let elements = [];
+    const origin = origins[i];
+    console.log({ i, origin });
     for (let j = 0; j < destinations.length; j++) {
-      const origin = origins[i];
       const destination = destinations[j];
+      console.log({ j, destination });
       const response = await gmap
         .distanceMatrix({
           origins: [origin],
@@ -40,6 +42,7 @@ const calcDuration = async (origins, destinations) => {
         })
         .asPromise();
       elements.push(response.json.rows[0].elements[0])
+      console.log('gmap called');
     }
     values.push({ elements });
   }
@@ -96,6 +99,7 @@ const newOfficeDuration = async ({ columns, rows, newOfficeAddresses }) => {
     // destinations is officeAddress
     const destinations = newOfficeAddresses;
 
+    console.log('before gmap api', origins.length, destinations.length);
     const values = await calcDuration(
       origins,
       destinations.map(addr => addr.officeAddress),

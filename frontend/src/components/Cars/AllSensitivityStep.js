@@ -46,6 +46,7 @@ const AllSensitivityStep = props => {
       >
         所有敏感度分析
       </Button>
+      <label>執行時間可達數小時，敬請稍候</label>
       {renderedData.columns && (
         <React.Fragment>
           <div className={classes.table}>
