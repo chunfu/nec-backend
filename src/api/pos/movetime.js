@@ -25,15 +25,25 @@ const getMoveTime = (req, res) => {
 };
 
 const calcDuration = async (origins, destinations) => {
-  const response = await gmap
-    .distanceMatrix({
-      origins,
-      destinations,
-      language: 'zh-TW',
-      departure_time,
-    })
-    .asPromise();
-  return response;
+  let values = [];
+  for (let i = 0; i < origins.length; i++) {
+    let elements = [];
+    for (let j = 0; j < destinations.length; j++) {
+      const origin = origins[i];
+      const destination = destinations[j];
+      const response = await gmap
+        .distanceMatrix({
+          origins: [origin],
+          destinations: [destination],
+          language: 'zh-TW',
+          departure_time,
+        })
+        .asPromise();
+      elements.push(response.json.rows[0].elements[0])
+    }
+    values.push({ elements });
+  }
+  return values;
 };
 
 const newCustomerDuration = async ({
@@ -50,12 +60,10 @@ const newCustomerDuration = async ({
       .map(c => officeAddressesList.find(({ name }) => name === c));
     // all new addresses from req.body
     const origins = newCustomerAddresses.map(addr => addr.customerAddress);
-    let response = await calcDuration(
+    let values = await calcDuration(
       origins,
       destinations.map(d => d.address),
     );
-
-    const values = response.json.rows;
 
     const newAddressRecords = newCustomerAddresses.map((newAddress, i) => {
       const { customerId, customerName, customerAddress } = newAddress;
@@ -64,9 +72,9 @@ const newCustomerDuration = async ({
         return e.duration.value;
       });
       let newAddressObj = {
-        [columns[1]]: customerId,
-        [columns[2]]: customerName,
-        [columns[3]]: customerAddress,
+        [columns[0]]: customerId,
+        [columns[1]]: customerName,
+        [columns[2]]: customerAddress,
       };
       return destinations.reduce((acc, col, idx) => {
         acc[col.name] = (durationArr[idx] / 60).toFixed(2);
@@ -88,11 +96,10 @@ const newOfficeDuration = async ({ columns, rows, newOfficeAddresses }) => {
     // destinations is officeAddress
     const destinations = newOfficeAddresses;
 
-    const response = await calcDuration(
+    const values = await calcDuration(
       origins,
       destinations.map(addr => addr.officeAddress),
     );
-    const values = response.json.rows;
     return rows.map((row, i) => {
       const durationArr = values[i].elements.map(e => {
         if (e.status !== 'OK') return 0;
