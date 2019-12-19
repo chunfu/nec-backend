@@ -29,20 +29,25 @@ const calcDuration = async (origins, destinations) => {
   for (let i = 0; i < origins.length; i++) {
     let elements = [];
     const origin = origins[i];
-    console.log({ i, origin });
+    console.log({ i, origin, length: origins.length });
     for (let j = 0; j < destinations.length; j++) {
       const destination = destinations[j];
-      console.log({ j, destination });
-      const response = await gmap
-        .distanceMatrix({
-          origins: [origin],
-          destinations: [destination],
-          language: 'zh-TW',
-          departure_time,
-        })
-        .asPromise();
-      elements.push(response.json.rows[0].elements[0])
-      console.log('gmap called');
+      console.log({ j, destination, length: destinations.length });
+      try {
+        const response = await gmap
+          .distanceMatrix({
+            origins: [origin],
+            destinations: [destination],
+            language: 'zh-TW',
+            departure_time,
+          })
+          .asPromise();
+        console.log('gmap called');
+        elements.push(response.json.rows[0].elements[0]);
+      } catch (err) {
+        console.log('**** err', err.stack);
+        elements.push({});
+      }
     }
     values.push({ elements });
   }
@@ -63,10 +68,7 @@ const newCustomerDuration = async ({
       .map(c => officeAddressesList.find(({ name }) => name === c));
     // all new addresses from req.body
     const origins = newCustomerAddresses.map(addr => addr.customerAddress);
-    let values = await calcDuration(
-      origins,
-      destinations.map(d => d.address),
-    );
+    let values = await calcDuration(origins, destinations.map(d => d.address));
 
     const newAddressRecords = newCustomerAddresses.map((newAddress, i) => {
       const { customerId, customerName, customerAddress } = newAddress;
