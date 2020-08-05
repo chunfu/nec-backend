@@ -41,7 +41,7 @@
     "connect-history-api-fallback": "^1.6.0",
     "cors": "^2.7.1",
     "express": "^4.13.3",
-    "express-fileupload": "^1.1.6-alpha.5",
+    "express-fileupload": "^1.1.9",
     "find-root": "^1.1.0",
     "lodash": "^4.17.15",
     "morgan": "^1.8.0",
