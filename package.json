@@ -46,7 +46,7 @@
     "lodash": "^4.17.15",
     "morgan": "^1.8.0",
     "resource-router-middleware": "^0.6.0",
-    "xlsx": "^0.15.1"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
